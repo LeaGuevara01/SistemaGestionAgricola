@@ -1,0 +1,470 @@
+/* Variables de color */
+:root {
+    --agri-green: #28a745;
+    --agri-dark: #1e5631;
+    --agri-light: #e8f5e9;
+    --bg-color: #f8f9fa;
+    --text-color: #212529;
+    --card-bg: #ffffff;
+    --header-bg: linear-gradient(135deg, var(--agri-dark), var(--agri-green));
+    --hover-bg: #e8f5e9;
+    --hover-text: var(--agri-dark);
+}
+/* Tema claro*/
+[data-bs-theme="light"] {
+    --bg-color: #f8f9fa;
+    --text-color: #212529;
+    --card-bg: #ffffff;
+    --header-bg: linear-gradient(135deg, var(--agri-dark), var(--agri-green));
+    --agri-light: #e8f5e9;
+    --hover-bg: #e8f5e9;
+    --hover-text: var(--agri-dark);
+}
+/* Tema oscuro */
+[data-bs-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #f8f9fa;
+    --card-bg: #2c2c2c;
+    --header-bg: linear-gradient(135deg, #0d2d14, #1a5632);
+    --agri-light: #2d2d2d;
+    --hover-bg: #1a5632;
+    --hover-text: white;
+}
+
+/* Estilos de la página */
+.page-wrapper {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+/* Estilos generales */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Custom colors */
+.text-agri-primary {
+    color: var(--agri-green) !important;
+}
+.text-agri-secondary {
+    color: var(--agri-dark) !important;
+}
+
+/* Estilos de botones */
+/* Tema claro */
+html[data-bs-theme="light"] {
+  --btn-bg-maquinaria: #e6f0ff;
+  --btn-text-maquinaria: #0d6efd;
+  --btn-border-maquinaria: #0d6efd;
+
+  --btn-bg-componentes: #ffffff;
+  --btn-text-componentes: #212529;
+  --btn-border-componentes: #6c757d;
+  
+  --btn-bg-inventario: #f8f9fa;
+  --btn-text-inventario: #393d42;
+  --btn-border-inventario: #6c757d;
+
+  --btn-bg-compra: #fffce0;
+  --btn-text-compra: #ffc107;
+  --btn-border-compra: #ffc107;
+  
+  --btn-bg-proveedor: #fff4e0;
+  --btn-text-proveedor: #ff8800;
+  --btn-border-proveedor: #ff8800;
+
+  --btn-bg-historial: #f5ede2;
+  --btn-text-historial: #795548;
+  --btn-border-historial: #795548;
+
+  --btn-bg-pagos: #e6f5ec;
+  --btn-text-pagos: #198754;
+  --btn-border-pagos: #198754;
+
+  --btn-bg-resumen: #e0f7fa;
+  --btn-text-resumen: #0dcaf0;
+  --btn-border-resumen: #0dcaf0;
+
+  --btn-bg-pdf: #ffe6e6;
+  --btn-text-pdf: #dc3545;
+  --btn-border-pdf: #dc3545;
+
+  --btn-bg-compras: #e9ecef;
+  --btn-text-compras: #212529;
+  --btn-border-compras: #212529;
+}
+
+/* Tema oscuro */
+html[data-bs-theme="dark"] {
+  --btn-bg-maquinaria: #001f3f;
+  --btn-text-maquinaria: #66b3ff;
+  --btn-border-maquinaria: #66b3ff;
+
+  --btn-bg-componentes: #1e1e1e;
+  --btn-text-componentes: #f8f9fa;
+  --btn-border-componentes: #ced4da;
+
+  --btn-bg-inventario: #2b2b2b;
+  --btn-text-inventario: #ced4da;
+  --btn-border-inventario: #ced4da;
+
+  --btn-bg-compra: #3f3c00;
+  --btn-text-compra: #ffd700;
+  --btn-border-compra: #ffd700;
+
+  --btn-bg-proveedor: #4d2c00;
+  --btn-text-proveedor: #ffa500;
+  --btn-border-proveedor: #ffa500;
+
+  --btn-bg-historial: #3e2f25;
+  --btn-text-historial: #d2b48c;
+  --btn-border-historial: #d2b48c;
+
+  --btn-bg-pagos: #003300;
+  --btn-text-pagos: #4caf50;
+  --btn-border-pagos: #4caf50;
+
+  --btn-bg-resumen: #003b4c;
+  --btn-text-resumen: #4fd8eb;
+  --btn-border-resumen: #4fd8eb;
+
+  --btn-bg-pdf: #4d0000;
+  --btn-text-pdf: #ff6b6b;
+  --btn-border-pdf: #ff6b6b;
+
+  --btn-bg-compras: #000000;
+  --btn-text-compras: #dee2e6;
+  --btn-border-compras: #dee2e6;
+}
+/* Botones del dashboard */
+.btn-dashboard {
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    align-items: center;
+    text-align: left;
+    display: flex;
+    gap: 0.5rem;
+    opacity: 0.85;
+    transition: all 0.3s ease;
+    transform: translateX(0);
+
+}
+/* Colores base con fondo semitransparente */
+.btn-dashboard.maquinaria {
+  background-color: var(--btn-bg-maquinaria);
+  color: var(--btn-text-maquinaria);
+  border-color: var(--btn-border-maquinaria);
+}
+.btn-dashboard.componentes {
+  background-color: var(--btn-bg-componentes);
+  color: var(--btn-text-componentes);
+  border-color: var(--btn-border-componentes);
+}
+.btn-dashboard.inventario {
+  background-color: var(--btn-bg-inventario);
+  color: var(--btn-text-inventario);
+  border-color: var(--btn-border-inventario);
+}
+.btn-dashboard.compra {
+  background-color: var(--btn-bg-compra);
+  color: var(--btn-text-compra);
+  border-color: var(--btn-border-compra);
+}
+.btn-dashboard.proveedor {
+  background-color: var(--btn-bg-proveedor);
+  color: var(--btn-text-proveedor);
+  border-color: var(--btn-border-proveedor);
+}
+.btn-dashboard.historial {
+  background-color: var(--btn-bg-historial);
+  color: var(--btn-text-historial);
+  border-color: var(--btn-border-historial);
+}
+.btn-dashboard.pagos {
+  background-color: var(--btn-bg-pagos);
+  color: var(--btn-text-pagos);
+  border-color: var(--btn-border-pagos);
+}
+.btn-dashboard.resumen {
+  background-color: var(--btn-bg-resumen);
+  color: var(--btn-text-resumen);
+  border-color: var(--btn-border-resumen);
+}
+.btn-dashboard.pdf {
+  background-color: var(--btn-bg-pdf);
+  color: var(--btn-text-pdf);
+  border-color: var(--btn-border-pdf);
+}
+.btn-dashboard.compras {
+  background-color: var(--btn-bg-compras);
+  color: var(--btn-text-compras);
+  border-color: var(--btn-border-compras);
+}
+/* Botones deshabilitados o no usados */
+.btn-dashboard.disabled-feature {
+    background-color: rgba(108, 117, 125, 0.07); /* gris muy claro */
+    border: 1px solid rgba(108, 117, 125, 0.15);
+    color: #6c757d;
+    opacity: 0.4;
+    pointer-events: none;
+}
+/* Hover y foco: opacidad y fondo más sólidos */
+.btn-dashboard:hover:not(.disabled-feature),
+.btn-dashboard:focus:not(.disabled-feature) {
+    opacity: 1;
+    background-color: unset; /* deja el color sólido */
+    color: inherit;
+    filter: brightness(1.15);
+    cursor: pointer;
+}
+/* Hover general */
+.btn-dashboard:hover,
+.btn-dashboard:focus {
+  filter: brightness(1.2);
+  transform: translateX(4px);
+  opacity: 1;
+  text-decoration: none;
+}
+/* Estado visible con transición */
+.btn-dashboard.visible {
+    opacity: 1;
+    transform: translateX(0px);
+}
+.btn-dashboard i {
+    font-size: 1.25rem;
+    transition: transform 0.2s;
+}
+/* Botones primarios en modo claro */
+html[data-bs-theme="light"] .btn-agri-primary {
+    color: white !important;
+    background-color: var(--agri-green);
+    border-color: var(--agri-green);
+}
+/* Botones primarios hover y focus en modo claro */
+html[data-bs-theme="light"] .btn-agri-primary:hover,
+html[data-bs-theme="light"] .btn-agri-primary:focus {
+    background-color: #2d6a2d;
+    border-color: #2d6a2d;
+    color: white !important;
+}
+/* Botones primarios en modo oscuro */
+html[data-bs-theme="dark"] .btn-agri-primary {
+    color: #cacaca !important;
+    background-color: var(--agri-dark);
+    border-color: #2d6a2d;
+}
+/* Botones primarios hover y focus en modo oscuro */
+html[data-bs-theme="dark"] .btn-agri-primary:hover,
+html[data-bs-theme="dark"] .btn-agri-primary:focus {
+    background-color: var(--agri-green);
+    border-color: var(--agri-green);
+    color: white !important;
+}
+/* Botones secundarios */
+.btn-agri-secondary {
+    color: black !important;
+    background-color: var(--agri-dark) !important;
+    border-color: var(--agri-dark);
+}
+/* Botones secundarios hover y focus */
+.btn-agri-secondary:hover,
+.btn-agri-secondary:focus {
+    background-color: #2d6a2d;
+    border-color: #2d6a2d;
+    color: white !important;
+}
+/* Botones de acción */
+.btn-outline-primary {
+    background-color: rgba(13, 110, 253, 0.2);
+}
+.btn-outline-danger {
+    background-color: rgba(220, 53, 69, 0.2);
+}
+.btn-outline-success {
+    background-color: #28a7463a;
+}
+/* Botones de acción hover y focus */
+.btn-outline-primary:hover {
+    background-color: rgba(13, 110, 253, 0.8);
+}
+.btn-outline-danger:hover {
+    background-color: rgba(220, 53, 69, 0.8);
+}
+.btn-outline-success:hover {
+    background-color: #2fc251cc;
+}
+/* Botones de grupo horizontal */
+.btn-group-horizontal {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-start; /* o center o flex-end */
+    align-items: center; 
+}
+/* Botones pequeños */
+.btn-sm {
+    display: center;
+    align-items: center;
+    justify-content: center;
+}
+/* Botones de acción */
+.wide-btn {
+    min-width: 100px;
+    display: inline-block;
+    text-align: center;
+}
+.btn-outline-light.btn-sm {
+    white-space: nowrap;
+}
+/* Encabezado del dashboard */
+.dashboard-header {
+    background: var(--header-bg);
+    padding: 1.5rem 1.5rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    width: 100% !important;
+}
+
+/* Estilos de las tarjetas */
+.card-section {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 4px solid var(--agri-green);
+    opacity: 0;
+    transition: opacity 0.7s ease-in-out;
+}
+
+.card-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    transition: transform 0.1s, box-shadow 0.2s;
+}
+
+.section-title {
+    color: var(--agri-green);
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Weather card styles */
+.weather-card {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--bg-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.clima-card .card-header,
+.clima-card .card-footer {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 0.75rem 1rem;
+    border: none;
+}
+
+.clima-card .card-header {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.clima-card .card-body {
+    background-color: var(--bg-color);
+    padding: 1rem;
+}
+
+.clima-card .card-footer {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.weather-icon {
+    font-size: 4rem;
+    margin: 0.5rem 0;
+}
+
+.weather-temp {
+    font-weight: 700;
+    font-size: 2rem;
+    margin: 0.5rem 0;
+}
+
+.weather-details {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.weather-bg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0.1;
+    font-size: 6rem;
+    line-height: 1;
+    z-index: 0;
+    transform: scale(1.05);
+}
+
+.weather-card:hover {
+    opacity: 0.15;
+    transform: scale(1.01);
+    transition: transform 0.1s, box-shadow 0.2s;
+}
+
+/* Responsive styles */
+.disabled-feature::after {
+    content: "Próximamente";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--agri-green);
+    color: var(--text-color);
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.theme-toggle {
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.25rem;
+}
+
+.theme-toggle:focus {
+    outline: none;
+    transform: scale(1.05)
+}
+
+/* Estilos para tablas */
+table td, table th {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Estilos de fondo */
+.bg-agri-green {
+    background-color: var(--agri-green);
+    color: white;
+}

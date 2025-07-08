@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="dashboard-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h2 class="mb-1 text-white">
+                    <i class="bi bi-gear-fill"></i> Máquina: {{ maquina.Nombre }}
+                    {% if maquina.ID_Maquina %} ({{ maquina.ID }}){% endif %}
+                </h2>
+                <p class="text-white opacity-75 mb-0">Detalles y gestión de la máquina</p>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ url_for('lista_maquinas') }}" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-arrow-left-circle"></i> Volver al listado
+                </a>
+                <div class="badge bg-light text-dark fs-6">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card-section mt-4">
+        {% if maquina.Foto %}
+            <img src="{{ url_for('static', filename='fotos/maquinas/' ~ maquina.Foto) }}" 
+                 class="img-fluid rounded shadow mb-4" style="max-height: 400px;" alt="Foto de {{ maquina.Nombre }}">
+        {% else %}
+            <p class="text-muted fst-italic">No hay foto cargada aún.</p>
+        {% endif %}
+
+        <!-- Formulario de subida -->
+        <form action="{{ url_for('upload_foto_maquina', id=maquina.ID) }}" method="post" enctype="multipart/form-data" class="mb-4">
+            <div class="mb-3">
+                <label for="foto" class="form-label text-agri-primary fw-semibold mb-3">Subir nueva foto</label>
+                <input
+                    class="form-control"
+                    type="file"
+                    name="foto"
+                    id="foto"
+                    accept=".jpg,.jpeg,.png"
+                    required
+                >
+            </div>
+            <div class="text-start">
+                <button class="btn btn-agri-primary w-100" type="submit">Cargar Foto</button>
+            </div>
+        </form>
+
+
+        <!-- Datos principales -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <p><strong>Marca:</strong> {{ maquina.Marca }}</p>
+                <p><strong>Modelo:</strong> {{ maquina.Modelo }}</p>
+                <p><strong>Año:</strong> {{ maquina.Año }}</p>
+                <p><strong>Estado:</strong> {{ maquina.Estado }}</p>
+                <p><strong>Observaciones:</strong> {{ maquina.Observaciones }}</p>
+            </div>
+        </div>
+
+        <!-- Componentes y frecuencias -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="section-title">
+                <i class="bi bi-puzzle"></i> Componentes y Frecuencias
+            </h3>
+            <a href="{{ url_for('asignar_componente', id_maquina=maquina.ID) }}" class="btn btn-agri-primary btn-sm mb-3">
+                <i class="bi bi-plus-lg"></i> Asignar componente
+            </a>
+        </div>
+
+        {% if componentes_asociados %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle shadow-sm rounded">
+                    <thead>
+                        <tr>
+                            <th>Componente</th>
+                            <th>Descripción</th>
+                            <th>Frecuencia</th>
+                            <th>Unidad</th>
+                            <th>Criterio adicional</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in componentes_asociados %}
+                        <tr>
+                            <td>{{ c.Nombre }}</td>
+                            <td>{{ c.Descripcion }}</td>
+                            <td>{{ c.Frecuencia }}</td>
+                            <td>{{ c['Unidad tiempo'] }}</td>
+                            <td>{{ c['Criterio adicional'] }}</td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ url_for('vista_componente', id=c.ID, id_maquina=maquina.ID) }}" 
+                                        class="btn btn-sm btn-primary w-100">
+                                        <i class="bi bi-eye"></i> Ver
+                                    </a>
+                                        <a href="{{ url_for('editar_frecuencia', id_maquina=maquina.ID, id_componente=c.ID) }}" 
+                                        class="btn btn-sm btn-warning w-100">
+                                    <i class="bi bi-pencil"></i> Editar frecuencia
+                                    </a>
+                                </div>
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted fst-italic">No hay componentes asociados a esta máquina.</p>
+        {% endif %}
+
+        <h3 class="mt-5 section-title"><i class="bi bi-box-seam"></i> Componentes disponibles para asociar</h3>
+        {% if componentes_no_asociados %}
+        <ul class="list-group mb-2">
+            {% for c in componentes_no_asociados %}
+            <li class="list-group-item">{{ c.Nombre }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p class="text-muted fst-italic">No hay componentes disponibles para asociar.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
