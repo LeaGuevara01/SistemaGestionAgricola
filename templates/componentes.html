@@ -1,43 +1,376 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Componentes</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-dark text-white">
-    <div class="container py-4">
-        <h1>Listado de Componentes</h1>
-        <a href="{{ url_for('index') }}" class="btn btn-secondary mb-1">← Volver al inicio</a>
-        <p class="mt-3">Aquí puedes ver todos los componentes registrados en el sistema.</p>
-        <a href="{{ url_for('registrar_componente') }}" class="btn btn-success mb-3">+ Agregar Componente</a>
-        <table class="table table-bordered table-hover bg-white">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for c in componentes %}
-                <tr>
-                    <td>{{ c.ID_Componente }}</td>
-                    <td>{{ c.Nombre }}</td>
-                    <td>{{ c.Descripcion }}</td>
-                    <td>
-                        <a href="{{ url_for('vista_componente', id=c.ID) }}" class="btn btn-sm btn-primary">Ver</a>
-                        <!--
-                        <form action="{{ url_for('eliminar_componente', id=c.ID) }}" method="post" style="display:inline;" onsubmit="return confirm('¿Estás seguro de eliminar este componente?');">
-                            <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                        </form>
-                        -->
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-wrapper">
+    <!-- Header de componentes -->
+    <div class="dashboard-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="flex-grow-1">
+                <h2 class="mb-1 text-white">
+                    <i class="bi bi-puzzle-fill"></i> Gestión de Componentes
+                </h2>
+                <p class="text-white opacity-75 mb-0">Administra todos los componentes del sistema agrícola</p>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-house"></i> 
+                    <span class="d-none d-md-inline">Inicio</span>
+                </a>
+                <a href="{{ url_for('registrar_componente') }}" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-plus-lg"></i> 
+                    <span class="d-none d-md-inline">Nuevo Componente</span>
+                    <span class="d-md-none">Nuevo</span>
+                </a>
+                <div class="badge bg-light text-dark fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+
+    <!-- Estadísticas rápidas -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card hidden-item" data-delay="100">
+                <div class="stat-icon bg-primary">
+                    <i class="bi bi-puzzle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ componentes|length }}</h3>
+                    <p>Total Componentes</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card hidden-item" data-delay="200">
+                <div class="stat-icon bg-success">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ componentes|selectattr('Foto')|list|length }}</h3>
+                    <p>Con Imagen</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card hidden-item" data-delay="300">
+                <div class="stat-icon bg-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ componentes|rejectattr('Foto')|list|length }}</h3>
+                    <p>Sin Imagen</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Filtros y búsqueda -->
+    <div class="card-section mb-4">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-6">
+                <label for="searchInput" class="form-label">
+                    <i class="bi bi-search"></i> Buscar componente
+                </label>
+                <input type="text" class="form-control" id="searchInput" placeholder="Buscar por nombre o descripción...">
+            </div>
+            <div class="col-md-3">
+                <label for="filterType" class="form-label">
+                    <i class="bi bi-funnel"></i> Filtrar por tipo
+                </label>
+                <select class="form-select" id="filterType">
+                    <option value="">Todos los tipos</option>
+                    {% for tipo in componentes|map(attribute='Tipo')|unique|list %}
+                        {% if tipo %}
+                            <option value="{{ tipo }}">{{ tipo }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+                    <i class="bi bi-x-circle"></i> Limpiar filtros
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de componentes -->
+    <div class="card-section">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="section-title mb-0">
+                <i class="bi bi-list-ul"></i> Lista de Componentes
+            </h3>
+            <div class="view-toggle">
+                <button class="btn btn-sm btn-outline-primary active" onclick="toggleView('table')" id="tableViewBtn">
+                    <i class="bi bi-table"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-primary" onclick="toggleView('cards')" id="cardsViewBtn">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Vista de tabla (desktop) -->
+        <div id="tableView" class="table-view">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th width="80">Imagen</th>
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th class="d-none d-md-table-cell">Tipo</th>
+                            <th class="d-none d-lg-table-cell">Descripción</th>
+                            <th width="100">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="componentsTableBody">
+                        {% for c in componentes %}
+                        <tr class="component-row clickable-row" 
+                            data-name="{{ c.Nombre|lower }}" 
+                            data-description="{{ c.Descripcion|lower }}" 
+                            data-type="{{ c.Tipo or '' }}"
+                            data-component-id="{{ c.ID }}">
+                            <td>
+                                {% if c.Foto %}
+                                    <img src="{{ url_for('static', filename='fotos/componentes/' ~ c.Foto) }}" 
+                                        class="component-thumb" alt="{{ c.Nombre }}">
+                                {% else %}
+                                    <div class="component-thumb-placeholder">
+                                        <i class="bi bi-image"></i>
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="component-code">{{ c.ID_Componente or 'N/A' }}</span>
+                            </td>
+                            <td>
+                                <strong class="component-name">{{ c.Nombre }}</strong>
+                            </td>
+                            <td class="d-none d-md-table-cell">
+                                {% if c.Tipo %}
+                                    <span class="badge bg-secondary">{{ c.Tipo }}</span>
+                                {% else %}
+                                    <span class="text-muted">No especificado</span>
+                                {% endif %}
+                            </td>
+                            <td class="d-none d-lg-table-cell">
+                                <span class="component-description">{{ c.Descripcion[:50] }}{% if c.Descripcion|length > 50 %}...{% endif %}</span>
+                            </td>
+                            <td class="action-cell">
+                                <div class="btn-group-horizontal">
+                                    <a href="{{ url_for('editar_componente', id=c.ID) }}" 
+                                    class="btn btn-outline-secondary btn-sm" 
+                                    title="Editar componente">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Vista de cards -->
+        <div id="cardsView" class="cards-view d-none">
+            <div class="row g-3" id="componentsCardsContainer">
+                {% for c in componentes %}
+                <div class="col-md-6 col-lg-4 component-card-wrapper" 
+                    data-name="{{ c.Nombre|lower }}" 
+                    data-description="{{ c.Descripcion|lower }}" 
+                    data-type="{{ c.Tipo or '' }}">
+                    <div class="component-card clickable-card" data-component-id="{{ c.ID }}">
+                        <div class="component-card-image">
+                            {% if c.Foto %}
+                                <img src="{{ url_for('static', filename='fotos/componentes/' ~ c.Foto) }}" 
+                                    alt="{{ c.Nombre }}">
+                            {% else %}
+                                <div class="component-card-placeholder">
+                                    <i class="bi bi-puzzle"></i>
+                                    <p>Sin imagen</p>
+                                </div>
+                            {% endif %}
+                            <div class="component-card-badge">
+                                {% if c.Tipo %}
+                                    <span class="badge bg-secondary">{{ c.Tipo }}</span>
+                                {% else %}
+                                    <span class="badge bg-light text-dark">Sin tipo</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="component-card-content">
+                            <div class="component-card-header">
+                                <h6 class="component-card-title">{{ c.Nombre }}</h6>
+                            </div>
+                            <p class="component-card-details">
+                                <strong>Código:</strong> {{ c.ID_Componente or 'N/A' }}<br>
+                                {% if c.Marca %}<strong>Marca:</strong> {{ c.Marca }}<br>{% endif %}
+                                {% if c.Descripcion %}<strong>Descripción:</strong> {{ c.Descripcion[:50] }}{% if c.Descripcion|length > 50 %}...{% endif %}{% endif %}
+                            </p>
+                            <div class="component-card-actions action-cell">
+                                <a href="{{ url_for('editar_componente', id=c.ID) }}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Estado vacío -->
+        {% if not componentes %}
+        <div class="empty-state text-center py-5">
+            <i class="bi bi-puzzle text-muted" style="font-size: 4rem;"></i>
+            <h4 class="text-muted mt-3">No hay componentes registrados</h4>
+            <p class="text-muted">Comienza agregando tu primer componente al sistema</p>
+            <a href="{{ url_for('registrar_componente') }}" class="btn btn-agri-primary">
+                <i class="bi bi-plus-lg"></i> Agregar Primer Componente
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// Animación gradual para las estadísticas
+document.addEventListener('DOMContentLoaded', function() {
+    // Animar header primero
+    setTimeout(() => {
+        const header = document.querySelector('.dashboard-header');
+        if (header) {
+            header.style.opacity = '1';
+        }
+    }, 100);
+    
+    // Animar estadísticas con delay escalonado
+    const statCards = document.querySelectorAll('.stat-card.hidden-item');
+    statCards.forEach((card, index) => {
+        const delay = parseInt(card.dataset.delay) || (index + 1) * 150;
+        setTimeout(() => {
+            card.classList.remove('hidden-item');
+            card.classList.add('visible-item');
+        }, delay + 300);
+    });
+    
+    // Animar filtros después de las estadísticas
+    setTimeout(() => {
+        const filterSection = document.querySelector('.card-section.hidden-item');
+        if (filterSection) {
+            filterSection.classList.remove('hidden-item');
+            filterSection.classList.add('visible-item');
+        }
+    }, 800);
+    
+    // Animar tabla/cards al final
+    setTimeout(() => {
+        const tableSection = document.querySelector('.card-section.hidden-item:last-of-type');
+        if (tableSection) {
+            tableSection.classList.remove('hidden-item');
+            tableSection.classList.add('visible-item');
+        }
+    }, 1000);
+    
+    // Hacer filas clickeables
+    const clickableRows = document.querySelectorAll('.clickable-row');
+    clickableRows.forEach(row => {
+        row.addEventListener('click', function(e) {
+            // No redirigir si se hace click en la columna de acciones
+            if (e.target.closest('.action-cell') || e.target.closest('.btn')) {
+                return;
+            }
+            
+            const componentId = this.dataset.componentId;
+            if (componentId) {
+                window.location.href = `/componente/${componentId}`;
+            }
+        });
+    });
+    
+    // Hacer cards clickeables
+    const clickableCards = document.querySelectorAll('.clickable-card');
+    clickableCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            // No redirigir si se hace click en la zona de acciones
+            if (e.target.closest('.action-cell') || e.target.closest('.btn')) {
+                return;
+            }
+            
+            const componentId = this.dataset.componentId;
+            if (componentId) {
+                window.location.href = `/componente/${componentId}`;
+            }
+        });
+    });
+});
+
+// Funcionalidad de búsqueda y filtros
+document.getElementById('searchInput').addEventListener('input', filterComponents);
+document.getElementById('filterType').addEventListener('change', filterComponents);
+
+function filterComponents() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const typeFilter = document.getElementById('filterType').value;
+    
+    // Filtrar tabla
+    const tableRows = document.querySelectorAll('.component-row');
+    tableRows.forEach(row => {
+        const name = row.dataset.name;
+        const description = row.dataset.description;
+        const type = row.dataset.type;
+        
+        const matchesSearch = name.includes(searchTerm) || description.includes(searchTerm);
+        const matchesType = !typeFilter || type === typeFilter;
+        
+        row.style.display = matchesSearch && matchesType ? '' : 'none';
+    });
+    
+    // Filtrar cards
+    const cardWrappers = document.querySelectorAll('.component-card-wrapper');
+    cardWrappers.forEach(wrapper => {
+        const name = wrapper.dataset.name;
+        const description = wrapper.dataset.description;
+        const type = wrapper.dataset.type;
+        
+        const matchesSearch = name.includes(searchTerm) || description.includes(searchTerm);
+        const matchesType = !typeFilter || type === typeFilter;
+        
+        wrapper.style.display = matchesSearch && matchesType ? '' : 'none';
+    });
+}
+
+function clearFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('filterType').value = '';
+    filterComponents();
+}
+
+function toggleView(view) {
+    const tableView = document.getElementById('tableView');
+    const cardsView = document.getElementById('cardsView');
+    const tableBtn = document.getElementById('tableViewBtn');
+    const cardsBtn = document.getElementById('cardsViewBtn');
+    
+    if (view === 'table') {
+        tableView.classList.remove('d-none');
+        cardsView.classList.add('d-none');
+        tableBtn.classList.add('active');
+        cardsBtn.classList.remove('active');
+    } else {
+        tableView.classList.add('d-none');
+        cardsView.classList.remove('d-none');
+        tableBtn.classList.remove('active');
+        cardsBtn.classList.add('active');
+    }
+}
+</script>
+
+{% endblock %}

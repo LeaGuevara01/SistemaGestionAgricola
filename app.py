@@ -45,7 +45,7 @@ def index():
 
 # Photo Upload
 # Define allowed file extensions for image uploads
-ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -332,8 +332,6 @@ def editar_frecuencia(id_maquina, id_componente):
     conn.close()
     return render_template('editar_frecuencia.html', frecuencia=frecuencia, id_maquina=id_maquina, id_componente=id_componente)
 
-
-
 # Component Management
 # The component management system allows users to view the list of components and their details.
 
@@ -396,6 +394,203 @@ def vista_componente(id):
     conn.close()
     return render_template('componente.html', componente=componente, proveedores=proveedores, id_maquina=id_maquina)
 
+# Component Purchase
+# The component purchase system allows users to register purchases of components from providers.
+@app.route('/registrar_compra', methods=['GET', 'POST'])
+def registrar_compra():
+    conn = get_db_connection()
+    proveedores = conn.execute('SELECT ID, Nombre FROM proveedores').fetchall()
+    componentes = conn.execute('SELECT ID, Nombre FROM componentes').fetchall()
+
+    if request.method == 'POST':
+        proveedor = request.form['proveedor']
+        componente = request.form['componente']
+        cantidad = int(request.form['cantidad'])
+        precio_unitario = float(request.form['precio_unitario'])
+        observacion = request.form['observacion']
+
+        # Insertar en compras
+        conn.execute('''
+            INSERT INTO compras (ID_Proveedor, ID_Componente, Cantidad, Precio_Unitario, Observacion)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (proveedor, componente, cantidad, precio_unitario, observacion))
+
+        # También insertar en stock como entrada
+        conn.execute('''
+            INSERT INTO stock (ID_Componente, Cantidad, Tipo, Observacion)
+            VALUES (?, ?, 'entrada', ?)
+        ''', (componente, cantidad, f'Compra de proveedor {proveedor}: {observacion}'))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for('vista_stock'))
+
+    conn.close()
+    return render_template('registrar_compra.html', proveedores=proveedores, componentes=componentes)
+
+# Component Editing
+# Component Editing - RUTA CORREGIDA
+@app.route('/componente/<int:id>/editar', methods=['GET', 'POST'])
+def editar_componente(id):
+    conn = get_db_connection()
+    
+    # Obtener el componente
+    componente = conn.execute('SELECT * FROM componentes WHERE ID = ?', (id,)).fetchone()
+    
+    if not componente:
+        conn.close()
+        flash('Componente no encontrado.', 'error')
+        return redirect(url_for('lista_componentes'))
+
+    if request.method == 'POST':
+        try:
+            # Debug: imprimir datos recibidos
+            print("=== DEBUG EDITAR COMPONENTE ===")
+            print(f"ID: {id}")
+            print(f"Form data: {dict(request.form)}")
+            print("===============================")
+            
+            # Obtener datos del formulario
+            codigo = request.form.get('codigo', '').strip()
+            nombre = request.form.get('nombre', '').strip()
+            tipo = request.form.get('tipo', '').strip()
+            marca = request.form.get('marca', '').strip()
+            modelo = request.form.get('modelo', '').strip()
+            precio_str = request.form.get('precio', '').strip()
+            descripcion = request.form.get('descripcion', '').strip()
+            foto = request.files.get('foto')
+
+            # Validación
+            if not nombre:
+                flash('El nombre del componente es obligatorio.', 'error')
+                conn.close()
+                return render_template('editar_componente.html', componente=componente)
+
+            # Procesar precio
+            precio_valor = None
+            if precio_str:
+                try:
+                    precio_valor = float(precio_str)
+                except ValueError:
+                    flash('El precio debe ser un número válido.', 'error')
+                    conn.close()
+                    return render_template('editar_componente.html', componente=componente)
+
+            # Procesar foto
+            foto_filename = componente['Foto']
+            if foto and foto.filename != '':
+                if allowed_file(foto.filename):
+                    # Eliminar foto anterior
+                    if componente['Foto']:
+                        foto_anterior = os.path.join(app.config['UPLOAD_FOLDER_COMPONENTES'], componente['Foto'])
+                        if os.path.exists(foto_anterior):
+                            try:
+                                os.remove(foto_anterior)
+                            except OSError:
+                                pass
+                    
+                    # Guardar nueva foto
+                    extension = foto.filename.rsplit('.', 1)[1].lower()
+                    foto_filename = secure_filename(f"componente_{id}.{extension}")
+                    filepath = os.path.join(app.config['UPLOAD_FOLDER_COMPONENTES'], foto_filename)
+                    foto.save(filepath)
+                else:
+                    flash('Formato de imagen no válido. Use JPG, PNG o GIF.', 'error')
+                    conn.close()
+                    return render_template('editar_componente.html', componente=componente)
+
+            # Actualizar en la base de datos - ORDEN CORREGIDO según la estructura
+            # Estructura: ID, ID_Componente, Nombre, Tipo, Descripcion, Foto, Marca, Modelo, Precio
+            conn.execute('''
+                UPDATE componentes SET 
+                ID_Componente = ?, 
+                Nombre = ?, 
+                Tipo = ?, 
+                Descripcion = ?, 
+                Foto = ?, 
+                Marca = ?, 
+                Modelo = ?, 
+                Precio = ?
+                WHERE ID = ?
+            ''', (codigo or None, nombre, tipo or None, descripcion or None, 
+                  foto_filename, marca or None, modelo or None, precio_valor, id))
+            
+            conn.commit()
+            flash('Componente actualizado correctamente.', 'success')
+            print("=== ACTUALIZACIÓN EXITOSA ===")
+            conn.close()
+            return redirect(url_for('vista_componente', id=id))
+            
+        except sqlite3.Error as e:
+            conn.rollback()
+            flash(f'Error de base de datos: {str(e)}', 'error')
+            print(f"Error SQL: {e}")
+            conn.close()
+            return render_template('editar_componente.html', componente=componente)
+        except Exception as e:
+            conn.rollback()
+            flash(f'Error inesperado: {str(e)}', 'error')
+            print(f"Error general: {e}")
+            conn.close()
+            return render_template('editar_componente.html', componente=componente)
+
+    # GET: mostrar formulario
+    conn.close()
+    return render_template('editar_componente.html', componente=componente)
+
+# Component Deletion
+@app.route('/componente/<int:id>/eliminar', methods=['POST', 'GET'])
+def eliminar_componente(id):
+    conn = get_db_connection()
+    componente = conn.execute('SELECT * FROM componentes WHERE ID = ?', (id,)).fetchone()
+    
+    if not componente:
+        conn.close()
+        flash('Componente no encontrado.', 'error')
+        return redirect(url_for('lista_componentes'))
+    
+    try:
+        # Eliminar foto si existe
+        if componente['Foto']:
+            foto_path = os.path.join(app.config['UPLOAD_FOLDER_COMPONENTES'], componente['Foto'])
+            if os.path.exists(foto_path):
+                try:
+                    os.remove(foto_path)
+                except OSError:
+                    pass  # No importa si no se puede eliminar la foto
+        
+        # Eliminar relaciones en maquinas_componentes
+        conn.execute('DELETE FROM maquinas_componentes WHERE ID_Componente = ?', (id,))
+        
+        # Eliminar frecuencias asociadas
+        conn.execute('DELETE FROM frecuencias WHERE ID_Componente = ?', (id,))
+        
+        # Eliminar relaciones con proveedores
+        conn.execute('DELETE FROM componentes_proveedores WHERE ID_Componente = ?', (id,))
+        
+        # Eliminar registros de stock
+        conn.execute('DELETE FROM stock WHERE ID_Componente = ?', (componente['ID_Componente'],))
+        
+        # Eliminar compras (opcional - podrías querer mantener el historial)
+        # conn.execute('DELETE FROM compras WHERE ID_Componente = ?', (id,))
+        
+        # Finalmente eliminar el componente
+        cursor = conn.execute('DELETE FROM componentes WHERE ID = ?', (id,))
+        
+        if cursor.rowcount == 0:
+            flash('No se pudo eliminar el componente.', 'error')
+        else:
+            flash(f'Componente "{componente["Nombre"]}" eliminado correctamente.', 'success')
+        
+        conn.commit()
+    except sqlite3.Error as e:
+        conn.rollback()
+        flash(f'Error al eliminar el componente: {str(e)}', 'error')
+    finally:
+        conn.close()
+    
+    return redirect(url_for('lista_componentes'))
+
 # Stock Management
 # The stock is calculated based on the entries and exits recorded in the database.
 # The stock is displayed in a table with the component name and the current stock level.
@@ -444,50 +639,6 @@ def registrar_stock():
 def vista_stock():
     stock = obtener_stock_actual()
     return render_template('stock.html', stock=stock)
-
-# Component Purchase
-# The component purchase system allows users to register purchases of components from providers.
-@app.route('/registrar_compra', methods=['GET', 'POST'])
-def registrar_compra():
-    conn = get_db_connection()
-    proveedores = conn.execute('SELECT ID, Nombre FROM proveedores').fetchall()
-    componentes = conn.execute('SELECT ID, Nombre FROM componentes').fetchall()
-
-    if request.method == 'POST':
-        proveedor = request.form['proveedor']
-        componente = request.form['componente']
-        cantidad = int(request.form['cantidad'])
-        precio_unitario = float(request.form['precio_unitario'])
-        observacion = request.form['observacion']
-
-        # Insertar en compras
-        conn.execute('''
-            INSERT INTO compras (ID_Proveedor, ID_Componente, Cantidad, Precio_Unitario, Observacion)
-            VALUES (?, ?, ?, ?, ?)
-        ''', (proveedor, componente, cantidad, precio_unitario, observacion))
-
-        # También insertar en stock como entrada
-        conn.execute('''
-            INSERT INTO stock (ID_Componente, Cantidad, Tipo, Observacion)
-            VALUES (?, ?, 'entrada', ?)
-        ''', (componente, cantidad, f'Compra de proveedor {proveedor}: {observacion}'))
-
-        conn.commit()
-        conn.close()
-        return redirect(url_for('vista_stock'))
-
-    conn.close()
-    return render_template('registrar_compra.html', proveedores=proveedores, componentes=componentes)
-
-# Component Deletion
-# The component deletion system allows users to delete components from the database.
-@app.route('/componentes/eliminar/<int:id>', methods=['POST'])
-def eliminar_componente(id):
-    conn = get_db_connection()
-    conn.execute('DELETE FROM componentes WHERE ID = ?', (id,))
-    conn.commit()
-    conn.close()
-    return redirect(url_for('lista_componentes'))
 
 # Provider Management
 # The provider management system allows users to view the list of providers and their details.
@@ -857,16 +1008,16 @@ def mapear_icono_clima(weather_id):
             return icono
     return "bi-question-circle"  # Icono por defecto
 
-
-# Debugging
-# Print the URL map to see all registered routes
-#print(app.url_map)
-
 # Database Connection with Timeout
 def get_db_connection():
     conn = sqlite3.connect('mantenimiento_agricola.db', timeout=10)  # Espera hasta 10 segundos
     conn.row_factory = sqlite3.Row
     return conn
 
+# Debug: imprimir todas las rutas registradas
 if __name__ == '__main__':
-    app.run(debug=True, threaded=False)
+    print("=== RUTAS REGISTRADAS ===")
+    for rule in app.url_map.iter_rules():
+        print(f"{rule.endpoint}: {rule.rule} {rule.methods}")
+    print("========================")
+    app.run(debug=True)

@@ -25,12 +25,51 @@ if (currentDate) {
 
 // Listener
 document.addEventListener('DOMContentLoaded', () => {
-    // Mostrar header y clima con retardo
-    const dash = document.querySelector('.dashboard-header');
+    // Actualizar el widget del clima
+    if (typeof cargarClima === 'function') {
+        cargarClima();
+    }
+    // Mostrar header, clima y cartas con retardo
+    const header = document.querySelector('.dashboard-header');
     const weather = document.querySelector('.clima-card');
-
-    if (dash) setTimeout(() => dash.style.opacity = '1', 500); // Retardo de 500ms
-    if (weather) setTimeout(() => weather.style.opacity = '1', 700); // Retardo de 700ms
+    let cards = document.querySelectorAll('.card-section');
+    // Ensure cards is an array
+    console.log('Cards found:', cards.length);
+    cards = Array.from(cards);
+    // Function to reveal hidden elements with delay
+    function showElement(element, delay) {
+        if (!element) return;
+        setTimeout(() => {
+            console.log('Showing element:', element.className);
+            element.classList.remove('hidden-item');
+            // Force reflow to restart CSS transition
+            void element.offsetWidth;
+            element.classList.add('visible-item');
+        }, delay);
+    }
+    // Initialize elements as hidden
+    if (header) {
+        header.classList.add('hidden-item');
+        console.log('Header hidden initially');
+    }
+    if (weather) {
+        weather.classList.add('hidden-item');
+        console.log('Weather hidden initially');
+    }
+    if (cards && cards.length) {
+        cards.forEach(card => {
+            card.classList.add('hidden-item');
+            console.log('Card hidden initially:', card.className);
+        });
+    } else {
+        console.log('No cards found with class "card-section"');
+    }
+    // Show elements gradually in correct order
+    showElement(header, 0);
+    showElement(weather, 600);
+    cards.forEach((card, index) => {
+        showElement(card, 1200 + index * 300);
+    });
 
     // Animación para secciones
     document.querySelectorAll('.card-section').forEach((card, index) => {
@@ -38,14 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.opacity = '1';
         }, index * 100);
     });
-
     // Animación para botones
     document.querySelectorAll('.btn-dashboard').forEach((btn, index) => {
         setTimeout(() => {
             btn.classList.add('visible');
         }, 200 + index * 100);
     });
-
     // Hacer clic en una fila de máquina para redireccionar
     document.querySelectorAll('.maquina-row').forEach(row => {
         row.addEventListener('click', () => {
@@ -55,25 +92,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-    
-    // Llamar a cargarClima para actualizar el widget del clima
-    if (typeof cargarClima === 'function') {
-        cargarClima();
-    }
 });
-
 // Clima
 function cargarClima() {
+    const cont = document.getElementById('clima-container');
+    const ts = document.getElementById('clima-timestamp');
+    
     fetch('/api/clima')
         .then(res => res.json())
         .then(data => {
-            const cont = document.getElementById('clima-container');
-            const ts = document.getElementById('clima-timestamp');
-
             if (data.status === 'success') {
                 const c = data.data;
-                cont.innerHTML = `
-                    <div class="weather-icon display-1"><i class="bi ${c.icono}"></i></div>
+                const newContent = `
+                    <div class="weather-icon"><i class="bi ${c.icono}"></i></div>
                     <h3>${c.temperatura}°C</h3>
                     <p>${c.condicion}</p>
                     <div class="row">
@@ -81,6 +112,18 @@ function cargarClima() {
                         <div class="col"><i class="bi bi-wind"></i> ${c.viento_kmh} km/h</div>
                     </div>
                 `;
+                
+                // Simple fade and replace
+                const spinner = cont.querySelector('.spinner-border');
+                if (spinner) {
+                    spinner.style.opacity = '0';
+                    setTimeout(() => {
+                        cont.innerHTML = newContent;
+                    }, 300);
+                } else {
+                    cont.innerHTML = newContent;
+                }
+                
                 ts.textContent = new Date().toLocaleTimeString();
             } else {
                 mostrarErrorClima(data.message);
@@ -88,7 +131,6 @@ function cargarClima() {
         })
         .catch(err => mostrarErrorClima(err.message));
 }
-
 function mostrarErrorClima(msg) {
     const cont = document.getElementById('clima-container');
     if (cont) {

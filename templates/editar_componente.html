@@ -1,0 +1,662 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-wrapper">
+    <!-- Header de edición -->
+    <div class="dashboard-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="flex-grow-1">
+                <h2 class="mb-1 text-white">
+                    <i class="bi bi-pencil-square"></i> Editar Componente
+                </h2>
+                <p class="text-white opacity-75 mb-0">Modifica la información del componente seleccionado</p>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <a href="{{ url_for('lista_componentes') }}" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-arrow-left"></i> 
+                    <span class="d-none d-md-inline">Volver a Componentes</span>
+                    <span class="d-md-none">Volver</span>
+                </a>
+                {% if componente %}
+                <a href="{{ url_for('vista_componente', id=componente.ID) }}" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-eye"></i> 
+                    <span class="d-none d-md-inline">Ver Componente</span>
+                    <span class="d-md-none">Ver</span>
+                </a>
+                {% endif %}
+                <div class="badge bg-light text-dark fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Formulario principal -->
+        <div class="col-lg-8">
+            <div class="card-section">
+                <h3 class="section-title">
+                    <i class="bi bi-info-circle"></i> Información del Componente
+                </h3>
+                
+                <form method="POST" enctype="multipart/form-data" id="editComponentForm">
+                    <div class="row g-3">
+                        <!-- Código del componente -->
+                        <div class="col-md-6">
+                            <label for="codigo" class="form-label">
+                                <i class="bi bi-hash"></i> Código del Componente
+                            </label>
+                            <input type="text" 
+                                class="form-control" 
+                                id="codigo" 
+                                name="codigo" 
+                                value="{{ componente.ID_Componente if componente and componente.ID_Componente is not none else '' }}"
+                                placeholder="Ej: C001, FILT-001">
+                            <div class="form-text">Código único para identificar el componente</div>
+                        </div>
+
+                        <!-- Nombre -->
+                        <div class="col-md-6">
+                            <label for="nombre" class="form-label required">
+                                <i class="bi bi-tag"></i> Nombre del Componente
+                            </label>
+                            <input type="text" 
+                                class="form-control" 
+                                id="nombre" 
+                                name="nombre" 
+                                value="{{ componente.Nombre if componente and componente.Nombre is not none else '' }}"
+                                required 
+                                placeholder="Ej: Filtro de aceite">
+                        </div>
+
+                        <!-- Tipo -->
+                        <div class="col-md-6">
+                            <label for="tipo" class="form-label">
+                                <i class="bi bi-collection"></i> Tipo de Componente
+                            </label>
+                            <select class="form-select" id="tipo" name="tipo">
+                                <option value="">Seleccionar tipo...</option>
+                                {% set tipo_actual = componente.Tipo if componente and componente.Tipo is not none else '' %}
+                                <option value="Filtro" {{ 'selected' if tipo_actual == 'Filtro' else '' }}>Filtro</option>
+                                <option value="Correa" {{ 'selected' if tipo_actual == 'Correa' else '' }}>Correa</option>
+                                <option value="Válvula" {{ 'selected' if tipo_actual == 'Válvula' else '' }}>Válvula</option>
+                                <option value="Sensor" {{ 'selected' if tipo_actual == 'Sensor' else '' }}>Sensor</option>
+                                <option value="Bomba" {{ 'selected' if tipo_actual == 'Bomba' else '' }}>Bomba</option>
+                                <option value="Motor" {{ 'selected' if tipo_actual == 'Motor' else '' }}>Motor</option>
+                                <option value="Hidráulico" {{ 'selected' if tipo_actual == 'Hidráulico' else '' }}>Hidráulico</option>
+                                <option value="Eléctrico" {{ 'selected' if tipo_actual == 'Eléctrico' else '' }}>Eléctrico</option>
+                                <option value="Mecánico" {{ 'selected' if tipo_actual == 'Mecánico' else '' }}>Mecánico</option>
+                                <option value="Otro" {{ 'selected' if tipo_actual == 'Otro' else '' }}>Otro</option>
+                            </select>
+                        </div>
+
+                        <!-- Marca -->
+                        <div class="col-md-6">
+                            <label for="marca" class="form-label">
+                                <i class="bi bi-award"></i> Marca
+                            </label>
+                            <input type="text" 
+                                class="form-control" 
+                                id="marca" 
+                                name="marca" 
+                                value="{{ componente.Marca if componente and componente.Marca is not none else '' }}"
+                                placeholder="Ej: Bosch, Mann, Fleetguard">
+                        </div>
+
+                        <!-- Modelo -->
+                        <div class="col-md-6">
+                            <label for="modelo" class="form-label">
+                                <i class="bi bi-gear"></i> Modelo
+                            </label>
+                            <input type="text" 
+                                class="form-control" 
+                                id="modelo" 
+                                name="modelo" 
+                                value="{{ componente.Modelo if componente and componente.Modelo is not none else '' }}"
+                                placeholder="Ej: W712/75, HF6177">
+                        </div>
+
+                        <!-- Precio - CORREGIDO -->
+                        <div class="col-md-6">
+                            <label for="precio" class="form-label">
+                                <i class="bi bi-currency-dollar"></i> Precio Unitario
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" 
+                                    class="form-control" 
+                                    id="precio" 
+                                    name="precio" 
+                                    value="{{ componente.Precio if componente and componente.Precio is not none else '' }}"
+                                    step="0.01" 
+                                    min="0"
+                                    placeholder="0.00">
+                            </div>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="col-12">
+                            <label for="descripcion" class="form-label">
+                                <i class="bi bi-card-text"></i> Descripción
+                            </label>
+                            <textarea class="form-control" 
+                                    id="descripcion" 
+                                    name="descripcion" 
+                                    rows="4" 
+                                    placeholder="Describe las características, función y detalles técnicos del componente...">{{ componente.Descripcion if componente and componente.Descripcion is not none else '' }}</textarea>
+                        </div>
+
+                        <!-- Imagen -->
+                        <div class="col-12">
+                            <label for="foto" class="form-label">
+                                <i class="bi bi-image"></i> Imagen del Componente
+                            </label>
+                            <input type="file" 
+                                class="form-control" 
+                                id="foto" 
+                                name="foto" 
+                                accept="image/*">
+                            <div class="form-text">
+                                Formatos soportados: JPG, PNG, GIF. Tamaño máximo: 5MB
+                                {% if componente and componente.Foto %}
+                                    <br><small class="text-muted">Imagen actual: {{ componente.Foto }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="d-flex gap-3 mt-4 pt-3 border-top">
+                        <button type="submit" class="btn btn-agri-primary">
+                            <i class="bi bi-check-lg"></i> Guardar Cambios
+                        </button>
+                        <a href="{{ url_for('lista_componentes') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-lg"></i> Cancelar
+                        </a>
+                        {% if componente %}
+                        <button type="button" class="btn btn-outline-danger ms-auto" onclick="confirmDelete()">
+                            <i class="bi bi-trash"></i> Eliminar Componente
+                        </button>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Panel lateral -->
+        <div class="col-lg-4">
+            <!-- Vista previa de imagen - CORREGIDA -->
+            <div class="card-section mb-4">
+                <h4 class="section-title">
+                    <i class="bi bi-image"></i> Vista Previa
+                </h4>
+                <div class="image-preview-container">
+                    {% if componente and componente.Foto and componente.Foto != '' %}
+                        <img src="{{ url_for('static', filename='fotos/componentes/' ~ componente.Foto) }}" 
+                            class="img-fluid rounded shadow" 
+                            alt="{{ componente.Nombre if componente.Nombre else 'Componente' }}"
+                            id="imagePreview">
+                    {% else %}
+                        <div class="image-placeholder" id="imagePlaceholder">
+                            <i class="bi bi-image"></i>
+                            <p>Sin imagen</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Información adicional - CORREGIDA -->
+            <div class="card-section">
+                <h4 class="section-title">
+                    <i class="bi bi-info-circle"></i> Información
+                </h4>
+                <div class="info-list">
+                    {% if componente %}
+                    <div class="info-item">
+                        <span class="info-label">ID del componente</span>
+                        <span class="info-value">{{ componente.ID if componente.ID else 'N/A' }}</span>
+                    </div>
+                    {% if componente.ID_Componente %}
+                    <div class="info-item">
+                        <span class="info-label">Código</span>
+                        <span class="info-value">{{ componente.ID_Componente }}</span>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                    <div class="info-item">
+                        <span class="info-label">Estado</span>
+                        <span class="info-value">
+                            <span class="badge bg-warning">En edición</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Consejos -->
+                <div class="mt-4 p-3 bg-light rounded">
+                    <h6 class="text-agri-primary mb-2">
+                        <i class="bi bi-lightbulb"></i> Consejos
+                    </h6>
+                    <ul class="small mb-0">
+                        <li>Usa códigos únicos para facilitar la búsqueda</li>
+                        <li>Incluye marca y modelo para mejor identificación</li>
+                        <li>Agrega una imagen clara del componente</li>
+                        <li>Describe la función y características técnicas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Vista previa de imagen
+document.getElementById('foto').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('imagePreview');
+    const placeholder = document.getElementById('imagePlaceholder');
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            if (preview) {
+                preview.src = e.target.result;
+            } else {
+                // Crear nueva imagen si no existe
+                const newImg = document.createElement('img');
+                newImg.src = e.target.result;
+                newImg.className = 'img-fluid rounded shadow';
+                newImg.id = 'imagePreview';
+                newImg.alt = 'Vista previa';
+                
+                if (placeholder) {
+                    placeholder.replaceWith(newImg);
+                }
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Validación del formulario
+document.getElementById('editComponentForm').addEventListener('submit', function(e) {
+    const nombre = document.getElementById('nombre').value.trim();
+    
+    if (!nombre) {
+        e.preventDefault();
+        alert('El nombre del componente es obligatorio');
+        document.getElementById('nombre').focus();
+        return false;
+    }
+    
+    // Mostrar indicador de carga
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Guardando...';
+    submitBtn.disabled = true;
+    
+    // Restaurar botón si hay error (esto se puede mejorar con AJAX)
+    setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }, 3000);
+});
+
+// Función para confirmar eliminación
+function confirmDelete() {
+    if (confirm('¿Estás seguro de que querés eliminar este componente? Esta acción no se puede deshacer.')) {
+        // Aquí iría la lógica de eliminación
+        window.location.href = '{{ url_for("eliminar_componente", id=componente.ID) if componente else "#" }}';
+    }
+}
+
+// Animación de entrada
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        const header = document.querySelector('.dashboard-header');
+        if (header) {
+            header.style.opacity = '1';
+        }
+    }, 100);
+    
+    setTimeout(() => {
+        const sections = document.querySelectorAll('.card-section');
+        sections.forEach((section, index) => {
+            setTimeout(() => {
+                section.style.opacity = '1';
+                section.style.transform = 'translateY(0)';
+            }, index * 150);
+        });
+    }, 200);
+});
+</script>
+
+<style>
+/* ========================================
+   ESTILOS PARA FORMULARIO DE EDICIÓN
+   ======================================== */
+
+/* Campos obligatorios */
+.required::after {
+    content: ' *';
+    color: #dc3545;
+}
+
+/* ========================================
+   VISTA PREVIA DE IMAGEN
+   ======================================== */
+
+.image-preview-container {
+    text-align: center;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.image-placeholder {
+    width: 100%;
+    height: 200px;
+    background: var(--agri-light);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--agri-green);
+    border: 2px dashed var(--agri-green);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.image-placeholder:hover {
+    opacity: 1;
+    border-color: var(--agri-green);
+}
+
+.image-placeholder i {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+}
+
+.image-placeholder p {
+    margin: 0;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+/* ========================================
+   INFORMACIÓN LATERAL
+   ======================================== */
+
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--agri-light);
+    border-radius: 8px;
+    border-left: 4px solid var(--agri-green);
+    transition: all 0.3s ease;
+}
+
+.info-item:hover {
+    transform: translateX(2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.info-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--agri-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+/* ========================================
+   TEMA OSCURO - MEJORAS DE CONTRASTE
+   ======================================== */
+
+[data-bs-theme="dark"] .image-placeholder {
+    background: #374151;
+    border-color: #4ade80;
+    color: #4ade80;
+}
+
+[data-bs-theme="dark"] .image-placeholder i {
+    color: #4ade80;
+}
+
+[data-bs-theme="dark"] .image-placeholder p {
+    color: #e2e8f0;
+}
+
+[data-bs-theme="dark"] .info-item {
+    background: #374151;
+    border-left-color: #4ade80;
+}
+
+[data-bs-theme="dark"] .info-item:hover {
+    background: #4b5563;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+[data-bs-theme="dark"] .info-label {
+    color: #4ade80;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .info-value {
+    color: #f8fafc;
+    font-weight: 500;
+}
+
+/* Formularios en modo oscuro */
+[data-bs-theme="dark"] .form-control {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: #f8fafc;
+}
+
+[data-bs-theme="dark"] .form-control:focus {
+    background-color: #374151;
+    border-color: #4ade80;
+    color: #f8fafc;
+    box-shadow: 0 0 0 0.2rem rgba(74, 222, 128, 0.25);
+}
+
+[data-bs-theme="dark"] .form-select {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: #f8fafc;
+}
+
+[data-bs-theme="dark"] .form-select:focus {
+    background-color: #374151;
+    border-color: #4ade80;
+    color: #f8fafc;
+    box-shadow: 0 0 0 0.2rem rgba(74, 222, 128, 0.25);
+}
+
+[data-bs-theme="dark"] .form-label {
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] .form-text {
+    color: #9ca3af;
+}
+
+[data-bs-theme="dark"] .input-group-text {
+    background-color: #4b5563;
+    border-color: #4b5563;
+    color: #e2e8f0;
+}
+
+/* Badges en modo oscuro */
+[data-bs-theme="dark"] .badge.bg-warning {
+    background-color: #f59e0b !important;
+    color: #1f2937 !important;
+    font-weight: 600;
+}
+
+/* Consejos en modo oscuro */
+[data-bs-theme="dark"] .bg-light {
+    background-color: #374151 !important;
+    border: 1px solid #4b5563;
+}
+
+[data-bs-theme="dark"] .text-agri-primary {
+    color: #4ade80 !important;
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] .bg-light ul li {
+    color: #d1d5db;
+}
+
+/* Botones en modo oscuro */
+[data-bs-theme="dark"] .btn-outline-secondary {
+    border-color: #6b7280;
+    color: #d1d5db;
+}
+
+[data-bs-theme="dark"] .btn-outline-secondary:hover {
+    background-color: #6b7280;
+    border-color: #6b7280;
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .btn-outline-danger {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+[data-bs-theme="dark"] .btn-outline-danger:hover {
+    background-color: #ef4444;
+    border-color: #ef4444;
+    color: #ffffff;
+}
+
+/* ========================================
+   ANIMACIONES INICIALES
+   ======================================== */
+
+.card-section {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease-out;
+}
+
+.card-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+    .image-preview-container {
+        min-height: 150px;
+        padding: 0.75rem;
+    }
+    
+    .image-placeholder {
+        height: 150px;
+    }
+    
+    .image-placeholder i {
+        font-size: 2.5rem;
+    }
+    
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 0.75rem;
+    }
+    
+    .info-label {
+        font-size: 0.8rem;
+    }
+    
+    .info-value {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .image-preview-container {
+        min-height: 120px;
+        padding: 0.5rem;
+    }
+    
+    .image-placeholder {
+        height: 120px;
+    }
+    
+    .image-placeholder i {
+        font-size: 2rem;
+    }
+    
+    .info-item {
+        padding: 0.5rem;
+    }
+}
+
+/* ========================================
+   MEJORAS ADICIONALES DE ACCESIBILIDAD
+   ======================================== */
+
+/* Focus visible mejorado */
+[data-bs-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-select:focus {
+    outline: 2px solid #4ade80;
+    outline-offset: 2px;
+}
+
+/* Hover states mejorados */
+[data-bs-theme="dark"] .form-control:hover {
+    border-color: #6b7280;
+}
+
+[data-bs-theme="dark"] .form-select:hover {
+    border-color: #6b7280;
+}
+
+/* Placeholder text en modo oscuro */
+[data-bs-theme="dark"] .form-control::placeholder {
+    color: #9ca3af;
+    opacity: 1;
+}
+
+/* Disabled states en modo oscuro */
+[data-bs-theme="dark"] .form-control:disabled,
+[data-bs-theme="dark"] .form-select:disabled {
+    background-color: #1f2937;
+    border-color: #374151;
+    color: #6b7280;
+}
+</style>
+
+{% endblock %}
