@@ -40,7 +40,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>{{ componentes|length }}</h3>
-                    <p>Total Componentes</p>
+                    <p>Componentes</p>
                 </div>
             </div>
         </div>
@@ -91,8 +91,11 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-md-3">
-                <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+            <div class="d-flex flex-column flex-md-row gap-2">
+                <button type="button" class="btn btn-outline-secondary w-100 w-md-auto" onclick="filterComponents()">
+                    <i class="bi bi-funnel-fill"></i> Aplicar filtros
+                </button>
+                <button type="button" class="btn btn-outline-secondary w-100 w-md-auto" onclick="clearFilters()">
                     <i class="bi bi-x-circle"></i> Limpiar filtros
                 </button>
             </div>

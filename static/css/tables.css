@@ -17,9 +17,16 @@
 }
 
 .table th {
-    background: var(--agri-light);
+    background: var(--card-bg);
     font-weight: 600;
-    color: var(--agri-green);
+    color: var(--text-color);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.table td {
+    background: var(--card-bg);
+    font-weight: 600;
+    color: var(--text-color);
     border-bottom: 2px solid var(--border-color);
 }
 
@@ -28,50 +35,113 @@
     cursor: pointer;
 }
 
+.table th:first-child,
+.table td:first-child {
+    padding-left: 0.5rem;
+}
+
+.table td.action-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50%;
+  height: 100%;
+}
+.table td.action-cell button {
+  margin: 0;
+  padding: 50%;
+  height: auto;
+}
 /* ====== FILAS CLICKEABLES ====== */
 .clickable-row {
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background-color 0.2s ease-in-out;
+    background-color: var(--agri-light);
 }
+
 .clickable-row:hover {
-    background: var(--hover-bg);
+    background-color: var(--hover-bg, #f0f4f0);
 }
+
+/* Touch devices: activa fondo solo al tocar */
 @media (hover: none) and (pointer: coarse) {
     .clickable-row:hover {
-        background: inherit;
+        background-color: inherit;
     }
     .clickable-row:active {
-        background: var(--hover-bg);
+        background-color: var(--hover-bg, #f0f4f0);
     }
 }
 
-/* ====== MINIATURAS EN TABLAS ====== */
+/* ====== MINIATURAS CENTRADAS (IMAGEN O ÍCONO) ====== */
 .machine-thumb,
-.component-thumb,
-.machine-thumb-placeholder,
-.component-thumb-placeholder {
+.component-thumb {
     width: 48px;
     height: 48px;
-    object-fit: cover;
-    border-radius: 8px;
-    background: var(--agri-light);
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0 auto; /* Centrado horizontal */
+    background: var(--agri-light);
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+    padding: 0;
+}
+
+.machine-thumb img,
+.component-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.machine-thumb i,
+.component-thumb i {
     color: var(--agri-green);
     font-size: 1.5rem;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
 }
 
 /* ====== CELDAS DE ACCIONES ====== */
 .action-cell {
     display: flex;
-    gap: 0.25rem;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 25%;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
-/* ====== RESPONSIVE TABLAS ====== */
+.action-cell > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.action-cell .btn {
+    padding: 25%;
+    font-size: 1rem;
+    line-height: 1;
+    min-height: unset;
+}
+
+td.action-cell {
+  background-color: var(--card-bg);
+}
+.clickable-row {
+  background-color: var(--card-bg);
+}
+.clickable-row:hover {
+  background-color: #e0e0e0;
+  cursor: pointer;
+}
+/* ====== TABLA RESPONSIVE ====== */
 .table-responsive {
     width: 100%;
     overflow-x: auto;
@@ -79,12 +149,20 @@
     margin-bottom: 1rem;
 }
 
+@media (max-width: 768px) {
+    .photo-col {
+        display: none !important;
+    }
+}
+
+/* Oculta columnas para pantallas más chicas */
 @media (max-width: 992px) {
     .table th.d-none.d-lg-table-cell,
     .table td.d-none.d-lg-table-cell {
         display: none !important;
     }
 }
+
 @media (max-width: 768px) {
     .table th.d-none.d-md-table-cell,
     .table td.d-none.d-md-table-cell {
@@ -97,11 +175,13 @@
     }
 
     .machine-thumb,
-    .component-thumb,
-    .machine-thumb-placeholder,
-    .component-thumb-placeholder {
+    .component-thumb {
         width: 36px;
         height: 36px;
+    }
+
+    .machine-thumb i,
+    .component-thumb i {
         font-size: 1.1rem;
     }
 }
@@ -111,18 +191,23 @@
     background: var(--card-bg);
     color: var(--text-color);
 }
+
 [data-bs-theme="dark"] .table th {
     background: var(--agri-light);
     color: var(--agri-green-primary);
     border-bottom: 2px solid var(--border-color);
 }
+
 [data-bs-theme="dark"] .table-hover > tbody > tr:hover {
     background: var(--hover-bg);
 }
+
 [data-bs-theme="dark"] .machine-thumb,
-[data-bs-theme="dark"] .component-thumb,
-[data-bs-theme="dark"] .machine-thumb-placeholder,
-[data-bs-theme="dark"] .component-thumb-placeholder {
+[data-bs-theme="dark"] .component-thumb {
     background: var(--agri-light);
+}
+
+[data-bs-theme="dark"] .machine-thumb i,
+[data-bs-theme="dark"] .component-thumb i {
     color: var(--agri-green-primary);
 }

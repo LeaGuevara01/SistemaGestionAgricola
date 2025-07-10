@@ -38,7 +38,7 @@
         <!-- Columna principal - Información del componente -->
         <div class="col-lg-8">
             <!-- Tarjeta de información principal -->
-            <div class="card-section">
+            <div class="card-section" style="max-height: fit-content;">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3 class="section-title mb-0">
                         <i class="bi bi-info-circle"></i> Información del Componente
@@ -195,7 +195,7 @@
                 </div>
 
                 {% if proveedores %}
-                    <div class="providers-list-unified">
+                    <div class="providers-list">
                         {% for p in proveedores %}
                         <div class="provider-row" tabindex="0" role="link" data-href="{{ url_for('ver_proveedor', id=p.ID) }}">
                             <div class="provider-info">
@@ -203,9 +203,6 @@
                                 {% if p.Telefono %}
                                     <div class="provider-contact">{{ p.Telefono }}</div>
                                 {% endif %}
-                            </div>
-                            <div class="provider-action">
-                                <i class="bi bi-chevron-right"></i>
                             </div>
                         </div>
                         {% endfor %}
@@ -220,6 +217,124 @@
         </div>
     </div>
 </div>
-<script></script>
-<style></style>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.provider-row').forEach(row => {
+            row.addEventListener('click', () => {
+                const href = row.dataset.href;
+                if (href) window.location.href = href;
+            });
+        });
+    });
+</script>
+<style>
+    .provider-row {
+        cursor: pointer;
+    }
+    /* --- Estilo general de la carta de proveedores --- */
+    .providers-card {
+    background: var(--card-bg, #fff);
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    transition: box-shadow 0.3s ease;
+    }
+
+    /* --- Contenedor de lista --- */
+    .providers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    }
+
+    /* --- Fila de proveedor individual --- */
+    .provider-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    background: var(--agri-light);
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    /* --- Hover + enfoque accesible --- */
+    .provider-row:hover,
+    .provider-row:focus {
+    background: var(--hover-bg);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    outline: none;
+    }
+
+    /* --- Nombre del proveedor --- */
+    .provider-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-color, #222);
+    }
+
+    /* --- Contacto del proveedor --- */
+    .provider-contact {
+    font-size: 0.9rem;
+    color: var(--text-muted, #666);
+    }
+
+    /* --- Estado vacío --- */
+    .empty-providers {
+    text-align: center;
+    padding: 1.5rem;
+    color: var(--text-muted, #aaa);
+    }
+
+    .empty-providers i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    }
+
+.detail-value {
+  background: var(--agri-light);
+  border-radius: 5px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: var(--text-color, #333);
+  margin-bottom: 0.5rem;
+  transition: background 0.3s ease;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: var(--text-color, #555);
+  font-size: 1.05rem;
+  margin-bottom: 0.25rem;
+  margin-left: 0.35rem;
+  letter-spacing: 0.3px;
+}
+
+.component-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 260px;
+  background: var(--agri-dark);
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  padding: 1rem;
+}
+
+.component-image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--agri-green-muted, #aabbaa);
+  font-size: 1.2rem;
+  text-align: center;
+}
+.component-image-placeholder i {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+</style>
 {% endblock %}

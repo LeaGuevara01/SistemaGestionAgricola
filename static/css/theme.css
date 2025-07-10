@@ -10,7 +10,7 @@
     --agri-green-muted: #c8d4c8;
 
     /* Base */
-    --card-bg: var(--agri-green-muted);
+    --card-bg: var(--agri-green-primary);
     --text-color: #2d3e2d;
     --radius: 8px;
     --transition: all 0.3s cubic-bezier(.4,2,.6,1);
@@ -32,7 +32,7 @@
 /* ====== TEMA CLARO ====== */
 [data-bs-theme="light"] {
     --bg-color: var(--agri-light);
-    --text-color: var(--text-color);
+    --text-color: #2d3e2d;
     --card-bg: var(--agri-green-muted);
     --header-bg: linear-gradient(135deg, var(--agri-green-dark), var(--agri-green-primary));
     --hover-bg: var(--agri-green-light);

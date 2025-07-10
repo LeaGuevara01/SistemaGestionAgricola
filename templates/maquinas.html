@@ -3,15 +3,14 @@
 {% block content %}
 <div class="page-wrapper">
     <!-- Header de máquinas -->
-    <div class="dashboard-header">
+    <div class="dashboard-header mb-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div class="flex-grow-1">
-                <h2 class="mb-1">
-                    <i class="bi bi-tractor"></i> Gestión de Maquinaria</h2>
-                <p class="opacity-75 mb-0">Administra todo el parque de maquinaria agrícola</p>
+                <h2><i class="bi bi-tractor"></i> Gestión de Maquinaria</h2>
+                <p class="opacity-75">Administra todo el parque de maquinaria agrícola</p>
             </div>
             <div class="d-flex align-items-center gap-2 flex-wrap">
-                <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-sm">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-sm ms-2">
                     <i class="bi bi-house"></i> 
                     <span class="d-none d-md-inline">Inicio</span>
                 </a>
@@ -39,7 +38,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>{{ maquinas|length }}</h3>
-                    <p style="text-align: right;">Máquinas</p>
+                    <p>Máquinas</p>
                 </div>
             </div>
         </div>
@@ -50,7 +49,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>{{ maquinas|selectattr('Estado', 'equalto', 'Operativa')|list|length }}</h3>
-                    <p style="text-align: right;">Operativas</p>
+                    <p>Operativas</p>
                 </div>
             </div>
         </div>
@@ -61,7 +60,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>{{ maquinas|selectattr('Estado', 'equalto', 'En taller')|list|length }}</h3>
-                    <p style="text-align: right;">Taller</p>
+                    <p>Taller</p>
                 </div>
             </div>
         </div>
@@ -72,7 +71,7 @@
                 </div>
                 <div class="stat-content">
                     <h3>{{ maquinas|selectattr('Estado', 'equalto', 'Reserva')|list|length }}</h3>
-                    <p style="text-align: right;">Reserva</p>
+                    <p>Reserva</p>
                 </div>
             </div>
         </div>
@@ -87,7 +86,7 @@
                 </label>
                 <input type="text" class="form-control" id="searchInput" placeholder="Buscar por nombre, marca o modelo...">
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label for="filterEstado" class="form-label">
                     <i class="bi bi-funnel"></i> Filtrar por estado
                 </label>
@@ -98,7 +97,7 @@
                     <option value="Fuera de servicio">Fuera de servicio</option>
                 </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label for="filterMarca" class="form-label">
                     <i class="bi bi-tag"></i> Marca
                 </label>
@@ -111,9 +110,12 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-md-1">
-                <button class="btn btn-outline-secondary" onclick="clearFilters()">
-                    <i class="bi bi-x-circle"></i>
+            <div class="d-flex flex-column flex-md-row gap-2">
+                <button type="button" class="btn btn-outline-secondary w-100 w-md-auto" onclick="filterComponents()">
+                    <i class="bi bi-funnel-fill"></i> Aplicar filtros
+                </button>
+                <button type="button" class="btn btn-outline-secondary w-100 w-md-auto" onclick="clearFilters()">
+                    <i class="bi bi-x-circle"></i> Limpiar filtros
                 </button>
             </div>
         </div>
@@ -121,7 +123,7 @@
 
     <!-- Lista de máquinas -->
     <div class="card-section hidden-item">
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex justify-content-between align-items-center ms-2">
             <h3 class="section-title">
                 <i class="bi bi-list-ul"></i> Lista de Máquinas
             </h3>
@@ -141,9 +143,8 @@
                 <table class="table table-hover align-middle">
                     <thead>
                         <tr>
-                            <th width="80">Imagen</th>
                             <th>Nombre</th>
-                            <th>Marca</th>
+                            <th class="text-center">Marca</th>
                             <th class="d-none d-md-table-cell">Modelo</th>
                             <th class="d-none d-lg-table-cell text-center">Año</th>
                             <th class="text-center">Estado</th>
@@ -152,26 +153,16 @@
                     </thead>
                     <tbody id="maquinasTableBody">
                         {% for m in maquinas %}
-                        <tr class="maquina-row clickable-row" 
+                        <tr class="clickable-row maquina-row" 
                             data-name="{{ m.Nombre|lower }}" 
                             data-marca="{{ m.Marca|lower }}" 
                             data-modelo="{{ m.Modelo|lower }}" 
                             data-estado="{{ m.Estado }}"
                             data-machine-id="{{ m.ID }}">
                             <td>
-                                {% if m.Foto %}
-                                    <img src="{{ url_for('static', filename='fotos/maquinas/' ~ m.Foto) }}" 
-                                        class="machine-thumb" alt="{{ m.Nombre }}">
-                                {% else %}
-                                    <div class="machine-thumb-placeholder">
-                                        <i class="bi bi-tractor"></i>
-                                    </div>
-                                {% endif %}
-                            </td>
-                            <td>
                                 <strong class="machine-name">{{ m.Nombre }}</strong>
                             </td>
-                            <td>{{ m.Marca }}</td>
+                            <td class="text-center">{{ m.Marca }}</td>
                             <td class="d-none d-md-table-cell">{{ m.Modelo }}</td>
                             <td class="d-none d-lg-table-cell text-center">{{ m.Año }}</td>
                             <td class="text-center">
@@ -201,7 +192,6 @@
             </div>
         </div>
 
-
         <!-- Vista de cards -->
         <div id="cardsView" class="cards-view d-none">
             <div class="row g-3" id="maquinasCardsContainer">
@@ -211,7 +201,7 @@
                     data-marca="{{ m.Marca|lower }}" 
                     data-modelo="{{ m.Modelo|lower }}" 
                     data-estado="{{ m.Estado }}">
-                    <div class="machine-card clickable-card" data-machine-id="{{ m.ID }}">
+                    <div class="machine-card clickable-card maquina-card" data-machine-id="{{ m.ID }}">
                         <div class="machine-card-image">
                             {% if m.Foto %}
                                 <img src="{{ url_for('static', filename='fotos/maquinas/' ~ m.Foto) }}" 
@@ -268,6 +258,37 @@
         {% endif %}
     </div>
 </div>
-<style></style>
-<script></script>
+<style>
+    /* Acciones del formulario */
+    .form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 0.5rem;
+    }
+
+    /* Responsive: el botón ocupa toda la fila en pantallas pequeñas */
+    @media (max-width: 576px) {
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .form-actions .btn {
+            width: 100%;
+        }
+    }
+</style>
+<script>
+    // Animar stats
+    document.querySelectorAll('.stat-card').forEach((section, index) => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            section.style.opacity = '1';
+            section.style.transform = 'translateY(0)';
+            section.style.transition = `all 0.5s cubic-bezier(.4,2,.6,1) ${index * 60}ms`;
+        }, 200 + index * 60);
+    });
+</script>
 {% endblock %}

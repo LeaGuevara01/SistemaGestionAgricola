@@ -20,6 +20,7 @@
     color: var(--agri-green-light);
     font-weight: 600;
     margin-bottom: 0.25rem;
+    margin-left: 0.5rem;
     font-size: 1.45rem;
 }
 
@@ -27,6 +28,7 @@
     color: #e0f2f1;
     font-weight: 400;
     margin-bottom: 0;
+    margin-left: 0.5rem;
     font-size: 1.05rem;
 }
 
@@ -47,7 +49,6 @@
     font-size: 1.20rem;
     cursor: pointer;
     padding: 0.25rem 0.5rem;
-    border-radius: 40%;
     transition: transform 0.2s, background 0.2s;
 }
 .theme-toggle:hover,
