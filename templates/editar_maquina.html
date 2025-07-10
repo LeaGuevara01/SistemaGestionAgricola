@@ -1,47 +1,192 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Editar Máquina</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-<div class="container py-4">
-    <h2>Editar Máquina</h2>
-    <a href="{{ url_for('vista_maquina', id=maquina.ID) }}" class="btn btn-secondary mb-3">← Volver</a>
+{% extends "base.html" %}
 
-    <form method="POST" class="bg-white p-4 rounded shadow-sm">
-        <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre</label>
-            <input type="text" name="nombre" class="form-control" value="{{ maquina.Nombre }}" required>
+{% block content %}
+<div class="page-wrapper">
+    <!-- Header de edición -->
+    <div class="dashboard-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="flex-grow-1">
+                <h2 class="mb-1 text-white">
+                    <i class="bi bi-pencil-square"></i> Editar Máquina
+                </h2>
+                <p class="text-white opacity-75 mb-0">Modifica la información de la máquina seleccionada</p>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <a href="{{ url_for('lista_maquinas') }}" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-arrow-left"></i> 
+                    <span class="d-none d-md-inline">Volver a Máquinas</span>
+                    <span class="d-md-none">Volver</span>
+                </a>
+                {% if maquina %}
+                <a href="{{ url_for('vista_maquina', id=maquina.ID) }}" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-eye"></i> 
+                    <span class="d-none d-md-inline">Ver Máquina</span>
+                    <span class="d-md-none">Ver</span>
+                </a>
+                {% endif %}
+                <div class="badge bg-light text-dark fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="marca" class="form-label">Marca</label>
-            <input type="text" name="marca" class="form-control" value="{{ maquina.Marca }}">
-        </div>
-        <div class="mb-3">
-            <label for="modelo" class="form-label">Modelo</label>
-            <input type="text" name="modelo" class="form-control" value="{{ maquina.Modelo }}">
-        </div>
-        <div class="mb-3">
-            <label for="anio" class="form-label">Año</label>
-            <input type="number" name="anio" class="form-control" value="{{ maquina.Año }}">
-        </div>
-        <div class="mb-3">
-            <label for="estado" class="form-label">Estado</label>
-            <select name="estado" class="form-select">
-                <option value="Operativa" {% if maquina.Estado == 'Operativa' %}selected{% endif %}>Operativa</option>
-                <option value="En mantenimiento" {% if maquina.Estado == 'En mantenimiento' %}selected{% endif %}>En mantenimiento</option>
-                <option value="Fuera de servicio" {% if maquina.Estado == 'Fuera de servicio' %}selected{% endif %}>Fuera de servicio</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="observaciones" class="form-label">Observaciones</label>
-            <textarea name="observaciones" class="form-control" rows="3">{{ maquina.Observaciones }}</textarea>
+    </div>
+
+    <div class="row g-4">
+        <!-- Formulario principal -->
+        <div class="col-lg-8">
+            <div class="card-section">
+                <h3 class="section-title">
+                    <i class="bi bi-info-circle"></i> Información de la Máquina
+                </h3>
+                <form method="POST" enctype="multipart/form-data" id="editMachineForm">
+                    <div class="row g-3">
+                        <!-- Nombre -->
+                        <div class="col-md-6">
+                            <label for="nombre" class="form-label required">
+                                <i class="bi bi-tag"></i> Nombre de la Máquina
+                            </label>
+                            <input type="text" class="form-control" id="nombre" name="nombre"
+                                value="{{ maquina.Nombre if maquina and maquina.Nombre is not none else '' }}"
+                                required placeholder="Ej: Tractor John Deere">
+                        </div>
+                        <!-- Marca -->
+                        <div class="col-md-6">
+                            <label for="marca" class="form-label">
+                                <i class="bi bi-award"></i> Marca
+                            </label>
+                            <input type="text" class="form-control" id="marca" name="marca"
+                                value="{{ maquina.Marca if maquina and maquina.Marca is not none else '' }}"
+                                placeholder="Ej: John Deere">
+                        </div>
+                        <!-- Modelo -->
+                        <div class="col-md-6">
+                            <label for="modelo" class="form-label">
+                                <i class="bi bi-gear"></i> Modelo
+                            </label>
+                            <input type="text" class="form-control" id="modelo" name="modelo"
+                                value="{{ maquina.Modelo if maquina and maquina.Modelo is not none else '' }}"
+                                placeholder="Ej: 5050E">
+                        </div>
+                        <!-- Año -->
+                        <div class="col-md-6">
+                            <label for="anio" class="form-label">
+                                <i class="bi bi-calendar"></i> Año
+                            </label>
+                            <input type="number" class="form-control" id="anio" name="anio"
+                                value="{{ maquina.Año if maquina and maquina.Año is not none else '' }}"
+                                placeholder="Ej: 2020">
+                        </div>
+                        <!-- Tipo (revisar)-->
+                        <div class="col-md-6">
+                            <label for="tipo" class="form-label">
+                                <i class="bi bi-collection"></i> Estado
+                            </label>
+                            <select class="form-select" id="tipo" name="tipo">
+                                <option value="">Seleccionar estado...</option>
+                                {% set tipo_actual = maquina.Estado if maquina and maquina.Estado is not none else '' %}
+                                <option value="Operativa" {{ 'selected' if tipo_actual == 'Operativa' else '' }}>Operativa</option>
+                                <option value="En Taller" {{ 'selected' if tipo_actual == 'En Taller' else '' }}>En Taller</option>
+                                <option value="Reserva" {{ 'selected' if tipo_actual == 'Reserva' else '' }}>Reserva</option>
+                                <option value="Fuera de servicio" {{ 'selected' if tipo_actual == 'Fuera de servicio' else '' }}>Fuera de servicio</option>
+                            </select>
+                        </div>
+                        <!-- Observaciones -->
+                        <div class="col-12">
+                            <label for="observaciones" class="form-label">
+                                <i class="bi bi-card-text"></i> Observaciones
+                            </label>
+                            <textarea class="form-control" id="observaciones" name="observaciones"
+                                rows="3"
+                                placeholder="Observaciones, detalles de mantenimiento, etc.">{{ maquina.Observaciones if maquina and maquina.Observaciones is not none else '' }}</textarea>
+                        </div>
+                        <!-- Imagen -->
+                        <div class="col-12">
+                            <label for="foto" class="form-label">
+                                <i class="bi bi-image"></i> Imagen de la Máquina
+                            </label>
+                            <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
+                            <div class="form-text">
+                                Formatos soportados: JPG, PNG, GIF. Tamaño máximo: 5MB
+                                {% if maquina and maquina.Foto %}
+                                    <br><small class="text-muted">Imagen actual: {{ maquina.Foto }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Botones de acción -->
+                    <div class="d-flex gap-3 mt-4 pt-3 border-top">
+                        <button type="submit" class="btn btn-agri-primary">
+                            <i class="bi bi-check-lg"></i> Guardar Cambios
+                        </button>
+                        <a href="{{ url_for('lista_maquinas') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-lg"></i> Cancelar
+                        </a>
+                        {% if maquina %}
+                        <button type="button" class="btn btn-outline-danger ms-auto" onclick="confirmDelete()">
+                            <i class="bi bi-trash"></i> Eliminar Máquina
+                        </button>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-    </form>
+        <!-- Panel lateral -->
+        <div class="col-lg-4">
+            <div class="card-section mb-4">
+                <h4 class="section-title">
+                    <i class="bi bi-image"></i> Vista Previa
+                </h4>
+                <div class="image-preview-container">
+                    {% if maquina and maquina.Foto and maquina.Foto != '' %}
+                        <img src="{{ url_for('static', filename='fotos/maquinas/' ~ maquina.Foto) }}"
+                            class="img-fluid rounded shadow"
+                            alt="{{ maquina.Nombre if maquina.Nombre else 'Máquina' }}"
+                            id="imagePreview">
+                    {% else %}
+                        <div class="image-placeholder" id="imagePlaceholder">
+                            <i class="bi bi-image"></i>
+                            <p>Sin imagen</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-section">
+                <h4 class="section-title">
+                    <i class="bi bi-info-circle"></i> Información
+                </h4>
+                <div class="info-list">
+                    {% if maquina %}
+                    <div class="info-item">
+                        <span class="info-label">ID de la máquina</span>
+                        <span class="info-value">{{ maquina.ID if maquina.ID else 'N/A' }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="info-item">
+                        <span class="info-label">Estado</span>
+                        <span class="info-value">
+                            <span class="badge bg-warning">En edición</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="mt-4 p-3 bg-light rounded">
+                    <h6 class="text-agri-primary mb-2">
+                        <i class="bi bi-lightbulb"></i> Consejos
+                    </h6>
+                    <ul class="small mb-0">
+                        <li>Incluye marca, modelo y año para mejor identificación</li>
+                        <li>Agrega una imagen clara de la máquina</li>
+                        <li>Describe el estado y observaciones relevantes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</body>
-</html>
+
+<script></script>
+<style></style>
+{% endblock %}

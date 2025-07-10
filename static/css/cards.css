@@ -1,0 +1,189 @@
+/* ====== CARDS GENERALES ====== */
+.card-section {
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s cubic-bezier(.4,2,.6,1);
+}
+.card-section.visible,
+.card-section.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.section-title {
+    color: var(--text-color);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    font-size: 1.25rem;
+    margin: 0;
+    gap: 0.5rem;
+}
+.section-title i {
+    font-size: 1.25rem;
+    color: var(--agri-green);
+}
+
+/* ====== CARDS DE MÁQUINAS Y COMPONENTES ====== */
+.machine-card,
+.component-card {
+    background: var(--card-bg, #fff);
+    border-radius: 10px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    padding: 1.25rem 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.machine-card:hover,
+.component-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    transform: translateY(-2px) scale(1.01);
+}
+
+.machine-card-image,
+.component-card-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    background: var(--agri-light, #f8fafc);
+    display: block;
+}
+
+.machine-card-title,
+.component-card-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--agri-dark, #222);
+}
+
+.machine-card-meta,
+.component-card-meta {
+    font-size: 0.95rem;
+    color: var(--agri-green, #388e3c);
+    margin-bottom: 0.25rem;
+}
+
+.machine-card-footer,
+.component-card-footer {
+    margin-top: auto;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* ====== CARDS DE PROVEEDORES ====== */
+.providers-card {
+    background: var(--card-bg, #fff);
+    border-radius: 10px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    padding: 1.25rem 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ====== CARDS DE PANEL COMPACTO ====== */
+.compact-panel {
+    background: var(--agri-light, #f8fafc);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+/* ====== ESTADÍSTICAS ====== */
+.stat-card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-left: 4px solid var(--agri-green);
+    transition: all 0.5s ease-out;
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--agri-green-primary);
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.stat-card.visible-item .stat-icon {
+    animation: iconBounce 0.6s ease-out 0.2s both;
+}
+
+.stat-icon.secondary {
+    color: var(--agri-green-secondary);
+}
+
+.stat-icon.tertiary {
+    color: var(--agri-green-tertiary);
+}
+
+/* ====== RESPONSIVE ====== */
+
+@keyframes iconBounce {
+    0% {
+        opacity: 0;
+        transform: scale(0.3) rotate(-180deg);
+    }
+    50% {
+        transform: scale(1.1) rotate(-90deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .stat-card {
+        padding: 1rem;
+    }
+    
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+    
+    .stat-content h3 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .card-section {
+        padding: 1.25rem 0.75rem;
+    }
+    .machine-card-image,
+    .component-card-image {
+        height: 120px;
+    }
+}
+@media (max-width: 576px) {
+    .card-section {
+        padding: 1rem 0.5rem;
+    }
+    .machine-card-image,
+    .component-card-image {
+        height: 90px;
+    }
+}

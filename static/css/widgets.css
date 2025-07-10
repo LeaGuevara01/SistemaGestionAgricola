@@ -1,0 +1,81 @@
+/* ========================================
+   WIDGET DEL CLIMA
+   ======================================== */
+
+.weather-card {
+    position: relative;
+    overflow: hidden;
+    border: none;
+    height: 100%;
+    background-color: var(--card-bg);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    opacity: 0;
+    border-radius: 12px;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-in-out, transform 0.2s ease, box-shadow 0.2s ease, all 0.5s cubic-bezier(.4,2,.6,1);;
+}
+.weather-card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.weather-card .card-header {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    padding: 0.75rem 1rem;
+    border: none;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-weight: 600;
+}
+
+.weather-card .card-body {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.weather-card .card-footer {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    padding: 0.75rem 1rem;
+    border: none;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+#clima-container {
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-grow: 1;
+}
+
+.weather-icon {
+    font-size: 3.5rem;
+    margin: 0.5rem 0;
+    color: var(--agri-green);
+}
+
+#clima-container h3 {
+    font-weight: 700;
+    font-size: 2rem;
+    margin: 0.5rem 0;
+    color: var(--text-color);
+}
+
+#clima-container p {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    margin: 0.25rem 0;
+}
+
+.weather-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}

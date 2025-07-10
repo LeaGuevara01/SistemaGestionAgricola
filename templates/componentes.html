@@ -35,7 +35,7 @@
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="stat-card hidden-item" data-delay="100">
-                <div class="stat-icon bg-primary">
+                <div class="stat-icon">
                     <i class="bi bi-puzzle"></i>
                 </div>
                 <div class="stat-content">
@@ -46,7 +46,7 @@
         </div>
         <div class="col-md-4">
             <div class="stat-card hidden-item" data-delay="200">
-                <div class="stat-icon bg-success">
+                <div class="stat-icon">
                     <i class="bi bi-check-circle"></i>
                 </div>
                 <div class="stat-content">
@@ -57,7 +57,7 @@
         </div>
         <div class="col-md-4">
             <div class="stat-card hidden-item" data-delay="300">
-                <div class="stat-icon bg-warning">
+                <div class="stat-icon">
                     <i class="bi bi-exclamation-triangle"></i>
                 </div>
                 <div class="stat-content">
@@ -154,7 +154,7 @@
                             </td>
                             <td class="d-none d-md-table-cell">
                                 {% if c.Tipo %}
-                                    <span class="badge bg-secondary">{{ c.Tipo }}</span>
+                                    <span class="badge" style="background-color: var(--agri-green-primary);">{{ c.Tipo }}</span>
                                 {% else %}
                                     <span class="text-muted">No especificado</span>
                                 {% endif %}
@@ -176,7 +176,7 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div>    
 
         <!-- Vista de cards -->
         <div id="cardsView" class="cards-view d-none">
@@ -199,9 +199,9 @@
                             {% endif %}
                             <div class="component-card-badge">
                                 {% if c.Tipo %}
-                                    <span class="badge bg-secondary">{{ c.Tipo }}</span>
+                                    <span class="badge" style="background-color: var(--agri-green-darker);">{{ c.Tipo }}</span>
                                 {% else %}
-                                    <span class="badge bg-light text-dark">Sin tipo</span>
+                                    <span class="badge" style="background-color: var(--agri-green-muted);">Sin tipo</span>
                                 {% endif %}
                             </div>
                         </div>
@@ -239,138 +239,6 @@
         {% endif %}
     </div>
 </div>
-
-<script>
-// Animación gradual para las estadísticas
-document.addEventListener('DOMContentLoaded', function() {
-    // Animar header primero
-    setTimeout(() => {
-        const header = document.querySelector('.dashboard-header');
-        if (header) {
-            header.style.opacity = '1';
-        }
-    }, 100);
-    
-    // Animar estadísticas con delay escalonado
-    const statCards = document.querySelectorAll('.stat-card.hidden-item');
-    statCards.forEach((card, index) => {
-        const delay = parseInt(card.dataset.delay) || (index + 1) * 150;
-        setTimeout(() => {
-            card.classList.remove('hidden-item');
-            card.classList.add('visible-item');
-        }, delay + 300);
-    });
-    
-    // Animar filtros después de las estadísticas
-    setTimeout(() => {
-        const filterSection = document.querySelector('.card-section.hidden-item');
-        if (filterSection) {
-            filterSection.classList.remove('hidden-item');
-            filterSection.classList.add('visible-item');
-        }
-    }, 800);
-    
-    // Animar tabla/cards al final
-    setTimeout(() => {
-        const tableSection = document.querySelector('.card-section.hidden-item:last-of-type');
-        if (tableSection) {
-            tableSection.classList.remove('hidden-item');
-            tableSection.classList.add('visible-item');
-        }
-    }, 1000);
-    
-    // Hacer filas clickeables
-    const clickableRows = document.querySelectorAll('.clickable-row');
-    clickableRows.forEach(row => {
-        row.addEventListener('click', function(e) {
-            // No redirigir si se hace click en la columna de acciones
-            if (e.target.closest('.action-cell') || e.target.closest('.btn')) {
-                return;
-            }
-            
-            const componentId = this.dataset.componentId;
-            if (componentId) {
-                window.location.href = `/componente/${componentId}`;
-            }
-        });
-    });
-    
-    // Hacer cards clickeables
-    const clickableCards = document.querySelectorAll('.clickable-card');
-    clickableCards.forEach(card => {
-        card.addEventListener('click', function(e) {
-            // No redirigir si se hace click en la zona de acciones
-            if (e.target.closest('.action-cell') || e.target.closest('.btn')) {
-                return;
-            }
-            
-            const componentId = this.dataset.componentId;
-            if (componentId) {
-                window.location.href = `/componente/${componentId}`;
-            }
-        });
-    });
-});
-
-// Funcionalidad de búsqueda y filtros
-document.getElementById('searchInput').addEventListener('input', filterComponents);
-document.getElementById('filterType').addEventListener('change', filterComponents);
-
-function filterComponents() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const typeFilter = document.getElementById('filterType').value;
-    
-    // Filtrar tabla
-    const tableRows = document.querySelectorAll('.component-row');
-    tableRows.forEach(row => {
-        const name = row.dataset.name;
-        const description = row.dataset.description;
-        const type = row.dataset.type;
-        
-        const matchesSearch = name.includes(searchTerm) || description.includes(searchTerm);
-        const matchesType = !typeFilter || type === typeFilter;
-        
-        row.style.display = matchesSearch && matchesType ? '' : 'none';
-    });
-    
-    // Filtrar cards
-    const cardWrappers = document.querySelectorAll('.component-card-wrapper');
-    cardWrappers.forEach(wrapper => {
-        const name = wrapper.dataset.name;
-        const description = wrapper.dataset.description;
-        const type = wrapper.dataset.type;
-        
-        const matchesSearch = name.includes(searchTerm) || description.includes(searchTerm);
-        const matchesType = !typeFilter || type === typeFilter;
-        
-        wrapper.style.display = matchesSearch && matchesType ? '' : 'none';
-    });
-}
-
-function clearFilters() {
-    document.getElementById('searchInput').value = '';
-    document.getElementById('filterType').value = '';
-    filterComponents();
-}
-
-function toggleView(view) {
-    const tableView = document.getElementById('tableView');
-    const cardsView = document.getElementById('cardsView');
-    const tableBtn = document.getElementById('tableViewBtn');
-    const cardsBtn = document.getElementById('cardsViewBtn');
-    
-    if (view === 'table') {
-        tableView.classList.remove('d-none');
-        cardsView.classList.add('d-none');
-        tableBtn.classList.add('active');
-        cardsBtn.classList.remove('active');
-    } else {
-        tableView.classList.add('d-none');
-        cardsView.classList.remove('d-none');
-        tableBtn.classList.remove('active');
-        cardsBtn.classList.add('active');
-    }
-}
-</script>
-
+<script></script>
+<style></style>
 {% endblock %}

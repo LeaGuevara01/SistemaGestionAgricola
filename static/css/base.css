@@ -1,0 +1,117 @@
+/* ====== RESET GENERAL ====== */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    box-sizing: border-box;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1.5;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: var(--transition);
+}
+
+
+/* ====== LINKS ====== */
+a {
+    color: var(--agri-green, #388e3c);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+a:hover, a:focus {
+    color: var(--agri-green-primary, #4ade80);
+    text-decoration: underline;
+}
+
+/* ====== LISTAS ====== */
+ul, ol {
+    margin-left: 1.25em;
+    margin-bottom: 1em;
+}
+li {
+    margin-bottom: 0.25em;
+}
+
+/* ====== IMÁGENES ====== */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+}
+
+/* ====== FORMULARIOS ====== */
+input, select, textarea, button {
+    font-family: inherit;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color, #e9ecef);
+    padding: 0.5em 0.75em;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+    border-color: var(--agri-green, #388e3c);
+    box-shadow: 0 0 0 2px rgba(72, 187, 120, 0.15);
+}
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+/* ====== UTILIDADES ====== */
+.text-center { text-align: center !important; }
+.text-right { text-align: right !important; }
+.text-left { text-align: left !important; }
+.mt-1 { margin-top: 0.5rem !important; }
+.mt-2 { margin-top: 1rem !important; }
+.mb-1 { margin-bottom: 0.5rem !important; }
+.mb-2 { margin-bottom: 1rem !important; }
+.p-1 { padding: 0.5rem !important; }
+.p-2 { padding: 1rem !important; }
+.w-100 { width: 100% !important; }
+.h-100 { height: 100% !important; }
+.d-flex { display: flex !important; }
+.flex-column { flex-direction: column !important; }
+.flex-row { flex-direction: row !important; }
+.align-items-center { align-items: center !important; }
+.justify-content-center { justify-content: center !important; }
+.gap-1 { gap: 0.5rem !important; }
+.gap-2 { gap: 1rem !important; }
+
+/* ====== SCROLLBAR ====== */
+::-webkit-scrollbar {
+    width: 8px;
+    background: var(--agri-light, #f8fafc);
+}
+::-webkit-scrollbar-thumb {
+    background: #e0e7ef;
+    border-radius: 4px;
+}

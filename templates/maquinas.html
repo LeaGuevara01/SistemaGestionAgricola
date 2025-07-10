@@ -6,21 +6,21 @@
     <div class="dashboard-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div class="flex-grow-1">
-                <h2 class="mb-1 text-white">
+                <h2 class="mb-1">
                     <i class="bi bi-tractor"></i> Gestión de Maquinaria</h2>
-                <p class="text-white opacity-75 mb-0">Administra todo el parque de maquinaria agrícola</p>
+                <p class="opacity-75 mb-0">Administra todo el parque de maquinaria agrícola</p>
             </div>
             <div class="d-flex align-items-center gap-2 flex-wrap">
                 <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-sm">
                     <i class="bi bi-house"></i> 
                     <span class="d-none d-md-inline">Inicio</span>
                 </a>
-                <a href="{{ url_for('registrar_maquina') }}" class="btn btn-light btn-sm">
+                <a href="{{ url_for('registrar_maquina') }}" class="btn btn-outline-light btn-sm">
                     <i class="bi bi-plus-lg"></i> 
                     <span class="d-none d-md-inline">Nueva Máquina</span>
                     <span class="d-md-none">Nueva</span>
                 </a>
-                <div class="badge bg-light text-dark fs-6 d-none d-lg-block">
+                <div class="badge fs-6 d-none d-lg-block">
                     <i class="bi bi-calendar3"></i> <span id="current-date"></span>
                 </div>
                 <button class="theme-toggle" id="themeToggle">
@@ -37,7 +37,7 @@
                 <div class="stat-icon">
                     <i class="bi bi-gear"></i>
                 </div>
-                <div class="stat-content"">
+                <div class="stat-content">
                     <h3>{{ maquinas|length }}</h3>
                     <p style="text-align: right;">Máquinas</p>
                 </div>
@@ -122,14 +122,14 @@
     <!-- Lista de máquinas -->
     <div class="card-section hidden-item">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="section-title mb-0">
+            <h3 class="section-title">
                 <i class="bi bi-list-ul"></i> Lista de Máquinas
             </h3>
             <div class="view-toggle">
-                <button class="btn btn-sm btn-outline-primary active" onclick="toggleView('table')" id="tableViewBtn">
+                <button class="btn btn-sm btn-agri-secondary active" onclick="toggleView('table')" id="tableViewBtn">
                     <i class="bi bi-table"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-primary" onclick="toggleView('cards')" id="cardsViewBtn">
+                <button class="btn btn-sm btn-agri-secondary" onclick="toggleView('cards')" id="cardsViewBtn">
                     <i class="bi bi-grid-3x3-gap"></i>
                 </button>
             </div>
@@ -145,9 +145,9 @@
                             <th>Nombre</th>
                             <th>Marca</th>
                             <th class="d-none d-md-table-cell">Modelo</th>
-                            <th class="d-none d-lg-table-cell">Año</th>
-                            <th>Estado</th>
-                            <th width="100">Acciones</th>
+                            <th class="d-none d-lg-table-cell text-center">Año</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-center" width="100">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="maquinasTableBody">
@@ -173,8 +173,8 @@
                             </td>
                             <td>{{ m.Marca }}</td>
                             <td class="d-none d-md-table-cell">{{ m.Modelo }}</td>
-                            <td class="d-none d-lg-table-cell">{{ m.Año }}</td>
-                            <td>
+                            <td class="d-none d-lg-table-cell text-center">{{ m.Año }}</td>
+                            <td class="text-center">
                                 {% if m.Estado == 'Operativa' %}
                                     <span class="badge" style="background-color: var(--agri-green-primary);">Operativa</span>
                                 {% elif m.Estado == 'En taller' %}
@@ -185,7 +185,7 @@
                                     <span class="badge text-dark" style="background-color: var(--agri-green-muted);">{{ m.Estado }}</span>
                                 {% endif %}
                             </td>
-                            <td class="action-cell">
+                            <td class="action-cell text-center">
                                 <div class="btn-group-horizontal">
                                     <a href="{{ url_for('editar_maquina', id=m.ID) }}" 
                                     class="btn btn-outline-secondary btn-sm" 
@@ -268,144 +268,6 @@
         {% endif %}
     </div>
 </div>
-
-<script>
-// Animación gradual para las estadísticas
-document.addEventListener('DOMContentLoaded', function() {
-    // Animar header primero
-    setTimeout(() => {
-        const header = document.querySelector('.dashboard-header');
-        if (header) {
-            header.style.opacity = '1';
-        }
-    }, 100);
-    
-    // Animar estadísticas con delay escalonado
-    const statCards = document.querySelectorAll('.stat-card.hidden-item');
-    statCards.forEach((card, index) => {
-        const delay = parseInt(card.dataset.delay) || (index + 1) * 150;
-        setTimeout(() => {
-            card.classList.remove('hidden-item');
-            card.classList.add('visible-item');
-        }, delay + 300);
-    });
-    
-    // Animar filtros después de las estadísticas
-    setTimeout(() => {
-        const filterSection = document.querySelector('.card-section.hidden-item');
-        if (filterSection) {
-            filterSection.classList.remove('hidden-item');
-            filterSection.classList.add('visible-item');
-        }
-    }, 800);
-    
-    // Animar tabla/cards al final
-    setTimeout(() => {
-        const tableSection = document.querySelector('.card-section.hidden-item:last-of-type');
-        if (tableSection) {
-            tableSection.classList.remove('hidden-item');
-            tableSection.classList.add('visible-item');
-        }
-    }, 1000);
-    
-    // Hacer filas clickeables
-    const clickableRows = document.querySelectorAll('.clickable-row');
-    clickableRows.forEach(row => {
-        row.addEventListener('click', function(e) {
-            // No redirigir si se hace click en la columna de acciones
-            if (e.target.closest('.action-cell') || e.target.closest('.btn')) {
-                return;
-            }
-            
-            const machineId = this.dataset.machineId;
-            if (machineId) {
-                window.location.href = `/maquina/${machineId}`;
-            }
-        });
-    });
-    
-    // Hacer cards clickeables
-    const clickableCards = document.querySelectorAll('.clickable-card');
-    clickableCards.forEach(card => {
-        card.addEventListener('click', function(e) {
-            // No redirigir si se hace click en la zona de acciones
-            if (e.target.closest('.action-cell') || e.target.closest('.btn')) {
-                return;
-            }
-            
-            const machineId = this.dataset.machineId;
-            if (machineId) {
-                window.location.href = `/maquina/${machineId}`;
-            }
-        });
-    });
-});
-
-// Funcionalidad de búsqueda y filtros
-document.getElementById('searchInput').addEventListener('input', filterMachines);
-document.getElementById('filterEstado').addEventListener('change', filterMachines);
-document.getElementById('filterMarca').addEventListener('change', filterMachines);
-
-function filterMachines() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const estadoFilter = document.getElementById('filterEstado').value;
-    const marcaFilter = document.getElementById('filterMarca').value;
-    
-    // Filtrar tabla
-    const tableRows = document.querySelectorAll('.maquina-row');
-    tableRows.forEach(row => {
-        const name = row.dataset.name;
-        const marca = row.dataset.marca;
-        const modelo = row.dataset.modelo;
-        const estado = row.dataset.estado;
-        
-        const matchesSearch = name.includes(searchTerm) || marca.includes(searchTerm) || modelo.includes(searchTerm);
-        const matchesEstado = !estadoFilter || estado === estadoFilter;
-        const matchesMarca = !marcaFilter || marca.includes(marcaFilter.toLowerCase());
-        
-        row.style.display = matchesSearch && matchesEstado && matchesMarca ? '' : 'none';
-    });
-    
-    // Filtrar cards
-    const cardWrappers = document.querySelectorAll('.machine-card-wrapper');
-    cardWrappers.forEach(wrapper => {
-        const name = wrapper.dataset.name;
-        const marca = wrapper.dataset.marca;
-        const modelo = wrapper.dataset.modelo;
-        const estado = wrapper.dataset.estado;
-        
-        const matchesSearch = name.includes(searchTerm) || marca.includes(searchTerm) || modelo.includes(searchTerm);
-        const matchesEstado = !estadoFilter || estado === estadoFilter;
-        const matchesMarca = !marcaFilter || marca.includes(marcaFilter.toLowerCase());
-        
-        wrapper.style.display = matchesSearch && matchesEstado && matchesMarca ? '' : 'none';
-    });
-}
-
-function clearFilters() {
-    document.getElementById('searchInput').value = '';
-    document.getElementById('filterEstado').value = '';
-    document.getElementById('filterMarca').value = '';
-    filterMachines();
-}
-
-function toggleView(view) {
-    const tableView = document.getElementById('tableView');
-    const cardsView = document.getElementById('cardsView');
-    const tableBtn = document.getElementById('tableViewBtn');
-    const cardsBtn = document.getElementById('cardsViewBtn');
-    
-    if (view === 'table') {
-        tableView.classList.remove('d-none');
-        cardsView.classList.add('d-none');
-        tableBtn.classList.add('active');
-        cardsBtn.classList.remove('active');
-    } else {
-        tableView.classList.add('d-none');
-        cardsView.classList.remove('d-none');
-        tableBtn.classList.remove('active');
-        cardsBtn.classList.add('active');
-    }
-}
-</script>
+<style></style>
+<script></script>
 {% endblock %}

@@ -207,23 +207,76 @@ def editar_maquina(id):
 
     if not maquina:
         conn.close()
-        return render_template('404.html', message="Máquina no encontrada"), 404
+        flash('Máquina no encontrada.', 'error')
+        return redirect(url_for('lista_maquinas'))
 
     if request.method == 'POST':
-        nombre = request.form['nombre']
-        marca = request.form['marca']
-        modelo = request.form['modelo']
-        anio = request.form['anio']
-        estado = request.form['estado']
-        observaciones = request.form['observaciones']
+        try:
+            # Obtener datos del formulario
+            nombre = request.form.get('nombre', '').strip()
+            marca = request.form.get('marca', '').strip()
+            modelo = request.form.get('modelo', '').strip()
+            anio = request.form.get('anio', '').strip()
+            estado = request.form.get('estado', '').strip()
+            observaciones = request.form.get('observaciones', '').strip()
+            foto = request.files.get('foto')
 
-        conn.execute('''
-            UPDATE maquinas SET Nombre = ?, Marca = ?, Modelo = ?, Año = ?, Estado = ?, Observaciones = ?
-            WHERE ID = ?
-        ''', (nombre, marca, modelo, anio, estado, observaciones, id))
-        conn.commit()
-        conn.close()
-        return redirect(url_for('vista_maquina', id=id))
+            # Validación
+            if not nombre:
+                flash('El nombre de la máquina es obligatorio.', 'error')
+                conn.close()
+                return render_template('editar_maquina.html', maquina=maquina)
+
+            # Procesar foto
+            foto_filename = maquina['Foto']
+            if foto and foto.filename != '':
+                if allowed_file(foto.filename):
+                    # Eliminar foto anterior si existe
+                    if maquina['Foto']:
+                        foto_anterior = os.path.join(app.config['UPLOAD_FOLDER_MAQUINAS'], maquina['Foto'])
+                        if os.path.exists(foto_anterior):
+                            try:
+                                os.remove(foto_anterior)
+                            except OSError:
+                                pass
+                    # Guardar nueva foto
+                    extension = foto.filename.rsplit('.', 1)[1].lower()
+                    foto_filename = secure_filename(f"maquina_{id}.{extension}")
+                    filepath = os.path.join(app.config['UPLOAD_FOLDER_MAQUINAS'], foto_filename)
+                    foto.save(filepath)
+                else:
+                    flash('Formato de imagen no válido. Use JPG, PNG o GIF.', 'error')
+                    conn.close()
+                    return render_template('editar_maquina.html', maquina=maquina)
+
+            # Actualizar en la base de datos
+            conn.execute('''
+                UPDATE maquinas SET 
+                    Nombre = ?, 
+                    Marca = ?, 
+                    Modelo = ?, 
+                    Año = ?, 
+                    Estado = ?, 
+                    Observaciones = ?, 
+                    Foto = ?
+                WHERE ID = ?
+            ''', (nombre, marca, modelo, anio, estado, observaciones, foto_filename, id))
+
+            conn.commit()
+            flash('Máquina actualizada correctamente.', 'success')
+            conn.close()
+            return redirect(url_for('vista_maquina', id=id))
+
+        except sqlite3.Error as e:
+            conn.rollback()
+            flash(f'Error de base de datos: {str(e)}', 'error')
+            conn.close()
+            return render_template('editar_maquina.html', maquina=maquina)
+        except Exception as e:
+            conn.rollback()
+            flash(f'Error inesperado: {str(e)}', 'error')
+            conn.close()
+            return render_template('editar_maquina.html', maquina=maquina)
 
     conn.close()
     return render_template('editar_maquina.html', maquina=maquina)
@@ -335,7 +388,6 @@ def editar_frecuencia(id_maquina, id_componente):
 # Component Management
 # The component management system allows users to view the list of components and their details.
 
-# TODO: Implement component editing and deletion functionality.
 @app.route('/componentes')
 def lista_componentes():
     conn = get_db_connection()
@@ -445,10 +497,10 @@ def editar_componente(id):
     if request.method == 'POST':
         try:
             # Debug: imprimir datos recibidos
-            print("=== DEBUG EDITAR COMPONENTE ===")
-            print(f"ID: {id}")
-            print(f"Form data: {dict(request.form)}")
-            print("===============================")
+            #print("=== DEBUG EDITAR COMPONENTE ===")
+            #print(f"ID: {id}")
+            #print(f"Form data: {dict(request.form)}")
+            #print("===============================")
             
             # Obtener datos del formulario
             codigo = request.form.get('codigo', '').strip()
@@ -597,9 +649,14 @@ def eliminar_componente(id):
 def obtener_stock_actual():
     conn = get_db_connection()
     consulta = '''
-    SELECT c.ID_Componente, c.Nombre,
-           IFNULL(SUM(CASE WHEN s.Tipo = 'entrada' THEN s.Cantidad ELSE 0 END), 0) -
-           IFNULL(SUM(CASE WHEN s.Tipo = 'salida' THEN s.Cantidad ELSE 0 END), 0) AS Stock_Actual
+    SELECT  c.ID AS ID,
+            c.ID_Componente,
+            c.Nombre,
+            c.Tipo,
+            c.Descripcion,
+            c.Foto,
+            IFNULL(SUM(CASE WHEN s.Tipo = 'entrada' THEN s.Cantidad ELSE 0 END), 0) -
+            IFNULL(SUM(CASE WHEN s.Tipo = 'salida' THEN s.Cantidad ELSE 0 END), 0) AS Stock_Actual
     FROM componentes c
     LEFT JOIN stock s ON c.ID_Componente = s.ID_Componente
     GROUP BY c.ID_Componente

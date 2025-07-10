@@ -1,0 +1,128 @@
+/* ====== TABLAS GENERALES ====== */
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+}
+
+.table th,
+.table td {
+    vertical-align: middle;
+    padding: 0.75rem 0.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.table th {
+    background: var(--agri-light);
+    font-weight: 600;
+    color: var(--agri-green);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.table-hover > tbody > tr:hover {
+    background-color: var(--hover-bg);
+    cursor: pointer;
+}
+
+/* ====== FILAS CLICKEABLES ====== */
+.clickable-row {
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.clickable-row:hover {
+    background: var(--hover-bg);
+}
+@media (hover: none) and (pointer: coarse) {
+    .clickable-row:hover {
+        background: inherit;
+    }
+    .clickable-row:active {
+        background: var(--hover-bg);
+    }
+}
+
+/* ====== MINIATURAS EN TABLAS ====== */
+.machine-thumb,
+.component-thumb,
+.machine-thumb-placeholder,
+.component-thumb-placeholder {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: var(--agri-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--agri-green);
+    font-size: 1.5rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+}
+
+/* ====== CELDAS DE ACCIONES ====== */
+.action-cell {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ====== RESPONSIVE TABLAS ====== */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 992px) {
+    .table th.d-none.d-lg-table-cell,
+    .table td.d-none.d-lg-table-cell {
+        display: none !important;
+    }
+}
+@media (max-width: 768px) {
+    .table th.d-none.d-md-table-cell,
+    .table td.d-none.d-md-table-cell {
+        display: none !important;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.5rem 0.25rem;
+    }
+
+    .machine-thumb,
+    .component-thumb,
+    .machine-thumb-placeholder,
+    .component-thumb-placeholder {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+    }
+}
+
+/* ====== TEMA OSCURO ====== */
+[data-bs-theme="dark"] .table {
+    background: var(--card-bg);
+    color: var(--text-color);
+}
+[data-bs-theme="dark"] .table th {
+    background: var(--agri-light);
+    color: var(--agri-green-primary);
+    border-bottom: 2px solid var(--border-color);
+}
+[data-bs-theme="dark"] .table-hover > tbody > tr:hover {
+    background: var(--hover-bg);
+}
+[data-bs-theme="dark"] .machine-thumb,
+[data-bs-theme="dark"] .component-thumb,
+[data-bs-theme="dark"] .machine-thumb-placeholder,
+[data-bs-theme="dark"] .component-thumb-placeholder {
+    background: var(--agri-light);
+    color: var(--agri-green-primary);
+}
