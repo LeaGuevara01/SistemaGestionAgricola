@@ -1,5 +1,4 @@
 /* ====== BOTONES GENERALES ====== */
-
 .btn-agri-primary,
 .btn-agri-secondary,
 .btn-outline-primary,
@@ -15,13 +14,11 @@
     font-weight: 600;
     font-size: 1.2rem !important;
     border-radius: 6px;
-    transition: background 0.2s, color 0.2s;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     min-height: 40px;
     outline: none;
 }
-
 /* ====== BOTÓN PRIMARY ====== */
-
 .btn-agri-primary {
     background: var(--btn-bg-primary, var(--btn-primary));
     color: var(--btn-text-primary);
@@ -32,9 +29,7 @@
     background: var(--btn-primary-hover);
     color: var(--btn-text-hover, #fff);
 }
-
 /* ====== BOTÓN SECONDARY ====== */
-
 .btn-agri-secondary {
     background: var(--btn-bg-secondary, var(--btn-secondary));
     color: var(--btn-text-secondary, #fff);
@@ -45,9 +40,7 @@
     background: var(--btn-secondary-hover);
     color: var(--btn-text-hover, #fff);
 }
-
 /* ====== OUTLINE LIGHT ====== */
-
 .btn-outline-light {
     background: transparent;
     border: none;
@@ -61,40 +54,41 @@
     color: var(--btn-text-primary);
     border-color: var(--agri-light);
 }
-
 /* ====== OUTLINE PRIMARY ====== */
-
 .btn-outline-primary {
     background: transparent;
-    color: var(--btn-text-tertiary);
+    color: var(--btn-neutral);
     border: none;
 }
 .btn-outline-primary:hover,
 .btn-outline-primary:focus,
 .btn-outline-primary.active,
 .btn-outline-primary.show {
-    background: var(--btn-primary-hover);
-    color: #fff;
-    border-color: var(--btn-primary-hover);
+    background: var(--btn-neutral-hover);
+    border-color: var(--btn-neutral-hover);
 }
-
 /* ====== OUTLINE SECONDARY ====== */
-
 .btn-outline-secondary {
     background: transparent;
     color: var(--btn-text-primary);
-    border: none;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    text-decoration: none !important;
 }
 .btn-outline-secondary:hover,
 .btn-outline-secondary:focus,
-.btn-outline-secondary.active,
+.btn-outline-secondary:active,
+.btn-outline-secondary.focus,
 .btn-outline-secondary.show {
     background: var(--agri-green-dark);
-    color: #fff;
+    color: var(--card-bg);
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    text-decoration: none !important;
 }
-
 /* ====== OUTLINE DANGER ====== */
-
 .btn-outline-danger {
     background: transparent;
     color: var(--btn-text-danger, #dc3545);
@@ -107,9 +101,7 @@
     background: var(--btn-border-danger, #dc3545);
     color: #fff;
 }
-
 /* ====== OUTLINE INFO ====== */
-
 .btn-outline-info {
     background: transparent;
     color: var(--btn-text-info, #17a2b8);
@@ -122,17 +114,13 @@
     background: var(--btn-border-info, #17a2b8);
     color: #fff;
 }
-
 /* ====== ICONOS EN BOTONES ====== */
-
 .btn i {
     font-size: 1.2rem;
     flex-shrink: 0;
     vertical-align: middle;
 }
-
 /* ====== BOTONES DASHBOARD Y TOGGLES ====== */
-
 .btn-dashboard {
     background: var(--btn-bg-primary);
     color: var(--btn-text-primary);
@@ -167,9 +155,7 @@
     padding-left: 0.25rem;
     display: inline-block;
 }
-
 /* ====== GRUPOS DE BOTONES ====== */
-
 .btn-group-vertical .btn,
 .btn-group-horizontal .btn {
     border-radius: 6px;
@@ -186,28 +172,77 @@
     margin-bottom: 0;
     margin-right: 0;
 }
-
 /* ====== BOTONES PEQUEÑOS ====== */
-
 .btn-sm {
     padding: 0.25rem 0.5rem;
     font-size: 0.85rem;
     border-radius: 5px;
 }
-
+/* ====== BOTONES VIEW TOGGLE ====== */
 .view-toggle {
-  display: flex;               /* disposición horizontal */
-  gap: 0.5rem;                 /* espacio entre botones */
-  margin-top: 0.5rem;          /* margen superior */
-  margin-bottom: 0.5rem;       /* margen inferior */
-  margin-left: auto;           /* opcional: lo empuja hacia la derecha */
-  margin-right: 0;             /* opcional */
-  flex-wrap: nowrap;           /* evita que se rompa en filas */
-  align-items: center;         /* centra verticalmente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem auto;
+  flex-wrap: wrap;
 }
-
 .view-toggle .btn {
-  white-space: nowrap;         /* evita que el ícono se corte o baje */
-  padding: 0.4rem 0.6rem;       /* compacta el botón */
+  white-space: nowrap;
+  padding: 0.4rem 0.8rem;
   font-size: 1rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+/* ====== QUITAR FONDO AZUL Y SOMBRA EN FOCUS Y ACTIVE ====== */
+.btn-agri-primary:focus,
+.btn-agri-secondary:focus,
+.btn-outline-primary:focus,
+.btn-outline-secondary:focus,
+.btn-outline-light:focus,
+.btn-outline-danger:focus,
+.btn-outline-info:focus,
+.btn-dashboard:focus,
+.btn-agri-primary:active,
+.btn-agri-secondary:active,
+.btn-outline-primary:active,
+.btn-outline-secondary:active,
+.btn-outline-light:active,
+.btn-outline-danger:active,
+.btn-outline-info:active,
+.btn-dashboard:active {
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  text-decoration: none !important;  /* Quitar subrayado si lo tiene */
+  -webkit-tap-highlight-color: transparent; /* Para móviles */
+}
+/* Mantener foco visible accesible con sombra suave */
+.btn-agri-primary:focus-visible,
+.btn-agri-secondary:focus-visible,
+.btn-outline-primary:focus-visible,
+.btn-outline-secondary:focus-visible,
+.btn-outline-light:focus-visible,
+.btn-outline-danger:focus-visible,
+.btn-outline-info:focus-visible,
+.btn-dashboard:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  text-decoration: none !important;  /* Quitar subrayado si lo tiene */
+  -webkit-tap-highlight-color: transparent; /* Para móviles */
+}
+/* Para todos los botones (opcional) */
+.btn-outline-primary.btn-sm,
+.btn-outline-primary.btn-sm:hover,
+.btn-outline-primary.btn-sm:focus,
+.btn-outline-primary.btn-sm:active {
+  text-decoration: none !important; /* Evita subrayados al hacer hover o focus */
+}
+/* También para otros botones que usen texto (links) */
+.btn {
+  text-decoration: none !important;
 }

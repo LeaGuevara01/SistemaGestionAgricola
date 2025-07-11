@@ -121,3 +121,60 @@ letter-spacing: 0.3px;
 }
 .info-label { font-weight: 700; }
 .info-value { color: var(--agri-green-darker); }
+
+.dashboard-section {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+} 
+
+.section-header {
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-muted, #6c757d);
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+}
+
+.section-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.page-section {
+  background: var(--card-bg, #fff);
+  border-radius: 12px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+  padding: 2rem 1.5rem;
+  margin-bottom: 2rem;
+  margin-top: 1rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.page-section:hover {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.section-content {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}

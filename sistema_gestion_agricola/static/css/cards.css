@@ -15,7 +15,6 @@
   margin-bottom: 1.5rem;
   transition: all 0.5s cubic-bezier(.4,2,.6,1);
 }
-
 .card.show,
 .card.visible,
 .card-section.show,
@@ -26,7 +25,6 @@
   opacity: 1;
   transform: translateY(0);
 }
-
 .card,
 .card-section,
 .card.detail-card,
@@ -34,8 +32,34 @@
   opacity: 0;
   transform: translateY(20px);
 }
+/* ====== INDEX CARD STYLES ====== */
+.dashboard-grid {
+  column-count: 1;
+  column-gap: 1.5rem;
+  padding: 0 1rem;
+}
 
-/* ====== SECTION TITLE ====== */
+.dashboard-card {
+  break-inside: avoid;
+  margin-bottom: 1.5rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.weather-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+}
+/* ====== SECTION TITLES ====== */
 .section-title {
   color: var(--text-color);
   font-weight: 600;
@@ -53,14 +77,12 @@
   font-weight: 600;
   color: var(--agri-green);
 }
-
 .section-subtitle {
   font-size: 1rem;
   color: var(--text-color);
   opacity: 75%;
   margin-top: 0.25rem;
 }
-
 /* ====== MACHINE & COMPONENT CARDS ====== */
 .machine-card,
 .component-card,
@@ -75,7 +97,6 @@
   box-shadow: 0 4px 16px rgba(0,0,0,0.10);
   transform: translateY(-2px) scale(1.01);
 }
-
 .machine-card-image,
 .component-card-image {
   width: 100%;
@@ -89,7 +110,6 @@
   align-items: center;
   justify-content: center;
 }
-
 .machine-card-image img,
 .component-card-image img {
   width: 100%;
@@ -98,7 +118,6 @@
   border-radius: inherit;
   display: block;
 }
-
 .machine-card-title,
 .component-card-title,
 .providers-card-title {
@@ -107,7 +126,6 @@
   color: var(--agri-dark, #222);
   margin-bottom: 0.5rem;
 }
-
 .machine-card-meta,
 .component-card-meta,
 .providers-card-meta {
@@ -115,7 +133,6 @@
   color: var(--agri-green, #388e3c);
   margin-bottom: 0.25rem;
 }
-
 .machine-card-footer,
 .component-card-footer,
 .providers-card-footer {
@@ -124,7 +141,6 @@
   gap: 0.5rem;
   align-items: center;
 }
-
 /* ====== COMPONENT BADGE & PLACEHOLDER ====== */
 .component-card-badge {
   position: absolute;
@@ -164,7 +180,6 @@
   font-weight: 500;
   font-size: 1rem;
 }
-
 /* ====== MACHINE DETAIL CARD ====== */
 .machine-detail-card {
   gap: 1rem;
@@ -184,7 +199,6 @@
   border-radius: 4px;
   color: var(--text-color);
 }
-
 /* ====== DETAIL CARD ====== */
 .card.detail-card {
   padding: 2rem;
@@ -207,7 +221,6 @@
   font-size: 1.3rem;
   margin-bottom: 1.2rem;
 }
-
 .card.detail-card img {
   max-height: 220px;
   object-fit: contain;
@@ -216,7 +229,6 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   display: block;
 }
-
 /* ====== EDIT FORM ====== */
 form#editComponentForm .form-control,
 form#editComponentForm .form-select {
@@ -242,7 +254,8 @@ form#editComponentForm .form-control:invalid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.4rem;
-  padding: 0 0.4rem;
+  padding: 0 0.6rem;
+  gap: 0rem 1.4rem !important; 
 }
 
 .stat-card {

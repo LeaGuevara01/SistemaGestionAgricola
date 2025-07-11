@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 
 {% block title %}Panel Agrícola{% endblock %}
 
@@ -10,7 +10,7 @@
             <div class="dashboard-header p-4 shadow rounded">
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                     <div class="flex-grow-1">
-                        <h2><i class="bi bi-tractor"></i>Sistema de Gestión Agrícola</h2>
+                        <h2 class="section-title">Sistema de Gestión Agrícola</h2>
                         <p class="opacity-75 d-none d-md-block">Control completo de su operación agrícola</p>
                     </div>
                     <div class="d-flex align-items-center gap-3 ms-1">
@@ -26,45 +26,41 @@
         </div>
     </div>
     <!-- Clima -->
-    <div class="row g-4"> 
-        <div class="col-12 col-lg-6 col-xl-4">
-            <div class="card clima-card weather-card h-100">
-                <div class="card-header">
-                    <i class="bi bi-cloud-sun"></i> Clima en Ucacha
+    <div class="dashboard-grid">
+        <div class="weather-card">
+            <div class="card-header">
+                <i class="bi bi-cloud-sun"></i> Clima en Ucacha
+            </div>
+            <div class="card-body text-center" id="clima-container">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Cargando...</span>
                 </div>
-                <div class="card-body text-center" id="clima-container">
-                    <div class="spinner-border" role="status">
-                        <span class="visually-hidden">Cargando...</span>
-                    </div>
-                </div>
-                <div class="card-footer text-muted small">
-                    Última actualización: <span id="clima-timestamp">--:--</span>
-                </div>
+            </div>
+            <div class="card-footer text-muted small">
+                Última actualización: <span id="clima-timestamp">--:--</span>
             </div>
         </div>
         <!-- Maquinaria -->
-        <div class="col-12 col-lg-6 col-xl-4">
-            <div class="card-section h-100">
-                <h3 class="section-title"><i class="bi bi-gear"></i> Maquinaria</h3>
-                <a href="{{ url_for('maquinas.listar_maquinas') }}" class="btn btn-dashboard">
-                    <i class="bi bi-list-ul"></i> Listado de Máquinas</a>
-            </div>
+        <div class="dashboard-card">
+            <h3 class="section-title"><i class="bi bi-gear"></i> Maquinaria</h3>
+            <a href="{{ url_for('maquinas.listar_maquinas') }}" class="btn btn-dashboard">
+            <i class="bi bi-list-ul"></i> Listado de Máquinas
+            </a>
         </div>
         <!-- Componentes e Inventario -->
-        <div class="col-12 col-lg-6 col-xl-4">
-                <div class="card-section h-100">
-                <h3 class="section-title">
+        <div class="dashboard-card">
+            <h3 class="section-title">
                     <i class="bi bi-puzzle"></i> Componentes</h3>
-                <a href="{{ url_for('componentes.lista_componentes') }}" class="btn btn-dashboard">
+                <a href="{{ url_for('componentes.lista_componentes') }}" 
+                    class="btn btn-dashboard">
                     <i class="bi bi-boxes"></i> Listado de Componentes</a>
-                <a href="{{ url_for('stock.vista_stock') }}" class="btn btn-dashboard">
+                <a href="{{ url_for('stock.vista_stock') }}" 
+                    class="btn btn-dashboard">
                     <i class="bi bi-clipboard2-check"></i> Inventario Actual</a>
-            </div>
         </div>
         <!-- Compras y Proveedores -->
-        <div class="col-12 col-lg-6 col-xl-4">
-            <div class="card-section h-100">
-                <h3 class="section-title ">
+        <div class="dashboard-card">
+            <h3 class="section-title">
                     <i class="bi bi-cart-plus"></i> Compras y Proveedores</h3>
 
                 <a href="{{ url_for('proveedores.listar_proveedores') }}" class="btn btn-dashboard">
@@ -75,25 +71,20 @@
 
                 <a href="{{ url_for('compras.historial_compras') }}" class="btn btn-dashboard">
                     <i class="bi bi-clock-history"></i> Historial de Compras</a>
-
-            </div>
         </div>
         <!-- Pagos y Cuentas -->
-        <div class="col-12 col-lg-6 col-xl-4">
-            <div class="card-section h-100">
-                <h3 class="section-title "><i class="bi bi-cash-stack"></i> Pagos</h3>
+        <div class="dashboard-card">
+            <h3 class="section-title"><i class="bi bi-cash-stack"></i> Pagos</h3>
                 <a href="{{ url_for('pagos.registrar_pago') }}" class="btn btn-dashboard">
                     <i class="bi bi-wallet2"></i> Registrar Pago</a>
                 <a href="{{ url_for('pagos.resumen_cuentas') }}" class="btn btn-dashboard">
                     <i class="bi bi-file-earmark-text"></i> Resumen de Cuentas</a>
                 <a href="{{ url_for('exportar_resumen_pdf') }}" class="btn btn-dashboard">
                     <i class="bi bi-file-earmark-pdf"></i> Exportar PDF</a>
-            </div>
         </div>
         <!-- Gráficos -->
-        <div class="col-12 col-lg-6 col-xl-4">
-            <div class="card-section h-100">
-                <h3 class="section-title ">
+        <div class="dashboard-card">
+            <h3 class="section-title">
                     <i class="bi bi-bar-chart"></i> Análisis Visual</h3>
                 <a href="{{ url_for('estadisticas.compras_por_proveedor') }}" class="btn btn-dashboard">
                     <i class="bi bi-pie-chart"></i> Compras por Proveedor</a>
@@ -103,12 +94,10 @@
                     <i class="bi bi-calendar-month"></i> Compras por mes/año</a>
                 <a href="#" class="btn btn-dashboard disabled-feature">
                     <i class="bi bi-box-seam"></i> Cantidad por pieza</a>
-            </div>
         </div>
         <!-- Excel y Filtros -->
-        <div class="col-12 col-lg-6 col-xl-4">
-            <div class="card-section h-100">
-                <h3 class="section-title ">
+        <div class="dashboard-card">
+            <h3 class="section-title">
                     <i class="bi bi-file-excel"></i> Exportaciones</h3>
                 <a href="#" class="btn btn-dashboard disabled-feature">
                     <i class="bi bi-file-earmark-excel"></i> Exportar a Excel</a>
@@ -118,7 +107,6 @@
                     <small class="text-mute">
                         <i class="bi bi-info-circle"></i> Próximas características en desarrollo</small>
                 </div>
-            </div>
         </div>
     </div>
 </div>

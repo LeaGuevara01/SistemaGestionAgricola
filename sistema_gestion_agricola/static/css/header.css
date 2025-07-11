@@ -40,25 +40,36 @@
 
 /* ====== THEME TOGGLE ====== */
 .theme-toggle {
-    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+    border-radius: 6px;
     border: none;
-    color: var(--agri-green-muted);
-    font-size: 1.20rem;
+    background: transparent;
+    color: var(--btn-neutral);
     cursor: pointer;
-    padding: 0.25rem 0.5rem;
-    transition: transform 0.2s, background 0.2s;
-}
-.theme-toggle:hover,
-.theme-toggle:focus {
-    background: rgba(255, 255, 255, 0.12);
-    transform: scale(1.05);
+    min-height: 40px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
     outline: none;
 }
-.theme-toggle .bi {
-    vertical-align: middle;
-    font-size: 1.2em;
+
+.theme-toggle:hover,
+.theme-toggle:focus,
+.theme-toggle.active,
+.theme-toggle.show {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.03);
+    color: var(--btn-text-hover, #fff);
 }
 
+.theme-toggle .bi {
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
 /* ====== RESPONSIVE HEADER ====== */
 @media (max-width: 768px) {
     .dashboard-header {

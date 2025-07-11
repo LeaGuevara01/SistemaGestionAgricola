@@ -118,21 +118,18 @@
     </div>
 
     <!-- Lista de máquinas -->
-    <div class="card-section hidden-item">
-        <div class="d-flex justify-content-between align-items-center ms-2">
-            <h3 class="section-title">
-                <i class="bi bi-list-ul"></i> Lista de Máquinas
-            </h3>
-            <div class="view-toggle">
-                <button class="btn btn-sm btn-outline-tertiary active" onclick="toggleView('table')" id="tableViewBtn">
-                    <i class="bi bi-table"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-tertiary" onclick="toggleView('cards')" id="cardsViewBtn">
-                    <i class="bi bi-grid-3x3-gap"></i>
-                </button>
-            </div>
+    <section class="page-section">
+        <h3 class="section-title">
+            <i class="bi bi-list-ul"></i> Lista de Máquinas
+        </h3>
+        <div class="view-toggle">
+            <button class="btn btn-sm btn-outline-tertiary active" onclick="toggleView('table')" id="tableViewBtn">
+                <i class="bi bi-table"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-tertiary" onclick="toggleView('cards')" id="cardsViewBtn">
+                <i class="bi bi-grid-3x3-gap"></i>
+            </button>
         </div>
-
         <!-- Vista de tabla -->
         <div id="tableView" class="table-view" style="padding: 0.5rem 0.5rem;">
             <div class="table-responsive">
@@ -252,7 +249,7 @@
                 </a>
         </div>
         {% endif %}
-    </div>
+    </section>
 </div>
 <style>
 .btn-outline-secondary {
