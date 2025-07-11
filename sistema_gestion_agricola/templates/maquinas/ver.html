@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-wrapper">
+    <!-- Header de máquina -->
+    <div class="dashboard-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="flex-grow-1">
+                <h2 class="section-title"><i class="bi bi-gear-fill"></i> Máquina: {{ maquina['Nombre'] }}</h2>
+                <p class="d-none d-md-block opacity-75">Detalles y gestión de la máquina</p>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <a href="{{ url_for('maquinas.listar_maquinas') }}" class="btn btn-outline-primary btn-sm ms-auto">
+                    <i class="bi bi-arrow-left"></i> 
+                    <span class="d-none d-md-inline">Volver</span>
+                    <span class="d-md-none">Volver</span>
+                </a>
+                <div class="badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="machine-detail-card">
+            <div class="row g-4 align-items-center">
+                <div class="col-md-5 text-center">
+                    {% if maquina['Foto'] %}
+                        <img src="{{ url_for('static', filename='fotos/maquinas/' ~ maquina['Foto']) }}" 
+                            class="img-fluid rounded shadow mx-auto d-block" 
+                            style="max-height: 300px; object-fit: contain;" 
+                            alt="Foto de {{ maquina['Nombre'] }}">
+                    {% else %}
+                        <div class="image-placeholder mx-auto d-flex flex-column justify-content-center align-items-center mb-2"
+                            style="width: 200px; height: 200px;">
+                            <i class="bi bi-image fs-1"></i>
+                            <p class="mb-0 mt-2">Sin imagen</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-7 machine-detail-info">
+                    <p style="background: var(--bg-color);"><strong>Marca:</strong> {{ maquina['Marca'] }}</p>
+                    <p style="background: var(--bg-color);"><strong>Modelo:</strong> {{ maquina['Modelo'] }}</p>
+                    <p style="background: var(--bg-color);"><strong>Año:</strong> {{ maquina['Año'] }}</p>
+                    <p style="background: var(--bg-color);"><strong>Estado:</strong> {{ maquina['Estado'] }}</p>
+                    <p style="background: var(--bg-color);"><strong>Observaciones:</strong> {{ maquina['Observaciones'] }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Componentes y frecuencias -->
+        <div class="componentes-card machine-card mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h3 class="section-title mb-0">
+                <i class="bi bi-puzzle"></i> Componentes y Frecuencias
+                </h3>
+                <a href="{{ url_for('componentes.registrar_componente', id_maquina=maquina['ID']) }}" class="btn btn-agri-primary btn-sm">
+                <i class="bi bi-plus-lg"></i> Asignar componente
+                </a>
+            </div>
+
+            {% if componentes_asociados %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Componente</th>
+                        <th class="d-none d-md-table-cell">Descripción</th>
+                        <th class="text-center">Frecuencia</th>
+                        <th class="d-none d-xl-table-cell">Criterio adicional</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in componentes_asociados %}
+                    <tr class="clickable-row component-row" 
+                        data-component-id="{{ c['ID'] }}" 
+                        data-machine-id="{{ maquina['ID'] }}"
+                        data-action="ver">
+                        
+                    <td><strong>{{ c['Nombre'] }}</strong></td>
+
+                    <td class="d-none d-md-table-cell">{{ c['Descripcion'] }}</td>
+                    
+                    <!-- Combinar frecuencia y unidad -->
+                    <td class="text-center">
+                        <div>{{ c['Frecuencia'] }}</div>
+                        <small class="text-muted">{{ c['Unidad tiempo'] }}</small>
+                    </td>
+                    
+                    <td class="d-none d-xl-table-cell">{{ c['Criterio adicional'] }}</td>
+                    
+                    <td class="action-cell">
+                        <div class="d-flex flex-column flex-md-row justify-content-center gap-1">
+                        <a href="{{ url_for('maquinas.editar_frecuencia', id_maquina=maquina['ID'], id_componente=c['ID']) }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-pencil"></i> <span class="d-none d-lg-inline">Editar</span>
+                        </a>
+                        </div>
+                    </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p class="text-muted fst-italic">No hay componentes asociados a esta máquina.</p>
+            {% endif %}
+        </div>
+
+        <h3 class="mt-3 section-title"><i class="bi bi-box-seam"></i> Componentes disponibles para asociar</h3>
+        {% if componentes_no_asociados %}
+        <ul class="list-group mb-2">
+            {% for c in componentes_no_asociados %}
+            <li class="list-group-item clickable-row" data-id="{{ c['ID'] }}" data-action="agregar">
+                {{ c['Nombre'] }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p class="text-muted fst-italic">No hay componentes disponibles para asociar.</p>
+        {% endif %}
+    </div>
+</div>
+<style></style>
+<script></script>
+{% endblock %}

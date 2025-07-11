@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-wrapper">
+    <!-- Header -->
+    <div class="dashboard-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="flex-grow-1">
+                <h2 class="section-title"><i class="bi bi-box-seam"></i> Stock de Componentes</h2>
+                <p class="section-subtitle d-none d-md-block opacity-75">Consulta el stock en sistema</p>
+            </div>
+            <div class="d-flex align-items-center flex-wrap gap-2">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-sm ms-2">
+                    <i class="bi bi-house"></i>
+                    <span class="d-none d-md-block d-md-inline">Inicio</span>
+                </a>
+
+                <a href="{{ url_for('stock.registrar_stock') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-plus-lg"></i>
+                    <span class="d-none d-md-inline">Registrar Stock</span>
+                </a>
+
+                <a href="{{ url_for('compras.registrar_compra') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-cart-plus"></i>
+                    <span class="d-none d-md-inline">Registrar Compra</span>
+                </a>
+
+                <div class="badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
+
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Stock -->
+    <div class="card-section hidden-item">
+        <div id="tableView" class="table-view">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th class="d-none d-md-table-cell text-center" width="120">Imagen</th>
+                            <th class="d-none d-md-table-cell">Código</th>
+                            <th>Nombre</th>
+                            <th class="d-none d-md-table-cell text-center">Tipo</th>
+                            <th class="text-center">Cantidad</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stockTableBody">
+                        {% for c in stock %}
+                        <tr class="clickable-row component-row" data-component-id="{{ c.ID }}">
+                            <!-- Imagen -->
+                            <td class="d-none d-md-table-cell text-center">
+                                {% if c.Foto %}
+                                    <img src="{{ url_for('static', filename='fotos/componentes/' ~ c.Foto) }}"
+                                         class="component-thumb" alt="{{ c.Nombre }}">
+                                {% else %}
+                                    <div class="component-thumb-placeholder">
+                                        <i class="bi bi-image text-muted fs-4"></i>
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <!-- Código -->
+                            <td class="d-none d-md-table-cell">
+                                <span class="component-code">{{ c.ID_Componente or 'N/A' }}</span>
+                            </td>
+                            <!-- Nombre -->
+                            <td>
+                                <strong class="component-name">{{ c.Nombre }}</strong>
+                            </td>
+                            <!-- Tipo -->
+                            <td class="d-none d-md-table-cell text-center align-middle">
+                                {% if c.Tipo %}
+                                    <span class="badge rounded-pill px-3 py-2 text-uppercase fw-semibold"
+                                        style="background-color: var(--agri-green-dark); color: #fff; font-size: 0.75rem;">
+                                        {{ c.Tipo }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted fst-italic">No especificado</span>
+                                {% endif %}
+                            </td>
+                            <!-- Stock -->
+                            <td class="text-center">
+                                <span class="badge rounded-pill px-3 py-2 fw-semibold"
+                                    style="background-color: var(--agri-green-dark); color: #fff; font-size: 0.85rem;">
+                                    {{ c.Stock_Actual or 0 }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script></script>
+<style></style>
+{% endblock %}

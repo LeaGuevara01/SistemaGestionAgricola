@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="card-section providers-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="section-title">
+                <i class="bi bi-box-seam"></i> Asignar Componentes a Proveedor: {{ proveedor['Nombre'] }}
+            </h2>
+            <a href="{{ url_for('ver_proveedor', id=proveedor['ID']) }}" class="btn btn-outline-secondary mx-auto">
+                ← Volver
+            </a>
+        </div>
+
+        <form method="POST" action="{{ url_for('asignar_componente_proveedor', id_proveedor=proveedor['ID']) }}">
+            <div class="mb-3">
+                <label for="componentes" class="form-label">Seleccione componentes para asignar</label>
+                <select name="componentes[]" id="componentes" class="form-select" multiple size="10" required>
+                    {% for c in componentes_disponibles %}
+                    <option value="{{ c['ID'] }}">{{ c['Nombre'] }}{% if c['Tipo'] %} — {{ c['Tipo'] }}{% endif %}</option>
+                    {% endfor %}
+                </select>
+                <small class="form-text text-muted">Mantenga presionado Ctrl para seleccionar múltiples componentes.</small>
+            </div>
+
+            <button type="submit" class="btn btn-agri-primary">
+                <i class="bi bi-plus-lg"></i> Asignar Componentes
+            </button>
+        </form>
+    </div>
+</div>
+<style>
+.providers-card {
+  background: var(--card-bg, #fff);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  color: var(--text-color, #222);
+}
+
+.providers-card p {
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.providers-card p strong {
+  color: var(--agri-green-primary, #2a7a2a);
+  width: 110px;
+  display: inline-block;
+}
+
+.providers-card > .row > .col-md-6:first-child {
+  background: var(--bg-color, #f8f9fa);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+}
+
+.providers-card > .row > .col-md-6:last-child {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.providers-card img {
+  max-height: 250px;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 3px 7px rgba(0,0,0,0.15);
+}
+</style>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Movimiento de Stock{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <!-- Header -->
+    <div class="dashboard-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h2 class="section-title">
+                    <i class="bi bi-arrow-left-right"></i> Registrar Movimiento de Stock
+                </h2>
+                <p class="section-subtitle d-none d-md-block opacity-75">Cargar una entrada o salida para un componente</p>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <a href="{{ url_for('stock.vista_stock') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-box"></i> Volver al stock
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="card-section">
+        <form method="POST">
+            <label for="id_componente" class="form-label fw-semibold">Componente</label>
+            <select name="id_componente" class="form-select" required>
+                {% for c in componentes %}
+                    <option value="{{ c['ID_Componente'] }}">{{ c['Nombre'] }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="cantidad" class="form-label fw-semibold">Cantidad</label>
+            <input type="number" class="form-control" name="cantidad" min="1" value="1" required>
+
+            <label class="form-label fw-semibold">Tipo</label>
+            <select name="tipo" class="form-select" required>
+                <option value="entrada">Entrada (compra)</option>
+                <option value="salida">Salida (uso en máquina)</option>
+            </select>
+
+            <label for="observacion" class="form-label fw-semibold">Observación</label>
+            <input type="text" class="form-control" name="observacion" placeholder="Opcional">
+
+            <button type="submit" class="btn btn-agri-primary mb-3">
+                <i class="bi bi-plus-circle"></i> Registrar movimiento
+            </button>
+        </form>
+    </div>
+</div>
+<script></script>
+<style></style>
+{% endblock %}

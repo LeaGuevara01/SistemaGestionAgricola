@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-wrapper">
+    <!-- Header de máquinas -->
+    <div class="dashboard-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="flex-grow-1">
+                <h2 class="section-title"><i class="bi bi-gear"></i>Gestión de Maquinaria</h2>
+                <p class="section-subtitle d-none d-md-block opacity-75">Administra todo el parque de maquinaria agrícola</p>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <a href="{{ url_for('index') }}" 
+                    class="btn btn-outline-primary btn-sm ms-2" 
+                    style="font-size: 1rem;">
+                    <i class="bi bi-house"></i> 
+                    <span class="d-none d-md-block d-md-inline">Inicio</span>
+                </a>
+                <a href="{{ url_for('maquinas.agregar_maquina') }}" 
+                    class="btn btn-outline-primary btn-sm" 
+                    style="font-size: 1rem;">
+                    <i class="bi bi-plus-lg"></i> 
+                    <span class="d-none d-md-block d-md-inline">Nueva Máquina</span>
+                    <span class="d-md-none">Nueva</span>
+                </a>
+                <div class="badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="stats-grid">
+    <div class="stat-card hidden-item" data-delay="100">
+        <div class="stat-icon">
+        <i class="bi bi-gear"></i>
+        </div>
+        <div class="stat-content">
+        <h3>{{ maquinas|length }}</h3>
+        <p>Máquinas</p>
+        </div>
+    </div>
+    <div class="stat-card hidden-item" data-delay="200">
+        <div class="stat-icon">
+        <i class="bi bi-check-circle"></i>
+        </div>
+        <div class="stat-content">
+        <h3>{{ maquinas|selectattr('Estado', 'equalto', 'Operativa')|list|length }}</h3>
+        <p>Operativas</p>
+        </div>
+    </div>
+    <div class="stat-card hidden-item" data-delay="300">
+        <div class="stat-icon">
+        <i class="bi bi-tools"></i>
+        </div>
+        <div class="stat-content">
+        <h3>{{ maquinas|selectattr('Estado', 'equalto', 'En taller')|list|length }}</h3>
+        <p>Taller</p>
+        </div>
+    </div>
+    <div class="stat-card hidden-item" data-delay="300">
+        <div class="stat-icon">
+        <i class="bi bi-life-preserver"></i>
+        </div>
+        <div class="stat-content">
+        <h3>{{ maquinas|selectattr('Estado', 'equalto', 'Reserva')|list|length }}</h3>
+        <p>Reserva</p>
+        </div>
+    </div>
+    </div>
+
+    <!-- Filtros y búsqueda -->
+    <div class="card-section mb-4 hidden-item" style="padding: 2rem 2.5rem;">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label for="searchInput" class="form-label">
+                    <i class="bi bi-search"></i> Buscar máquina
+                </label>
+                <input type="text" class="form-control" id="searchInput" placeholder="Buscar por nombre, marca...">
+            </div>
+            <div class="col-md-4">
+                <label for="filterEstado" class="form-label">
+                    <i class="bi bi-funnel"></i> Filtrar por estado
+                </label>
+                <select class="form-select" id="filterEstado">
+                    <option value="">Todos los estados</option>
+                    <option value="Operativa">Operativa</option>
+                    <option value="En taller">En taller</option>
+                    <option value="Fuera de servicio">Fuera de servicio</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="filterMarca" class="form-label">
+                    <i class="bi bi-tag"></i> Marca
+                </label>
+                <select class="form-select" id="filterMarca">
+                    <option value="">Todas las marcas</option>
+                    {% for marca in maquinas|map(attribute='Marca')|unique|list %}
+                        {% if marca %}
+                            <option value="{{ marca }}">{{ marca }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="d-flex flex-column flex-md-row gap-2">
+                <button type="button" class="btn btn-outline-secondary w-100 w-md-auto" onclick="filterComponents()">
+                    <i class="bi bi-funnel-fill"></i> Aplicar filtros
+                </button>
+                <button type="button" class="btn btn-outline-secondary w-100 w-md-auto" onclick="clearFilters()">
+                    <i class="bi bi-x-circle"></i> Limpiar filtros
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de máquinas -->
+    <div class="card-section hidden-item">
+        <div class="d-flex justify-content-between align-items-center ms-2">
+            <h3 class="section-title">
+                <i class="bi bi-list-ul"></i> Lista de Máquinas
+            </h3>
+            <div class="view-toggle">
+                <button class="btn btn-sm btn-outline-tertiary active" onclick="toggleView('table')" id="tableViewBtn">
+                    <i class="bi bi-table"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-tertiary" onclick="toggleView('cards')" id="cardsViewBtn">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Vista de tabla -->
+        <div id="tableView" class="table-view" style="padding: 0.5rem 0.5rem;">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th class="d-none d-md-table-cell text-center">Marca</th>
+                            <th class="d-none d-md-table-cell">Modelo</th>
+                            <th class="d-none d-lg-table-cell text-center">Año</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-center" width="100">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="maquinasTableBody">
+                        {% for m in maquinas %}
+                        <tr class="clickable-row maquina-row" 
+                            data-name="{{ m.Nombre|lower }}" 
+                            data-marca="{{ m.Marca|lower }}" 
+                            data-modelo="{{ m.Modelo|lower }}" 
+                            data-estado="{{ m.Estado }}"
+                            data-machine-id="{{ m.ID }}">
+                            <td>
+                                <strong class="machine-name">{{ m.Nombre }}</strong>
+                            </td>
+                            <td class="d-none d-md-table-cell text-center">{{ m.Marca }}</td>
+                            <td class="d-none d-md-table-cell">{{ m.Modelo }}</td>
+                            <td class="d-none d-lg-table-cell text-center">{{ m.Año }}</td>
+                            <td class="text-center">
+                                {% if m.Estado == 'Operativa' %}
+                                    <span class="badge" style="background-color: var(--agri-green-primary);">Operativa</span>
+                                {% elif m.Estado == 'En taller' %}
+                                    <span class="badge" style="background-color: var(--agri-green-dark);">En taller</span>
+                                {% elif m.Estado == 'Fuera de servicio' %}
+                                    <span class="badge" style="background-color: var(--agri-green-darker);">Fuera de servicio</span>
+                                {% else %}
+                                    <span class="badge text-dark" style="background-color: var(--agri-green-muted);">{{ m.Estado }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="action-cell text-center">
+                                <div class="btn-group-horizontal">
+                                    <a href="{{ url_for('maquinas.editar_maquina', id=m.ID) }}" 
+                                    class="btn btn-outline-secondary btn-sm" 
+                                    title="Editar máquina">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Vista de cards -->
+        <div id="cardsView" class="cards-view d-none">
+            <div class="row g-3" id="maquinasCardsContainer">
+                {% for m in maquinas %}
+                <div class="col-md-6 col-lg-4 machine-card-wrapper" 
+                    data-name="{{ m.Nombre|lower }}" 
+                    data-marca="{{ m.Marca|lower }}" 
+                    data-modelo="{{ m.Modelo|lower }}" 
+                    data-estado="{{ m.Estado }}">
+                    <div class="machine-card clickable-card maquina-card" data-machine-id="{{ m.ID }}">
+                        <div class="machine-card-image">
+                            {% if m.Foto %}
+                                <img src="{{ url_for('static', filename='fotos/maquinas/' ~ m.Foto) }}" 
+                                    alt="{{ m.Nombre }}">
+                            {% else %}
+                                <div class="machine-card-placeholder">
+                                    <i class="bi bi-tractor"></i>
+                                    <p>Sin imagen</p>
+                                </div>
+                            {% endif %}
+                            <div class="machine-card-badge">
+                                {% if m.Estado == 'Operativa' %}
+                                    <span class="badge bg-success">Operativa</span>
+                                {% elif m.Estado == 'En taller' %}
+                                    <span class="badge bg-warning text-dark">En taller</span>
+                                {% elif m.Estado == 'Fuera de servicio' %}
+                                    <span class="badge bg-danger">Fuera de servicio</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ m.Estado }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="machine-card-content">
+                            <div class="machine-card-header">
+                                <h6 class="machine-card-title">{{ m.Nombre }}</h6>
+                            </div>
+                            <p class="machine-card-details">
+                                <strong>Marca:</strong> {{ m.Marca }}<br>
+                                <strong>Modelo:</strong> {{ m.Modelo }}<br>
+                                <strong>Año:</strong> {{ m.Año }}
+                            </p>
+                            <div class="machine-card-actions action-cell">
+                                <a href="{{ url_for('maquinas.editar_maquina', id=m.ID) }}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Estado vacío -->
+        {% if not maquinas %}
+        <div class="empty-state text-center py-5">
+            <i class="bi bi-tractor text-muted" style="font-size: 4rem;"></i>
+            <h4 class="text-muted mt-3">No hay máquinas registradas</h4>
+            <p class="text-muted mb-4">Comienza agregando tu primera máquina al sistema</p>
+                <a href="{{ url_for('maquinas.agregar_maquina') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-plus-lg"></i> Agregar Primera Máquina
+                </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<style>
+.btn-outline-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-outline-tertiary {
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    
+    background: transparent;
+    color: var(--btn-text-tertiary, var(--agri-green-tertiary));
+    border: none;
+    border-radius: 6px;
+
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    min-height: 40px;
+    text-align: center;
+    outline: none;
+}
+.btn-outline-tertiary:hover,
+.btn-outline-tertiary:focus {
+    background: var(--btn-primary-hover, var(--agri-green-dark));
+    color: #fff;
+    border-color: var(--btn-primary-hover, var(--agri-green-dark));
+}
+
+.section-title{
+    margin-top: 0.75rem;
+}
+</style>
+<script>
+// Animar stats
+document.querySelectorAll('.stat-card').forEach((section, index) => {
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(20px)';
+    setTimeout(() => {
+        section.style.opacity = '1';
+        section.style.transform = 'translateY(0)';
+        section.style.transition = `all 0.5s cubic-bezier(.4,2,.6,1) ${index * 60}ms`;
+    }, 200 + index * 60);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-wrapper">
+  <!-- Encabezado -->
+  <div class="dashboard-header mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div class="flex-grow-1">
+        <h2 class="section-title"><i class="bi bi-people-fill"></i> Lista de Proveedores</h2>
+        <p class="section-subtitle d-none d-md-block">Administra todo el cuaderno de cuentas proveedoras</p>
+      </div>
+      <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+        <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-house"></i>
+          <span class="d-none d-md-inline">Inicio</span>
+        </a>
+        <a href="{{ url_for('proveedores.agregar_proveedor') }}" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-plus-lg"></i>
+          <span class="d-none d-md-inline">Agregar Proveedor</span>
+          <span class="d-md-none">Agregar</span>
+        </a>
+        <div class="badge fs-6 d-none d-lg-block">
+          <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+        </div>
+        <button class="theme-toggle btn btn-sm btn-outline-light" id="themeToggle">
+          <i class="bi bi-moon-fill" id="themeIcon"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Proveedores -->
+  <div class="card-section">
+    {% if proveedores %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Localidad</th>
+            <th>Contacto</th>
+            <th>Teléfono</th>
+            <th>Rubro</th>
+            <th class="text-center" width="80">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in proveedores %}
+          <tr class="component-row clickable-row" data-href="{{ url_for('proveedores.ver_proveedor', id=p.ID) }}">
+            <td><strong>{{ p.Nombre }}</strong></td>
+            <td>{{ p.Localidad or '-' }}</td>
+            <td>{{ p.Contacto or '-' }}</td>
+            <td>{{ p.Telefono or '-' }}</td>
+            <td>{{ p.Rubro or '-' }}</td>
+            <td class="action-cell">
+              <a href="{{ url_for('proveedores.editar_proveedor', id=p.ID) }}" 
+                 class="btn btn-outline-secondary btn-sm" 
+                 title="Editar proveedor"
+                 onclick="event.stopPropagation();">
+                <i class="bi bi-pencil"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="text-muted fst-italic">No hay proveedores registrados.</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Hacer clickeables las filas
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('tr.clickable-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const href = row.getAttribute('data-href');
+      if (href) window.location.href = href;
+    });
+  });
+});
+</script>
+{% endblock %}

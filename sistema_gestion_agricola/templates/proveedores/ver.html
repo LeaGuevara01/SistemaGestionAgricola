@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-wrapper">
+    <!-- Header -->
+    <div class="dashboard-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="flex-grow-1">
+                <h2 class="section-title"><i class="bi bi-people-fill"></i> Proveedor: {{ proveedor['Nombre'] }}</h2>
+                <p class="section-subtitle d-md-block opacity-75">Detalles y gestión del proveedor</p>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <a href="{{ url_for('proveedores.listar_proveedores') }}" class="btn btn-outline-primary btn-sm ">
+                    <i class="bi bi-arrow-left"></i> 
+                    <span class="d-none d-md-inline">Volver</span>
+                </a>
+                <div class="badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Datos básicos proveedor -->
+    <div>
+        <div class="card-section providers-card">
+            <div class="row g-3">
+                <div class="col-md-6" style="background: var(--bg-color); border-radius: 10px; padding: 1rem;">
+                    <p><strong>Localidad:</strong> {{ proveedor['Localidad'] }}</p>
+                    <p><strong>Contacto:</strong> {{ proveedor['Contacto'] }}</p>
+                    <p><strong>Teléfono:</strong> {{ proveedor['Telefono'] }}</p>
+                    <p><strong>Email:</strong> {{ proveedor['Email'] }}</p>
+                    <p><strong>Rubro:</strong> {{ proveedor['Rubro'] }}</p>
+                    <p><strong>Dirección:</strong> {{ proveedor['Direccion'] }}</p>
+                    <p><strong>Detalles:</strong> {{ proveedor['Observaciones'] }}</p>
+                </div>
+                <div class="col-md-6 text-center align-self-center">
+                    {% if proveedor['Foto'] %}
+                        <img src="{{ url_for('static', filename='fotos/proveedores/' ~ proveedor['Foto']) }}" alt="Foto de {{ proveedor['Nombre'] }}" 
+                                class="img-fluid rounded shadow mx-auto" style="max-height: 250px; object-fit: contain;">
+                    {% else %}
+                        <p class="text-muted fst-italic">No hay foto cargada aún.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Componentes asociados -->
+        <div class="componentes-card machine-card mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h3 class="section-title mb-0">
+                    <i class="bi bi-puzzle"></i> Componentes asociados
+                </h3>
+                <a href="{{ url_for('proveedores.asignar_componente_proveedor', id_proveedor=proveedor['ID']) }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-plus-lg"></i> Asignar componente
+                </a>
+            </div>
+
+            {% if componentes_asociados %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Componente</th>
+                            <th class="d-none d-md-table-cell">Descripción</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in componentes_asociados %}
+                        <tr class="clickable-row component-row" data-component-id="{{ c['ID'] }}" data-provider-id="{{ proveedor['ID'] }}" data-action="ver">
+                            <td><strong>{{ c['Nombre'] }}</strong></td>
+                            <td class="d-none d-md-table-cell">{{ c['Descripcion'] }}</td>
+                            <td class="action-cell text-center">
+                                <a href="{{ url_for('proveedores.editar_componente_proveedor', id_proveedor=proveedor['ID'], id_componente=c['ID']) }}"
+                                class="btn btn-outline-secondary btn-sm" title="Editar componente">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p class="text-muted fst-italic">No hay componentes asociados a este proveedor.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<style>
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-buttons a.btn,
+.action-buttons button.btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.providers-card {
+  background: var(--card-bg, #fff);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  color: var(--text-color, #222);
+}
+
+.providers-card p {
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.providers-card p strong {
+  color: var(--agri-green-primary, #2a7a2a);
+  width: 110px;
+  display: inline-block;
+}
+
+.providers-card > .row > .col-md-6:first-child {
+  background: var(--bg-color, #f8f9fa);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+}
+
+.providers-card > .row > .col-md-6:last-child {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.providers-card img {
+  max-height: 250px;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 3px 7px rgba(0,0,0,0.15);
+}
+</style>
+<script></script>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="dashboard-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="flex-grow-1">
+                <h2 class="mb-0"><i class="bi bi-cart-plus"></i> Registrar compra de componente</h2>
+                <p class="opacity-75 d-none d-md-block">Asigná una nueva compra a un proveedor</p>
+            </div>
+
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <a href="{{ url_for('proveedores.listar_proveedores') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-people-fill"></i>
+                    <span class="d-none d-md-inline">Proveedores</span>
+                </a>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-house"></i> 
+                    <span class="d-none d-md-inline">Inicio</span>
+                </a>
+                <div class="badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="providers-card">
+        <form method="POST" class="row g-4">
+            <!-- Proveedor -->
+            <div class="col-md-6">
+                <label class="form-label"><strong>Proveedor</strong></label>
+                <select name="proveedor" class="form-select" required>
+                    <option value="" disabled selected>Seleccionar proveedor</option>
+                    {% for p in proveedores %}
+                        <option value="{{ p['ID'] }}">{{ p['Nombre'] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Componente -->
+            <div class="col-md-6">
+                <label class="form-label"><strong>Componente</strong></label>
+                <select name="componente" class="form-select" required>
+                    <option value="" disabled selected>Seleccionar componente</option>
+                    {% for c in componentes %}
+                        <option value="{{ c['ID'] }}">{{ c['Nombre'] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Cantidad -->
+            <div class="col-md-4">
+                <label class="form-label"><strong>Cantidad</strong></label>
+                <input type="number" name="cantidad" class="form-control" min="1" required>
+            </div>
+
+            <!-- Precio unitario -->
+            <div class="col-md-4">
+                <label class="form-label"><strong>Precio Unitario</strong></label>
+                <input type="number" name="precio_unitario" class="form-control" step="0.01" min="0" required>
+            </div>
+
+            <!-- Observación -->
+            <div class="col-md-4">
+                <label class="form-label"><strong>Observación</strong></label>
+                <input type="text" name="observacion" class="form-control" placeholder="Opcional">
+            </div>
+
+            <!-- Botón -->
+            <div class="col-12 text-end">
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="bi bi-save"></i> Registrar compra
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<style>
+/* Estilos para formularios responsivos */
+.filter-form {
+  background: var(--card-bg, #fff);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.filter-form .form-label {
+  font-weight: 600;
+  color: var(--text-color, #333);
+}
+
+.filter-form .form-select {
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+}
+
+.filter-form .btn {
+  width: 100%;
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .filter-form .btn {
+    width: auto;
+  }
+}
+</style>
+<script></script>
+{% endblock %}

@@ -1,0 +1,171 @@
+/* ====== TABLAS GENERALES ====== */
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+}
+
+.table th,
+.table td {
+    vertical-align: middle;
+    padding: 0.75rem 0.5rem;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    font-weight: 500;
+    box-sizing: border-box;
+}
+
+.table th {
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.table-hover > tbody > tr:hover > td {
+    background-color: var(--hover-bg);
+}
+
+/* ====== ACCIONES ====== */
+td.action-cell {
+    padding: 0 !important;
+    width: 80px;
+    text-align: center;
+    vertical-align: middle;
+    background-color: var(--card-bg);
+}
+
+td.action-cell > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    gap: 0.25rem;
+}
+
+td.action-cell a.btn {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ====== FILAS CLICKEABLES ====== */
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.component-row {
+    background-color: var(--card-bg);
+}
+
+.component-row:hover > td {
+    background-color: var(--hover-bg);
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .clickable-row:hover td {
+        background-color: inherit;
+    }
+
+    .clickable-row:active td {
+        background-color: var(--hover-bg, #f0f4f0);
+    }
+}
+
+/* ====== MINIATURAS ====== */
+.machine-thumb,
+.component-thumb {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto;
+    background: var(--agri-light);
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.machine-thumb img,
+.component-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.machine-thumb i,
+.component-thumb i {
+    color: var(--agri-green);
+    font-size: 1.5rem;
+}
+
+/* ====== TABLA RESPONSIVE ====== */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+    background-color: var(--card-bg);
+}
+
+/* Ocultar columnas grandes en pantallas pequeñas */
+@media (max-width: 992px) {
+    .table th.d-none.d-lg-table-cell,
+    .table td.d-none.d-lg-table-cell {
+        display: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .table th.d-none.d-md-table-cell,
+    .table td.d-none.d-md-table-cell {
+        display: none !important;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.5rem 0.25rem;
+    }
+
+    .machine-thumb,
+    .component-thumb {
+        width: 36px;
+        height: 36px;
+    }
+
+    .machine-thumb i,
+    .component-thumb i {
+        font-size: 1.1rem;
+    }
+}
+
+/* ====== TEMA OSCURO ====== */
+[data-bs-theme="dark"] .table,
+[data-bs-theme="dark"] .table th,
+[data-bs-theme="dark"] .table td {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+[data-bs-theme="dark"] .table-hover > tbody > tr:hover > td {
+    background-color: var(--hover-bg);
+}
+
+[data-bs-theme="dark"] .machine-thumb,
+[data-bs-theme="dark"] .component-thumb {
+    background: var(--agri-light);
+}
+
+[data-bs-theme="dark"] .machine-thumb i,
+[data-bs-theme="dark"] .component-thumb i {
+    color: var(--agri-green-primary);
+}
