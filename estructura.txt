@@ -1,0 +1,60 @@
+.
+|-- deprecated.txt
+|-- estructura.txt
+|-- frontend
+|   |                               `-- index.html
+|   |                               `-- package-lock.json
+|   |                               `-- package.json
+|   |                               `-- public
+|   |                               `-- fotos
+|   |-- src
+|   |   |                           `-- main.js
+|   |   |                           `-- style.css
+|   |                               `-- styles
+|   `-- vite.config.js
+|-- init_db.py
+|-- mantenimiento_agricola.sqbpro
+|-- requirements.txt
+|-- run.py
+|-- sistema_gestion_agricola
+|   |-- Procfile
+|   |-- __init__.py
+|   |-- dbbrowser.sqbpro
+|   |-- routes
+|   |   |                           `-- clima.py
+|   |   |                           `-- componentes.py
+|   |   |                           `-- compras.py
+|   |   |                           `-- estadisticas.py
+|   |   |                           `-- maquinas.py
+|   |   |                           `-- pagos.py
+|   |   |                           `-- proveedores.py
+|   |                               `-- stock.py
+|   |-- sistema_gestion_agricola.db
+|   |-- static
+|   |   |                           `-- assets
+|   |   |                           `-- css
+|   |   |                           `-- dist
+|   |   |                           `-- fotos
+|   |                               `-- js
+|   |-- templates
+|   |   |                           `-- 404.html
+|   |   |                           `-- 505.html
+|   |   |                           `-- base.html
+|   |   |                           `-- componentes
+|   |   |                           `-- compras
+|   |   |                           `-- estadisticas
+|   |   |                           `-- index.html
+|   |   |                           `-- layout.html
+|   |   |                           `-- maquinas
+|   |   |                           `-- pagos
+|   |   |                           `-- partials
+|   |   |                           `-- proveedores
+|   |                               `-- stock
+|   `-- utils
+|       |                           `-- clima_utils.py
+|       |                           `-- db.py
+|       |                           `-- files.py
+|                                   `-- stock_utils.py
+`-- sistema_gestion_agricola.db
+
+23 directories, 34 files

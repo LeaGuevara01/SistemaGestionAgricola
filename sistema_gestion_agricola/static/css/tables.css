@@ -112,7 +112,7 @@ td.action-cell a.btn {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    margin-bottom: 1rem;
+    margin-bottom: 0rem;
     background-color: var(--card-bg);
 }
 

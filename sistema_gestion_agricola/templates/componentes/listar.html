@@ -32,38 +32,34 @@
     </div>
     {% if componentes %}
     <!-- Estadísticas rápidas -->
-    <div class="stats-grid">
-        <div class="stat-card hidden-item" data-delay="100">
-            <div class="stat-icon">
-                <i class="bi bi-puzzle"></i>
-            </div>
+    <div class="stats-grid mixed mb-3">
+        <div class="stat-card compact hidden-item" data-delay="100">
+            <div class="stat-icon"><i class="bi bi-puzzle"></i></div>
             <div class="stat-content">
                 <h3>{{ componentes|length }}</h3>
                 <p>Componentes</p>
             </div>
         </div>
-        <div class="stat-card hidden-item" data-delay="200">
-            <div class="stat-icon">
-                <i class="bi bi-check-circle"></i>
-            </div>
+
+        <div class="stat-card compact hidden-item" data-delay="200">
+            <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
             <div class="stat-content">
                 <h3>{{ componentes|selectattr('Foto')|list|length }}</h3>
                 <p>Con Imagen</p>
             </div>
         </div>
-        <div class="stat-card hidden-item" data-delay="300">
-            <div class="stat-icon">
-                <i class="bi bi-exclamation-triangle"></i>
-            </div>
+
+        <div class="stat-card compact hidden-item" data-delay="300">
+            <div class="stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
             <div class="stat-content">
                 <h3>{{ componentes|rejectattr('Foto')|list|length }}</h3>
                 <p>Sin Imagen</p>
             </div>
         </div>
-        <div class="stat-card hidden-item" data-delay="400">
-            <div class="stat-icon">
-                <i class="bi bi-cash"></i>
-            </div>
+    </div>
+    <div class="stats-grid panel mb-3">
+        <div class="stat-card panel hidden-item" data-delay="400">
+            <div class="stat-icon"><i class="bi bi-cash"></i></div>
             <div class="stat-content">
                 <h3>
                     ${{ "%.2f"|format(
@@ -73,26 +69,25 @@
                 <p>Precio Promedio</p>
             </div>
         </div>
-        <div class="stat-card hidden-item" data-delay="500">
-            <div class="stat-icon">
-                <i class="bi bi-graph-up-arrow"></i>
-            </div>
+
+        <div class="stat-card panel hidden-item" data-delay="500">
+            <div class="stat-icon"><i class="bi bi-graph-up-arrow"></i></div>
             <div class="stat-content">
                 {% set max_comp = componentes|max(attribute='Precio') %}
                 <h3>${{ "%.2f"|format(max_comp.Precio) }}</h3>
                 <p>{{ max_comp.Nombre }}</p>
             </div>
         </div>
-        <div class="stat-card hidden-item" data-delay="600">
-            <div class="stat-icon">
-                <i class="bi bi-bank"></i>
-            </div>
+
+        <div class="stat-card panel hidden-item" data-delay="600">
+            <div class="stat-icon"><i class="bi bi-bank"></i></div>
             <div class="stat-content">
                 <h3>${{ "%.2f"|format(componentes | map(attribute='Precio') | select | sum) }}</h3>
                 <p>Valor Total</p>
             </div>
         </div>
     </div>
+
     {% endif %}
     {% if componentes %}
     <!-- Filtros y búsqueda -->
@@ -152,7 +147,7 @@
                             <th>Nombre</th>
                             <th class="d-none d-sm-table-cell">Tipo</th>
                             <th class="d-none d-lg-table-cell">Descripción</th>
-                            <th width="120">Acciones</th>
+                            <th width="80" style="text-align: right;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="componentsTableBody">
@@ -189,7 +184,7 @@
                                 <span class="component-description">{{ c.Descripcion[:50] }}{% if c.Descripcion|length > 50 %}...{% endif %}</span>
                             </td>
                             <td class="action-cell">
-                                <div class="btn-group-horizontal">
+                                <div class="btn-group-horizontal"> 
                                     <a href="{{ url_for('componentes.editar_componente', id=c.ID) }}" 
                                     class="btn btn-outline-secondary btn-sm" 
                                     title="Editar componente">
@@ -207,49 +202,38 @@
         <div id="cardsView" class="cards-view d-none">
             <div class="row g-3" id="componentsCardsContainer">
                 {% for c in componentes %}
-                <div class="col-md-6 col-lg-4 component-card-wrapper" 
-                    data-name="{{ c.Nombre|lower }}" 
-                    data-description="{{ c.Descripcion|lower }}" 
-                    data-type="{{ c.Tipo or '' }}">
-                    <div class="component-card clickable-card" data-component-id="{{ c.ID }}">
-                        <div class="component-card-image">
-                            {% if c.Foto %}
-                                <img src="{{ url_for('static', filename='fotos/componentes/' ~ c.Foto) }}" 
-                                    alt="{{ c.Nombre }}">
-                            {% else %}
-                                <div class="component-card-placeholder">
-                                    <i class="bi bi-puzzle"></i>
-                                    <p>Sin imagen</p>
-                                </div>
-                            {% endif %}
-                            <div class="component-card-badge">
-                                {% if c.Tipo %}
-                                    <span class="badge" style="background-color: var(--agri-green-darker);">{{ c.Tipo }}</span>
-                                {% else %}
-                                    <span class="badge" style="background-color: var(--agri-green-muted);">Sin tipo</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="component-card-content">
-                            <div class="component-card-header">
-                                <h6 class="component-card-title">{{ c.Nombre }}</h6>
-                            </div>
-                            <p class="component-card-details">
-                                <strong>Código:</strong> {{ c.ID_Componente or 'N/A' }}<br>
-                                {% if c.Marca %}<strong>Marca:</strong> {{ c.Marca }}<br>{% endif %}
-                                {% if c.Descripcion %}<strong>Descripción:</strong> {{ c.Descripcion[:50] }}{% if c.Descripcion|length > 50 %}...{% endif %}{% endif %}
-                            </p>
-                            <div class="component-card-actions action-cell">
-                                <a href="{{ url_for('componentes.editar_componente', id=c.ID) }}" class="btn btn-outline-secondary btn-sm">
-                                    <i class="bi bi-pencil"></i> Editar
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
+                {% set data_attrs = {
+                    "name": c.Nombre|lower,
+                    "description": c.Descripcion|lower,
+                    "type": c.Tipo or ""
+                    } %}
+                {% include 'partials/card.html' %}
+                
+                {% set wrapper_class = "component-card-wrapper" %}
+                {% set card_class = "component-card" %}
+                {% set id = c.ID %}
+                {% set image = url_for('static', filename='fotos/componentes/' ~ c.Foto) if c.Foto else None %}
+                {% set placeholder_icon = "bi bi-puzzle" %}
+                {% set badge_text = c.Tipo or "Sin tipo" %}
+                {% set badge_class = "bg-dark" if c.Tipo else "bg-secondary" %}
+                {% set title = c.Nombre %}
+                {% set descripcion = c.Descripcion or "" %}
+                {% set detalles_recortados = descripcion[:50] ~ ("..." if descripcion|length > 50 else "") %}
+                {% set details = "
+                    <strong>Código:</strong> " ~ (c.ID_Componente or "N/A") ~ "<br>" ~
+                    ("<strong>Marca:</strong> " ~ c.Marca ~ "<br>" if c.Marca) ~
+                    ("<strong>Descripción:</strong> " ~ detalles_recortados if descripcion)
+                %}
+                {% set edit_url = url_for('componentes.editar_componente', id=c.ID) %}
+                {% set data_attrs = {
+                    "name": c.Nombre|lower,
+                    "description": descripcion|lower,
+                    "type": c.Tipo or ""
+                } %}
                 {% endfor %}
             </div>
-        </div>
+            </div>
         {% endif %}
         <!-- Estado vacío -->
         {% if not componentes %}
@@ -265,6 +249,10 @@
         {% endif %}
     </section>
 <style>
+td.action-cell .btn-group-horizontal {
+    justify-content: flex-end;
+    display: flex;
+}
 .btn-outline-secondary {
     display: flex;
     align-items: center;

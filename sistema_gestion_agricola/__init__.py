@@ -4,6 +4,7 @@ import os
 from flask import Flask, render_template, make_response
 from flask_caching import Cache
 from dotenv import load_dotenv
+from .utils.vite_helper import vite_asset
 import pdfkit
 
 # Cargar variables de entorno
@@ -53,6 +54,10 @@ def create_app():
 
     from .utils.db import get_db_connection
 
+    @app.route('/vite')
+    def vite_app():
+        return render_template('vite.html')  # plantilla que solo tiene <div id="app"></div> y carga Vite
+
     # Home Page
     @app.route('/')
     def index():
@@ -92,5 +97,9 @@ def create_app():
         response.headers['Content-Type'] = 'application/pdf'
         response.headers['Content-Disposition'] = 'inline; filename=resumen_cuentas.pdf'
         return response
+    
+    from sistema_gestion_agricola.utils.db import get_db_connection
+    from sistema_gestion_agricola.utils.vite_helper import vite_asset
+    app.jinja_env.globals['vite_asset'] = vite_asset
 
     return app

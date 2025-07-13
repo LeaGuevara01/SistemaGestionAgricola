@@ -179,6 +179,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --------- Limpiar filtros ----------
+    window.clearFilters = function() {
+        searchInput && (searchInput.value = '');
+        filterEstado && (filterEstado.value = '');
+        filterMarca && (filterMarca.value = '');
+        filterMachines(); // Refiltra después de limpiar
+    };
+
     // --------- Cambiar vista cards/tabla ----------
     window.toggleView = function(view) {
         const tableView = document.getElementById('tableView');
@@ -192,13 +200,5 @@ document.addEventListener('DOMContentLoaded', () => {
         cardsView.classList.toggle('d-none', isTable);
         tableBtn.classList.toggle('active', isTable);
         cardsBtn.classList.toggle('active', !isTable);
-    };
-
-    // --------- Limpiar filtros ----------
-    window.clearFilters = function() {
-        if (searchInput) searchInput.value = '';
-        if (filterEstado) filterEstado.value = '';
-        if (filterMarca) filterMarca.value = '';
-        filterMachines();
     };
 });
