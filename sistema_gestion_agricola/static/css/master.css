@@ -1,0 +1,37 @@
+/* Master CSS file combining all individual CSS files */
+
+/* Base styles and resets */
+@import url('base.css');
+
+/* Theme variables and colors */
+@import url('theme.css');
+
+/* Custom component styles */
+@import url('custom.css');
+
+/* Buttons styles */
+@import url('buttons.css');
+
+/* Cards styles */
+@import url('cards.css');
+
+/* Forms styles */
+@import url('forms.css');
+
+/* Header styles */
+@import url('header.css');
+
+/* Responsive styles */
+@import url('responsive.css');
+
+/* Legacy styles (review if needed) */
+@import url('styles_old.css');
+
+/* Main consolidated styles */
+@import url('styles.css');
+
+/* Tables styles */
+@import url('tables.css');
+
+/* Widgets styles */
+@import url('widgets.css');

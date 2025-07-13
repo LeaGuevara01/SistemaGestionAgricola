@@ -98,8 +98,6 @@ def create_app():
         response.headers['Content-Disposition'] = 'inline; filename=resumen_cuentas.pdf'
         return response
     
-    from sistema_gestion_agricola.utils.db import get_db_connection
-    from sistema_gestion_agricola.utils.vite_helper import vite_asset
     app.jinja_env.globals['vite_asset'] = vite_asset
 
     return app

@@ -1,20 +1,20 @@
 /* ====== FORMULARIOS GENERALES ====== */
 
 form {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 /* ====== LABELS ====== */
 
 label,
 .form-edit label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-    margin-left: 0.5rem;
-    color: var(--text-color, #2d3e2d);
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  margin-left: 0.5rem;
+  color: var(--text-color, #2d3e2d);
 }
 
 /* ====== INPUTS, SELECTS, TEXTAREAS ====== */
@@ -26,17 +26,17 @@ textarea,
 .form-edit .form-control,
 .form-edit .form-select,
 .form-edit textarea {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    font-size: 1rem;
-    font-family: inherit;
-    background-color: var(--bg-color);
-    border: none;               /* Sin borde */
-    border-radius: var(--radius, 6px);
-    color: var(--text-color);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: none;           /* Sin sombra */
-    outline: none;              /* Sin outline */
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  font-family: inherit;
+  background-color: var(--bg-color);
+  border: none;
+  border-radius: var(--radius, 6px);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: none;
+  outline: none;
 }
 
 /* Mantener fondo y sin borde ni sombra en foco, hover, activo */
@@ -55,10 +55,10 @@ textarea:active,
 .form-edit .form-control:focus,
 .form-edit .form-select:focus,
 .form-edit textarea:focus {
-    background-color: var(--bg-color);
-    border: none;
-    box-shadow: none;
-    outline: none;
+  background-color: var(--bg-color);
+  border: none;
+  box-shadow: none;
+  outline: none;
 }
 
 /* ====== INPUTS INVÁLIDOS ====== */
@@ -70,8 +70,8 @@ textarea:invalid,
 .form-edit input:invalid,
 .form-edit select:invalid,
 .form-edit textarea:invalid {
-    border: none;
-    box-shadow: none;
+  border: none;
+  box-shadow: none;
 }
 
 .form-select:invalid:focus,
@@ -81,18 +81,18 @@ textarea:invalid:focus,
 .form-edit input:invalid:focus,
 .form-edit select:invalid:focus,
 .form-edit textarea:invalid:focus {
-    background-color: var(--bg-color);
-    border: none;
-    box-shadow: none;
-    outline: none;
+  background-color: var(--bg-color);
+  border: none;
+  box-shadow: none;
+  outline: none;
 }
 
 /* ====== PLACEHOLDER ====== */
 
 ::placeholder,
 .form-edit ::placeholder {
-    color: var(--agri-green-secondary, #a4c39d);
-    opacity: 0.85;
+  color: var(--agri-green-secondary, #a4c39d);
+  opacity: 0.85;
 }
 
 #searchInput {
@@ -105,55 +105,54 @@ textarea:invalid:focus,
   color: var(--text-color);
 }
 
-
 /* ====== INPUT GROUPS ====== */
 
 .input-group {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
 }
 
 .input-group > .form-control {
-    flex: 1 1 auto;
-    min-width: 0;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .input-group > .btn {
-    white-space: nowrap;
+  white-space: nowrap;
 }
 
 .input-group-text {
-    display: flex;
-    align-items: center;
-    background-color: var(--agri-light, #e9f0e9);
-    border: none;              /* Sin borde */
-    border-radius: 6px 0 0 6px; /* redondeado solo a la izquierda */
-    color: var(--text-color, #2d3e2d);
-    font-weight: 600;
-    user-select: none;
-    white-space: nowrap;
-    box-shadow: none;
+  display: flex;
+  align-items: center;
+  background-color: var(--agri-light, #e9f0e9);
+  border: none;
+  border-radius: 6px 0 0 6px;
+  color: var(--text-color, #2d3e2d);
+  font-weight: 600;
+  user-select: none;
+  white-space: nowrap;
+  box-shadow: none;
 }
 
 /* ====== CHECKBOX & RADIO ====== */
 
 .form-check {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .form-check-input {
-    width: 1.1rem;
-    height: 1.1rem;
-    accent-color: var(--agri-green-primary);
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--agri-green-primary);
 }
 
 .form-check-label {
-    font-weight: 500;
-    color: var(--text-color);
+  font-weight: 500;
+  color: var(--text-color);
 }
 
 /* ====== SELECT con ícono personalizado ====== */
@@ -161,78 +160,78 @@ textarea:invalid:focus,
 select,
 .form-select,
 .form-edit select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='12' height='12' viewBox='0 0 20 20'%3E%3Cpath fill='%236b8e6b' d='M10 12l-6-6h12z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 12px 12px;
-    background-color: var(--bg-color);
-    border: none;
-    box-shadow: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='12' height='12' viewBox='0 0 20 20'%3E%3Cpath fill='%236b8e6b' d='M10 12l-6-6h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 12px 12px;
+  background-color: var(--bg-color);
+  border: none;
+  box-shadow: none;
 }
 
 /* ====== BOTÓN SUBMIT ====== */
 
 form button[type="submit"],
 .form-edit button[type="submit"] {
-    margin-top: 1rem;
-    width: 100%;
-    background-color: var(--btn-bg-primary);
-    color: var(--text-color);
-    font-weight: 700;
-    border: none;
-    border-radius: 0.7rem;
-    padding: 0.7rem 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+  margin-top: 1rem;
+  width: 100%;
+  background-color: var(--btn-bg-primary);
+  color: var(--text-color);
+  font-weight: 700;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 form button[type="submit"]:hover,
 .form-edit button[type="submit"]:hover {
-    background: var(--hover-bg);
-    color: var(--agri-green-dark);
+  background: var(--hover-bg);
+  color: var(--agri-green-dark);
 }
 
 /* ====== GRIDS ====== */
 
 .form-edit .row {
-    gap: 1rem;
+  gap: 1rem;
 }
 
 /* ====== FORM CHECK (checkbox, radio) ====== */
 
 .form-edit .form-check {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
 }
 
 .form-edit .form-check-input {
-    width: 1.2rem;
-    height: 1.2rem;
-    accent-color: var(--agri-green-primary, #6b8e6b);
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: var(--agri-green-primary, #6b8e6b);
 }
 
 .form-edit .form-check-label {
-    font-weight: 500;
-    color: var(--text-color);
+  font-weight: 500;
+  color: var(--text-color);
 }
 
 /* ====== Mensajes de ayuda y textos pequeños ====== */
 
 .form-edit .form-text {
-    font-size: 0.85rem;
-    color: var(--agri-green-muted, #a3b18a);
-    margin-top: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--agri-green-muted, #a3b18a);
+  margin-top: 0.25rem;
 }
 
 /* ====== Responsivo ====== */
 
 @media (max-width: 768px) {
-    .form-edit {
-        padding: 1.25rem 1.5rem;
-        max-width: 100%;
-        margin: 1rem auto;
-    }
+  .form-edit {
+    padding: 1.25rem 1.5rem;
+    max-width: 100%;
+    margin: 1rem auto;
+  }
 }

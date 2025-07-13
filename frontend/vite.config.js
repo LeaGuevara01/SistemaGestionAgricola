@@ -20,6 +20,9 @@ export default defineConfig(({ command }) => {
       server: {
         port: 5173,
         strictPort: true,
+        proxy: {
+          '/api': 'http://localhost:3000'
+        }
       },
     }
   } else {
@@ -32,7 +35,7 @@ export default defineConfig(({ command }) => {
         emptyOutDir: true,
         assetsDir: '.',
         rollupOptions: {
-          input: '/src/main.jsx',
+        input: 'src/main.jsx',
         },
       },
     }

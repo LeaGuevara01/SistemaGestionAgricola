@@ -1,0 +1,32 @@
+# Entornos virtuales
+venv/
+**/venv/
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Archivos temporales
+*.log
+*.sqlite3
+*.db
+*.sdb
+*.swo
+*.swp
+*.bak
+
+# Entornos editor
+.vscode/
+.idea/
+
+# Node / Vite
+node_modules/
+dist/
+*.local
+
+# Bases de datos de DB Browser for SQLite
+*.sqbpro
+
+# Variables de entorno
+.env

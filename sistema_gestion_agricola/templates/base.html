@@ -19,20 +19,14 @@
     <script type="module" src="http://localhost:5173/@vite/client"></script>
     <script type="module" src="http://localhost:5173/src/main.jsx"></script>
   {% else %}
-    <link rel="stylesheet" href="{{ vite_asset('src/main.jsx').replace('.js', '.css') }}">
-    <script type="module" src="{{ vite_asset('src/main.jsx') }}"></script>
+    {% set assets = vite_asset('src/main.jsx') %}
+    {% for css_file in assets.css %}
+      <link rel="stylesheet" href="{{ css_file }}">
+    {% endfor %}
+    <script type="module" src="{{ assets.file }}"></script>
   {% endif %}
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/cards.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/tables.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/buttons.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/widgets.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/master.css') }}">
 
 </head>
 
