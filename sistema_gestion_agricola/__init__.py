@@ -1,5 +1,4 @@
 # __init__.py
-
 import os
 from flask import Flask, render_template, make_response
 from flask_caching import Cache
