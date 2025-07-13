@@ -8,18 +8,20 @@
     <div class="row g-4">
         <div class="col-12">
             <div class="dashboard-header p-4 shadow rounded">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                    <div class="flex-grow-1">
+                <div class="header-topbar">
+                    <!-- Bloque central: título -->
+                    <div class="header-title">
                         <h2 class="section-title">Sistema de Gestión Agrícola</h2>
-                        <p class="opacity-75 d-none d-md-block">Control completo de su operación agrícola</p>
+                        <p class="section-subtitle opacity-75 d-none d-md-block">Control completo de su operación agrícola</p>
                     </div>
-                    <div class="d-flex align-items-center gap-3 ms-1">
-                        <div class="badge fs-6 d-lg-block">
-                            <i class="bi bi-calendar3"></i> <span id="current-date"></span>
-                        </div>
+                    <!-- Bloque derecho: fecha y botón de tema -->
+                    <div class="header-controls">
                         <button class="theme-toggle" id="themeToggle">
                             <i class="bi bi-moon-fill" id="themeIcon"></i>
                         </button>
+                        <div class="calendar-badge fs-6 d-lg-block">
+                            <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -28,41 +30,51 @@
     <!-- Clima -->
     <div class="dashboard-grid">
         <div class="weather-card">
-            <div class="card-header">
+            <div class="card-header mb-3">
                 <i class="bi bi-cloud-sun"></i> Clima en Ucacha
             </div>
-            <div class="card-body text-center" id="clima-container">
+            <div class="card-body text-center p-0" id="clima-container">
                 <div class="spinner-border" role="status">
                     <span class="visually-hidden">Cargando...</span>
                 </div>
             </div>
-            <div class="card-footer text-muted small">
+            <div class="card-footer text-muted small mt-3">
                 Última actualización: <span id="clima-timestamp">--:--</span>
             </div>
         </div>
         <!-- Maquinaria -->
         <div class="dashboard-card">
-            <h3 class="section-title"><i class="bi bi-gear"></i> Maquinaria</h3>
-            <a href="{{ url_for('maquinas.listar_maquinas') }}" class="btn btn-dashboard">
-            <i class="bi bi-list-ul"></i> Listado de Máquinas
-            </a>
+            <div class="card-header mb-3">
+                <h3 class="section-title m-0">
+                    <i class="bi bi-gear"></i> Maquinaria</h3>
+            </div>
+            <div class="card-body d-flex flex-column gap-2">
+                <a href="{{ url_for('maquinas.listar_maquinas') }}" class="btn btn-dashboard">
+                    <i class="bi bi-list-ul"></i> Listado de Máquinas</a>
+            </div>
         </div>
         <!-- Componentes e Inventario -->
         <div class="dashboard-card">
-            <h3 class="section-title">
+            <div class="card-header mb-3">
+                <h3 class="section-title m-0">
                     <i class="bi bi-puzzle"></i> Componentes</h3>
+            </div>
+            <div class="card-body d-flex flex-column gap-2">
                 <a href="{{ url_for('componentes.lista_componentes') }}" 
                     class="btn btn-dashboard">
                     <i class="bi bi-boxes"></i> Listado de Componentes</a>
                 <a href="{{ url_for('stock.vista_stock') }}" 
                     class="btn btn-dashboard">
                     <i class="bi bi-clipboard2-check"></i> Inventario Actual</a>
+            </div>
         </div>
         <!-- Compras y Proveedores -->
         <div class="dashboard-card">
-            <h3 class="section-title">
-                    <i class="bi bi-cart-plus"></i> Compras y Proveedores</h3>
-
+            <div class="card-header mb-3">
+                <h3 class="section-title m-0">
+                    <i class="bi bi-cart-plus"></i> Compras</h3>
+            </div>        
+            <div class="card-body d-flex flex-column gap-2">        
                 <a href="{{ url_for('proveedores.listar_proveedores') }}" class="btn btn-dashboard">
                     <i class="bi bi-people"></i> Ver Proveedores</a>
 
@@ -71,42 +83,57 @@
 
                 <a href="{{ url_for('compras.historial_compras') }}" class="btn btn-dashboard">
                     <i class="bi bi-clock-history"></i> Historial de Compras</a>
+            </div>        
         </div>
         <!-- Pagos y Cuentas -->
         <div class="dashboard-card">
-            <h3 class="section-title"><i class="bi bi-cash-stack"></i> Pagos</h3>
+            <div class="card-header mb-3">
+                <h3 class="section-title m-0">
+                    <i class="bi bi-cash-stack"></i> Pagos</h3>
+            </div>
+            <div class="card-body d-flex flex-column gap-2"> 
                 <a href="{{ url_for('pagos.registrar_pago') }}" class="btn btn-dashboard">
                     <i class="bi bi-wallet2"></i> Registrar Pago</a>
                 <a href="{{ url_for('pagos.resumen_cuentas') }}" class="btn btn-dashboard">
                     <i class="bi bi-file-earmark-text"></i> Resumen de Cuentas</a>
                 <a href="{{ url_for('exportar_resumen_pdf') }}" class="btn btn-dashboard">
                     <i class="bi bi-file-earmark-pdf"></i> Exportar PDF</a>
+            </div>
         </div>
         <!-- Gráficos -->
         <div class="dashboard-card">
-            <h3 class="section-title">
+            <div class="card-header mb-3">
+                <h3 class="section-title m-0">
                     <i class="bi bi-bar-chart"></i> Análisis Visual</h3>
+            </div>        
+            <div class="card-body d-flex flex-column gap-2"> 
                 <a href="{{ url_for('estadisticas.compras_por_proveedor') }}" class="btn btn-dashboard">
                     <i class="bi bi-pie-chart"></i> Compras por Proveedor</a>
                 <a href="#" class="btn btn-dashboard disabled-feature">
-                    <i class="bi bi-graph-up"></i> Componente más comprado</a>
+                    <i class="bi bi-graph-up"></i> Más comprado</a>
                 <a href="#" class="btn btn-dashboard disabled-feature">
-                    <i class="bi bi-calendar-month"></i> Compras por mes/año</a>
+                    <i class="bi bi-calendar-month"></i> Compras por período</a>
                 <a href="#" class="btn btn-dashboard disabled-feature">
                     <i class="bi bi-box-seam"></i> Cantidad por pieza</a>
+            </div>
         </div>
         <!-- Excel y Filtros -->
         <div class="dashboard-card">
-            <h3 class="section-title">
+            <div class="card-header mb-3">
+                <h3 class="section-title m-0">
                     <i class="bi bi-file-excel"></i> Exportaciones</h3>
+            </div>            
+            <div class="card-body d-flex flex-column gap-2"> 
                 <a href="#" class="btn btn-dashboard disabled-feature">
                     <i class="bi bi-file-earmark-excel"></i> Exportar a Excel</a>
                 <a href="#" class="btn btn-dashboard disabled-feature">
                     <i class="bi bi-funnel"></i> Filtros Avanzados</a>
-                <div class="mt-3 pt-2 border-top" style="text-align: center">
-                    <small class="text-mute">
+                <!-- Línea separadora con mensaje -->
+                <div class="mt-3 pt-2 border-top custom-border" style="text-align: center;">
+                    <small class="text-muted">
                         <i class="bi bi-info-circle"></i> Próximas características en desarrollo</small>
                 </div>
+            </div>
         </div>
     </div>
 </div>
@@ -118,5 +145,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 150);
 });
 </script>
-<style></style>
+<style>
+button.theme-toggle,
+.badge {
+  line-height: 1;
+}
+.custom-border {
+    border-top: 1px solid var(--text-color) !important;
+}
+</style>
 {% endblock %}

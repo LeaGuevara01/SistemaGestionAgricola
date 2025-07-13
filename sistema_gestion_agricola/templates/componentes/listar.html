@@ -3,72 +3,100 @@
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
-    <div class="dashboard-header mb-4">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div class="flex-grow-1">
+    <div class="dashboard-header p-4 shadow rounded">
+        <div class="header-topbar">
+            <div class="header-title">
                 <h2 class="section-title"><i class="bi bi-puzzle-fill"></i> Gestión de Componentes</h2>
-                <p class="section-subtitle d-none d-md-block opacity-75">Administra todos los componentes del sistema agrícola</p>
+                <p class="section-subtitle d-none d-md-block opacity-75">Administra todos los componentes del sistema</p>
             </div>
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-sm ms-2">
+            <div class="header-controls">
+                <a href="{{ url_for('index') }}" 
+                    class="btn btn-outline-primary btn-sm ms-2">
                     <i class="bi bi-house"></i> 
                     <span class="d-none d-md-block d-md-inline">Inicio</span>
                 </a>
-                <a href="{{ url_for('componentes.registrar_componente') }}" class="btn btn-outline-primary btn-sm">
+                <a href="{{ url_for('componentes.registrar_componente') }}" 
+                    class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-plus-lg"></i> 
                     <span class="d-none d-md-block d-md-inline">Nuevo Componente</span>
                     <span class="d-md-none">Nuevo</span>
                 </a>
-                <div class="badge fs-6 d-none d-lg-block">
-                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
-                </div>
                 <button class="theme-toggle" id="themeToggle">
                     <i class="bi bi-moon-fill" id="themeIcon"></i>
                 </button>
+                <div class="calendar-badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
             </div>
         </div>
     </div>
-
+    {% if componentes %}
     <!-- Estadísticas rápidas -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="stat-card hidden-item" data-delay="100">
-                <div class="stat-icon">
-                    <i class="bi bi-puzzle"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>{{ componentes|length }}</h3>
-                    <p>Componentes</p>
-                </div>
+    <div class="stats-grid">
+        <div class="stat-card hidden-item" data-delay="100">
+            <div class="stat-icon">
+                <i class="bi bi-puzzle"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ componentes|length }}</h3>
+                <p>Componentes</p>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="stat-card hidden-item" data-delay="200">
-                <div class="stat-icon">
-                    <i class="bi bi-check-circle"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>{{ componentes|selectattr('Foto')|list|length }}</h3>
-                    <p>Con Imagen</p>
-                </div>
+        <div class="stat-card hidden-item" data-delay="200">
+            <div class="stat-icon">
+                <i class="bi bi-check-circle"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ componentes|selectattr('Foto')|list|length }}</h3>
+                <p>Con Imagen</p>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="stat-card hidden-item" data-delay="300">
-                <div class="stat-icon">
-                    <i class="bi bi-exclamation-triangle"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>{{ componentes|rejectattr('Foto')|list|length }}</h3>
-                    <p>Sin Imagen</p>
-                </div>
+        <div class="stat-card hidden-item" data-delay="300">
+            <div class="stat-icon">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ componentes|rejectattr('Foto')|list|length }}</h3>
+                <p>Sin Imagen</p>
+            </div>
+        </div>
+        <div class="stat-card hidden-item" data-delay="400">
+            <div class="stat-icon">
+                <i class="bi bi-cash"></i>
+            </div>
+            <div class="stat-content">
+                <h3>
+                    ${{ "%.2f"|format(
+                    (componentes|map(attribute='Precio')|select|sum) / 
+                    (componentes|length if componentes|length > 0 else 1)) }}
+                </h3>
+                <p>Precio Promedio</p>
+            </div>
+        </div>
+        <div class="stat-card hidden-item" data-delay="500">
+            <div class="stat-icon">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+            <div class="stat-content">
+                {% set max_comp = componentes|max(attribute='Precio') %}
+                <h3>${{ "%.2f"|format(max_comp.Precio) }}</h3>
+                <p>{{ max_comp.Nombre }}</p>
+            </div>
+        </div>
+        <div class="stat-card hidden-item" data-delay="600">
+            <div class="stat-icon">
+                <i class="bi bi-bank"></i>
+            </div>
+            <div class="stat-content">
+                <h3>${{ "%.2f"|format(componentes | map(attribute='Precio') | select | sum) }}</h3>
+                <p>Valor Total</p>
             </div>
         </div>
     </div>
-
-
+    {% endif %}
+    {% if componentes %}
     <!-- Filtros y búsqueda -->
-    <div class="card-section mb-4 hidden-item">
+    <div class="card-section mb-4 hidden-item" style="padding: 2rem 2.5rem;">
         <div class="row g-3 align-items-end">
             <div class="col-md-6">
                 <label for="searchInput" class="form-label">
@@ -99,24 +127,21 @@
             </div>
         </div>
     </div>
-
+    {% endif %}
     <!-- Lista de componentes -->
-    <div class="card-section">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="section-title mb-0">
-                <i class="bi bi-list-ul"></i> Lista de Componentes
-            </h3>
+    <section class="page-section">
+        <h3 class="section-title">
+                <i class="bi bi-list-ul"></i> Lista de Componentes</h3>
             <div class="view-toggle">
-                <button class="btn btn-sm btn-outline-primary active" onclick="toggleView('table')" id="tableViewBtn">
+                <button class="btn btn-sm btn-outline-tertiary active" onclick="toggleView('table')" id="tableViewBtn">
                     <i class="bi bi-table"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-primary" onclick="toggleView('cards')" id="cardsViewBtn">
+                <button class="btn btn-sm btn-outline-tertiary" onclick="toggleView('cards')" id="cardsViewBtn">
                     <i class="bi bi-grid-3x3-gap"></i>
                 </button>
             </div>
-        </div>
-
-        <!-- Vista de tabla (desktop) -->
+        {% if componentes %}
+        <!-- Vista de tabla -->
         <div id="tableView" class="table-view">
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
@@ -125,7 +150,7 @@
                             <th class="d-none d-md-table-cell" width="120">Imagen</th>
                             <th class="d-none d-lg-table-cell">Código</th>
                             <th>Nombre</th>
-                            <th class="d-none d-md-table-cell">Tipo</th>
+                            <th class="d-none d-sm-table-cell">Tipo</th>
                             <th class="d-none d-lg-table-cell">Descripción</th>
                             <th width="120">Acciones</th>
                         </tr>
@@ -137,7 +162,7 @@
                             data-description="{{ c.Descripcion|lower }}" 
                             data-type="{{ c.Tipo or '' }}"
                             data-component-id="{{ c.ID }}">
-                            <td class="d-none d-lg-table-cell">
+                            <td class="d-none d-md-table-cell">
                                 {% if c.Foto %}
                                     <img src="{{ url_for('static', filename='fotos/componentes/' ~ c.Foto) }}" 
                                         class="component-thumb" alt="{{ c.Nombre }}">
@@ -153,7 +178,7 @@
                             <td>
                                 <strong class="component-name">{{ c.Nombre }}</strong>
                             </td>
-                            <td class="d-none d-md-table-cell">
+                            <td class="d-none d-sm-table-cell">
                                 {% if c.Tipo %}
                                     <span class="badge" style="background-color: var(--agri-green-primary);">{{ c.Tipo }}</span>
                                 {% else %}
@@ -178,7 +203,6 @@
                 </table>
             </div>
         </div>    
-
         <!-- Vista de cards -->
         <div id="cardsView" class="cards-view d-none">
             <div class="row g-3" id="componentsCardsContainer">
@@ -226,22 +250,61 @@
                 {% endfor %}
             </div>
         </div>
-
+        {% endif %}
         <!-- Estado vacío -->
         {% if not componentes %}
         <div class="empty-state text-center py-5">
             <i class="bi bi-puzzle text-muted" style="font-size: 4rem;"></i>
             <h4 class="text-muted mt-3">No hay componentes registrados</h4>
-            <p class="text-muted">Comienza agregando tu primer componente al sistema</p>
-            <a href="{{ url_for('componentes.registrar_componente') }}" class="btn btn-agri-primary">
-                <i class="bi bi-plus-lg"></i> Agregar Primer Componente
+            <p class="text-muted mb-5">Comienza agregando tu primer componente al sistema</p>
+                <a href="{{ url_for('componentes.registrar_componente') }}" 
+                    class="btn btn-outline-secondary">
+                    <i class="bi bi-plus-lg"></i> Agregar Primer Componente
             </a>
         </div>
         {% endif %}
-    </div>
-</div>
+    </section>
+<style>
+.btn-outline-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-outline-tertiary {
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    
+    background: transparent;
+    color: var(--btn-text-tertiary, var(--agri-green-tertiary));
+    border: none;
+    border-radius: 6px;
+
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    min-height: 40px;
+    text-align: center;
+    outline: none;
+}
+.btn-outline-tertiary:hover,
+.btn-outline-tertiary:focus {
+    background: var(--btn-primary-hover, var(--agri-green-dark));
+    color: #fff;
+    border-color: var(--btn-primary-hover, var(--agri-green-dark));
+}
+.section-title{
+    margin-top: 0.75rem;
+}
+@media (min-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+</style>
 <script>
-// Animar stats
 document.querySelectorAll('.stat-card').forEach((section, index) => {
     section.style.opacity = '0';
     section.style.transform = 'translateY(20px)';
@@ -252,5 +315,4 @@ document.querySelectorAll('.stat-card').forEach((section, index) => {
     }, 200 + index * 60);
 });
 </script>
-<style></style>
 {% endblock %}

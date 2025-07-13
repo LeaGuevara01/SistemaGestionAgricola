@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Nuevo Proveedor{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <!-- Header -->
+    <div class="dashboard-header p-4 shadow rounded">
+        <div class="header-topbar">
+            <div class="header-title">
+                <h2 class="section-title"><i class="bi bi-truck"></i>Agregar Nuevo Proveedor</h2>
+                <p class="d-none d-md-block opacity-75">Registrar un proveedor para compras</p>
+            </div>
+        </div>
+        <div class="header-controls">
+            <a href="{{ url_for('proveedores.listar_proveedores') }}" 
+                class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-arrow-left"></i>
+                <span class="d-none d-md-inline">Volver a Proveedores</span>
+                <span class="d-md-none">Volver</span>
+            </a>
+        </div>
+    </div>
+    
+    <section class="page-section">
+        <div class="card-section">
+            <form method="POST" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" name="nombre" id="nombre" required>
+                    <div class="invalid-feedback">Por favor ingrese el nombre del proveedor.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="localidad" class="form-label">Localidad</label>
+                    <input type="text" class="form-control" name="localidad" id="localidad">
+                </div>
+
+                <div class="mb-3">
+                    <label for="contacto" class="form-label">Contacto</label>
+                    <input type="text" class="form-control" name="contacto" id="contacto">
+                </div>
+
+                <div class="mb-3">
+                    <label for="telefono" class="form-label">Teléfono</label>
+                    <input type="tel" class="form-control" name="telefono" id="telefono">
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" name="email" id="email">
+                </div>
+
+                <div class="mb-3">
+                    <label for="rubro" class="form-label">Rubro</label>
+                    <input type="text" class="form-control" name="rubro" id="rubro">
+                </div>
+
+                <div class="mb-3">
+                    <label for="direccion" class="form-label">Dirección</label>
+                    <input type="text" class="form-control" name="direccion" id="direccion">
+                </div>
+
+                <div class="mb-3">
+                    <label for="observaciones" class="form-label">Observaciones</label>
+                    <textarea class="form-control" name="observaciones" id="observaciones" rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Guardar Proveedor
+                </button>
+            </form>
+        </div>
+    </section>
+</div>
+
+<script>
+    // Bootstrap form validation
+    (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+{% endblock %}

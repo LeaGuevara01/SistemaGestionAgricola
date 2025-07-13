@@ -18,7 +18,7 @@
 
     /* Botones unificados */
     --btn-primary: var(--agri-green-primary);
-    --btn-primary-hover: var(--agri-green-dark);
+    --btn-primary-hover: var(--agri-green-tertiary);
     --btn-secondary: var(--agri-green-primary);
     --btn-secondary-hover: var(--agri-green-dark);
     --btn-accent: var(--agri-green-primary);
@@ -31,7 +31,7 @@
 
 /* ====== TEMA CLARO ====== */
 [data-bs-theme="light"] {
-    --bg-color: var(--agri-light);
+    --bg-color: var(--agri-green-secondary);
     --text-color: #2d3e2d;
     --card-bg: var(--agri-green-muted);
     --header-bg: linear-gradient(135deg, var(--agri-green-dark), var(--agri-green-primary));
@@ -41,12 +41,12 @@
     --agri-dark: #2a2f2a;
 
     /* Botones claros */
-    --btn-bg-primary: var(--agri-green-muted);
+    --btn-bg-primary: var(--agri-green-secondary);
     --btn-text-primary: var(--agri-primary);
     --btn-border-primary: var(--agri-green-primary);
 
-    --btn-bg-secondary: var(--agri-green-darker);
-    --btn-text-secondary: var(--agri-green-secondary);
+    --btn-bg-secondary: var(--agri-green-dark);
+    --btn-text-secondary: var(--agri-green-darker);
     --btn-border-secondary: var(--agri-green-secondary);
 
     --btn-bg-tertiary: var(--agri-green-muted);
@@ -60,7 +60,7 @@
     --text-color: var(--agri-green-muted);
     --card-bg: var(--agri-light);
     --header-bg: linear-gradient(135deg, var(--agri-green-darker), #2a3d2a);
-    --hover-bg: var(--agri-green-darker);
+    --hover-bg: var(--agri-green-tertiary);
     --hover-text: var(--agri-green-muted);
     --agri-dark: #f8fafc;
     --agri-light: #2a2f2a;
@@ -70,8 +70,8 @@
     --btn-text-primary: var(--agri-green-tertiary);
     --btn-border-primary: var(--agri-green-secondary);
 
-    --btn-bg-secondary: #2a3d2a;
-    --btn-text-secondary: var(--agri-green-tertiary);
+    --btn-bg-secondary: var(--agri-green-dark);
+    --btn-text-secondary: var(--agri-green-secondary);
     --btn-border-secondary: var(--agri-green-secondary);
 
     --btn-bg-tertiary: #2a2f2a;

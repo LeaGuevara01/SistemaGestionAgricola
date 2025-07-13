@@ -99,15 +99,16 @@
                     placeholder="Observaciones, detalles de mantenimiento, etc.">{{ maquina.Observaciones if maquina and maquina.Observaciones is not none else '' }}</textarea>
             </div>
             <!-- Imagen -->
-            <div class="col-12">
-                <label for="foto" class="form-label">
+            <div class="col-12 custom-file-upload">
+                <label for="foto" class="upload-label">
                     <i class="bi bi-image"></i> Imagen
                 </label>
                 <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
-                <div class="form-text">
-                    Formatos soportados: JPG, PNG, GIF. Tamaño máximo: 5MB
-                    {% if maquina and maquina.Foto %}
-                        <br><small class="text-muted">Imagen actual: {{ maquina.Foto }}</small>
+                <div id="file-name" class="file-name-preview">
+                    {% if componente and componente.Foto %}
+                        Imagen actual: {{ componente.Foto }}
+                    {% else %}
+                        No se ha seleccionado ningún archivo.
                     {% endif %}
                 </div>
             </div>

@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from ..utils.db import get_db_connection
 
-proveedores_bp = Blueprint('proveedores', __name__, url_prefix='/proveedores')
+proveedores_bp = Blueprint('proveedores', __name__, url_prefix='/proveedor')
 
 # List Providers
 @proveedores_bp.route('/')
@@ -13,31 +13,34 @@ def listar_proveedores():
     return render_template('proveedores/listar.html', proveedores=proveedores)
 
 # Create Provider
-@proveedores_bp.route('/agregar', methods=['POST'])
+@proveedores_bp.route('/agregar', methods=['GET', 'POST'])
 def agregar_proveedor():
-    nombre = request.form['nombre']
-    localidad = request.form.get('localidad', '')
-    contacto = request.form.get('contacto', '')
-    telefono = request.form.get('telefono', '')
-    email = request.form.get('email', '')
-    rubro = request.form.get('rubro', '')
-    direccion = request.form.get('direccion', '')
-    observaciones = request.form.get('observaciones', '')
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        localidad = request.form.get('localidad', '')
+        contacto = request.form.get('contacto', '')
+        telefono = request.form.get('telefono', '')
+        email = request.form.get('email', '')
+        rubro = request.form.get('rubro', '')
+        direccion = request.form.get('direccion', '')
+        observaciones = request.form.get('observaciones', '')
 
-    if not nombre.strip():
-        flash('El nombre es obligatorio.')
+        if not nombre.strip():
+            flash('El nombre es obligatorio.')
+            return redirect(url_for('proveedores.agregar_proveedor'))
+
+        conn = get_db_connection()
+        conn.execute('''
+            INSERT INTO proveedores (Nombre, Localidad, Contacto, Telefono, Email, Rubro, Direccion, Observaciones)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (nombre, localidad, contacto, telefono, email, rubro, direccion, observaciones))
+        conn.commit()
+        conn.close()
+
+        flash(f'Proveedor "{nombre}" agregado correctamente.')
         return redirect(url_for('proveedores.listar_proveedores'))
 
-    conn = get_db_connection()
-    conn.execute('''
-        INSERT INTO proveedores (Nombre, Localidad, Contacto, Telefono, Email, Rubro, Direccion, Observaciones)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (nombre, localidad, contacto, telefono, email, rubro, direccion, observaciones))
-    conn.commit()
-    conn.close()
-
-    flash(f'Proveedor "{nombre}" agregado correctamente.')
-    return redirect(url_for('proveedores.listar_proveedores'))
+    return render_template('proveedores/agregar.html')
 
 # Read Provider
 @proveedores_bp.route('/<int:id>')
@@ -53,7 +56,7 @@ def ver_proveedor(id):
 
     # Obtener componentes asociados
     componentes_asociados = conn.execute('''
-        SELECT c.ID, c.Nombre, c.Descripcion
+        SELECT c.ID, c.Nombre, c.Descripcion, cp.Cantidad
         FROM componentes c
         JOIN componentes_proveedores cp ON c.ID = cp.ID_Componente
         WHERE cp.ID_Proveedor = ?

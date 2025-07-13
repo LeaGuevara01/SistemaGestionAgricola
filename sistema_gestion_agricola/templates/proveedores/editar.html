@@ -1,38 +1,100 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <title>Proveedor {{ proveedor.Nombre }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-</head>
-<body class="bg-light">
-<div class="container py-4">
-    <h1>Proveedor: {{ proveedor.Nombre }}</h1>
-    <a href="{{ url_for('listar_proveedores') }}" class="btn btn-secondary mb-3">← Volver</a>
+{% extends "base.html" %}
 
-    <dl class="row">
-        <dt class="col-sm-3">Localidad</dt>
-        <dd class="col-sm-9">{{ proveedor.Localidad or '-' }}</dd>
+{% block title %}Editar Proveedor{% endblock %}
 
-        <dt class="col-sm-3">Contacto</dt>
-        <dd class="col-sm-9">{{ proveedor.Contacto or '-' }}</dd>
+{% block content %}
+<div class="page-wrapper">
+    <!-- Header -->
+    <div class="dashboard-header mb-4 shadow rounded">
+        <div class="header-topbar">
+            <div class="header-title">
+                <h2 class="section-title"><i class="bi bi-pencil-square"></i> Editar Proveedor</h2>
+                <p class="section-subtitle d-none d-md-block opacity-75">Modificá los datos del proveedor registrado</p>
+            </div>
+            <div class="header-controls">
+                <a href="{{ url_for('proveedores.ver_proveedor', id=proveedor.ID) }}" 
+                   class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-arrow-left"></i>
+                    <span class="d-none d-md-inline">Volver</span>
+                </a>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+                <div class="calendar-badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i><span id="current-date"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="page-section">
+    <!-- Formulario -->
+        <div class="card-section">
+            <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" value="{{ proveedor.Nombre }}" required>
+                    <div class="invalid-feedback">El nombre es obligatorio.</div>
+                </div>
 
-        <dt class="col-sm-3">Teléfono</dt>
-        <dd class="col-sm-9">{{ proveedor.Telefono or '-' }}</dd>
+                <div class="mb-3">
+                    <label for="localidad" class="form-label">Localidad</label>
+                    <input type="text" class="form-control" id="localidad" name="localidad" value="{{ proveedor.Localidad or '' }}">
+                </div>
 
-        <dt class="col-sm-3">Email</dt>
-        <dd class="col-sm-9">{{ proveedor.Email or '-' }}</dd>
+                <div class="mb-3">
+                    <label for="contacto" class="form-label">Contacto</label>
+                    <input type="text" class="form-control" id="contacto" name="contacto" value="{{ proveedor.Contacto or '' }}">
+                </div>
 
-        <dt class="col-sm-3">Rubro</dt>
-        <dd class="col-sm-9">{{ proveedor.Rubro or '-' }}</dd>
+                <div class="mb-3">
+                    <label for="telefono" class="form-label">Teléfono</label>
+                    <input type="text" class="form-control" id="telefono" name="telefono" value="{{ proveedor.Telefono or '' }}">
+                </div>
 
-        <dt class="col-sm-3">Dirección</dt>
-        <dd class="col-sm-9">{{ proveedor.Direccion or '-' }}</dd>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ proveedor.Email or '' }}">
+                </div>
 
-        <dt class="col-sm-3">Observaciones</dt>
-        <dd class="col-sm-9">{{ proveedor.Observaciones or '-' }}</dd>
-    </dl>
+                <div class="mb-3">
+                    <label for="rubro" class="form-label">Rubro</label>
+                    <input type="text" class="form-control" id="rubro" name="rubro" value="{{ proveedor.Rubro or '' }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="direccion" class="form-label">Dirección</label>
+                    <input type="text" class="form-control" id="direccion" name="direccion" value="{{ proveedor.Direccion or '' }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="observaciones" class="form-label">Observaciones</label>
+                    <textarea class="form-control" id="observaciones" name="observaciones" rows="3">{{ proveedor.Observaciones or '' }}</textarea>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-outline-secondary">
+                        <i class="bi bi-save"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+
+<!-- Bootstrap Validation -->
+<script>
+    (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+{% endblock %}

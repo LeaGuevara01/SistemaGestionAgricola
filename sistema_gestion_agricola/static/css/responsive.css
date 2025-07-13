@@ -1,5 +1,6 @@
-/* ====== RESPONSIVE ====== */
+/* ====== RESPONSIVE: max-width 768px ====== */
 @media (max-width: 768px) {
+  /* Card section */
   .card-section {
     padding: 1.25rem 0.75rem;
   }
@@ -7,6 +8,7 @@
   .component-card-image {
     height: 120px;
   }
+  /* Stat card */
   .stat-card {
     padding: 1rem;
   }
@@ -17,10 +19,27 @@
   }
   .stat-content h3,
   .stat-content p {
+    font-size: 1.4rem;
+  }
+  /* Header */
+  .dashboard-header {
+    padding: 1.25rem 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .dashboard-header h2 {
     font-size: 1.25rem;
   }
+  .dashboard-header .badge,
+  .calendar-badge {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    font-size: 0.95rem;
+    padding: 0.4em 0.8em;
+    gap: 0.5rem;
+  }
 }
-
+/* ====== RESPONSIVE: max-width 576px ====== */
 @media (max-width: 576px) {
   .card-section {
     padding: 1rem 0.5rem;
@@ -29,8 +48,14 @@
   .component-card-image {
     height: 90px;
   }
+  .dashboard-header {
+    padding: 1rem 0.5rem 0.75rem;
+  }
+  .dashboard-header h2 {
+    font-size: 1.1rem;
+  }
 }
-
+/* ====== RESPONSIVE: max-width 480px ====== */
 @media (max-width: 480px) {
   .image-placeholder {
     max-width: 160px;
@@ -38,28 +63,70 @@
     font-size: 2rem;
   }
 }
-
-@media (min-width: 768px) {
-  .stats-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@keyframes iconBounce {
-  0% { opacity: 0; transform: scale(0.3) rotate(-180deg); }
-  50% { transform: scale(1.1) rotate(-90deg); }
-  100% { opacity: 1; transform: scale(1) rotate(0deg); }
-}
-
-/* Masonry */
+/* ====== RESPONSIVE: min-width 576px ====== */
 @media (min-width: 576px) {
   .dashboard-grid {
     column-count: 2;
   }
 }
-
+/* ====== RESPONSIVE: min-width 768px ====== */
+@media (min-width: 768px) {
+  /* Header text alignment */
+  .header-title,
+  .section-title,
+  .section-subtitle {
+    text-align: left;
+  }
+  .header-title {
+    max-width: 70%;
+  }
+  .header-topbar {
+    justify-content: space-between;
+  }
+  /* Stats grid */
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+/* ====== RESPONSIVE: min-width 992px ====== */
 @media (min-width: 992px) {
   .dashboard-grid {
     column-count: 4;
+  }
+  .calendar-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+}
+/* ====== ANIMATIONS ====== */
+@keyframes iconBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-180deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(-90deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@media (max-width: 400px) {
+  .stat-card {
+    padding: 0.6rem;
+  }
+  .stat-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 1.3rem;
+  }
+  .stat-content h3,
+  .stat-content p {
+    font-size: 1rem;
   }
 }

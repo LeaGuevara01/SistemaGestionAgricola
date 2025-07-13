@@ -22,7 +22,7 @@ def lista_componentes():
     return render_template('componentes/listar.html', componentes=componentes)
 
 
-# Component Registration
+# Create Component
 # This route allows users to register a new component with its details and photo.
 @componentes_bp.route('/agregar', methods=['GET', 'POST'])
 def registrar_componente():
@@ -50,10 +50,10 @@ def registrar_componente():
         conn.close()
         return redirect(url_for('componentes.vista_componente', id=nuevo_id))
     # If the request is GET, render the form
-    return render_template('componentes/registrar.html')
+    return render_template('componentes/agregar.html')
 
 
-# Component Details
+# Read Component
 # This route allows users to view the details of a specific component, including its suppliers and frequencies
 @componentes_bp.route('/<int:id>')
 def vista_componente(id):
@@ -245,8 +245,6 @@ def eliminar_componente(id):
         conn.close()
     
     return redirect(url_for('componentes.lista_componentes'))
-
-
 
 # Upload Component Photo
 @componentes_bp.route('/<int:id>/upload_foto', methods=['POST'])

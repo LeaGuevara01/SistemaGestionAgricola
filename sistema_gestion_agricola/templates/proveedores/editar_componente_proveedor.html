@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Componente del Proveedor{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <!-- Header -->
+    <div class="dashboard-header mb-4 shadow rounded">
+        <div class="header-topbar">
+            <div class="header-title">
+                <h2 class="section-title"><i class="bi bi-pencil-square"></i> Editar Componente del Proveedor</h2>
+                <p class="section-subtitle d-none d-md-block opacity-75">Modificá los detalles de la compra o asignación del componente</p>
+            </div>
+            <div class="header-controls">
+                <a href="{{ url_for('proveedores.ver_proveedor', id=proveedor.ID) }}" 
+                    class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-arrow-left"></i>
+                    <span class="d-none d-md-inline">Volver al proveedor</span>
+                </a>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+                <div class="calendar-badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i><span id="current-date"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario de edición -->
+    <div class="card-section">
+        <form method="POST" class="form-edit needs-validation" novalidate>
+            <!-- Componente -->
+            <div class="mb-3">
+                <label for="componente" class="form-label">Componente</label>
+                <select name="componente" id="componente" class="form-select" required>
+                    {% for c in componentes %}
+                        <option value="{{ c.ID }}" {% if c.ID == componente.ID %}selected{% endif %}>
+                            {{ c.Nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <div class="invalid-feedback">Seleccioná un componente.</div>
+            </div>
+
+            <!-- Cantidad -->
+            <div class="mb-3">
+                <label for="cantidad" class="form-label">Cantidad</label>
+                <input type="number" class="form-control" name="cantidad" id="cantidad" min="1" required value="{{ cantidad }}">
+                <div class="invalid-feedback">Ingresá una cantidad válida.</div>
+            </div>
+
+            <!-- Precio -->
+            <div class="mb-3">
+                <label for="precio_unitario" class="form-label">Precio Unitario</label>
+                <input type="number" class="form-control" name="precio_unitario" id="precio_unitario" step="0.01" min="0" required value="{{ precio }}">
+                <div class="invalid-feedback">Ingresá un precio válido.</div>
+            </div>
+
+            <!-- Observación -->
+            <div class="mb-3">
+                <label for="observacion" class="form-label">Observación</label>
+                <input type="text" class="form-control" name="observacion" id="observacion" value="{{ observacion or '' }}">
+            </div>
+
+            <!-- Botón -->
+            <div class="text-end">
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="bi bi-save"></i> Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Validación Bootstrap -->
+<script>
+(() => {
+    'use strict';
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+})();
+</script>
+{% endblock %}

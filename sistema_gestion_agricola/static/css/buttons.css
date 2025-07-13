@@ -70,7 +70,7 @@
 /* ====== OUTLINE SECONDARY ====== */
 .btn-outline-secondary {
     background: transparent;
-    color: var(--btn-text-primary);
+    color: var(--btn-text-secondary);
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
@@ -81,12 +81,15 @@
 .btn-outline-secondary:active,
 .btn-outline-secondary.focus,
 .btn-outline-secondary.show {
-    background: var(--agri-green-dark);
-    color: var(--card-bg);
+    background: var(--btn-bg-secondary);
+    color: var(--agri-green-tertiary);
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
     text-decoration: none !important;
+}
+.btn-outline-secondary:focus {
+    color: var(--btn-text-secondary) !important;
 }
 /* ====== OUTLINE DANGER ====== */
 .btn-outline-danger {

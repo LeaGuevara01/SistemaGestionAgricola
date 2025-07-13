@@ -12,7 +12,9 @@
                 <p class="d-none d-md-block opacity-75">Agrega una nueva máquina al sistema</p>
             </div>
             <div class="d-flex align-items-center gap-2 flex-wrap">
-                <a href="{{ url_for('maquinas.listar_maquinas') }}" class="btn btn-outline-light btn-sm ms-2" style="border: none; font-size: 1.25rem;">
+                <a href="{{ url_for('maquinas.listar_maquinas') }}" 
+                    class="btn btn-outline-light btn-sm ms-2" 
+                    style="border: none; font-size: 1.25rem;">
                     <i class="bi bi-arrow-left"></i> 
                     <span class="d-none d-md-block d-md-inline">Volver a Máquinas</span>
                 </a>
@@ -57,9 +59,10 @@
                 <label for="observaciones" class="form-label">Observaciones</label>
                 <textarea name="observaciones" id="observaciones" class="form-control"></textarea>
             </div>
-            <div class="mb-3">
-                <label for="foto" class="form-label">Foto</label>
-                <input type="file" name="foto" id="foto" class="form-control" accept=".jpg,.jpeg,.png">
+            <div class="mb-3 custom-file-upload">
+                <label for="foto" class="upload-label">Foto
+                    <input type="file" name="foto" id="foto" class="form-control" accept=".jpg,.jpeg,.png">
+                </label>
             </div>
 
             <!-- Componentes -->
@@ -93,7 +96,7 @@
             </div>
             {% endfor %}
 
-            <button type="submit" class="btn btn-primary mt-3">Guardar Máquina</button>
+            <button type="submit" class="btn btn-outline-secondary mt-3">Guardar Máquina</button>
         </form>
     </div>
 </div>
