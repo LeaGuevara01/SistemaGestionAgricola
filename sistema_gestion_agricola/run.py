@@ -1,5 +1,5 @@
 # run.py
-from __init__ import create_app
+from . import create_app
 
 app = create_app()
 app.config['ENV'] = 'development'  # o 'production' en producción
