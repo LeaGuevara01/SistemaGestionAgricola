@@ -1,0 +1,1 @@
+web: gunicorn sistema_gestion_agricola.run:app
