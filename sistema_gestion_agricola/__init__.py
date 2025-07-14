@@ -10,8 +10,6 @@ import pdfkit
 # Cargar variables de entorno
 load_dotenv()
 
-cache = Cache()
-
 def create_app():
     api_key = os.getenv('WEATHER_API_KEY')
     if not api_key:
