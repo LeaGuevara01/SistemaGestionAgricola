@@ -4,6 +4,7 @@ from flask import Flask, render_template, make_response
 from flask_caching import Cache
 from dotenv import load_dotenv
 from .utils.vite_helper import vite_asset #onrender
+from .cache_config import cache
 import pdfkit
 
 # Cargar variables de entorno

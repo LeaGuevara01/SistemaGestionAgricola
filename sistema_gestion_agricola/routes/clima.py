@@ -2,7 +2,7 @@
 from flask import Blueprint, jsonify, current_app
 from datetime import datetime
 from ..utils.clima_utils import obtener_datos_clima
-from .. import cache  # Importar instancia de cache
+from ..cache_config import cache
 
 clima_bp = Blueprint('clima', __name__, url_prefix='/api/clima')
 
