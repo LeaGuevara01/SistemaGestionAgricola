@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-wrapper">
+
+    <!-- Header -->
+    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
+        <div class="header-topbar">
+            <div class="header-title">
+                <h2 class="section-title"><i class="bi bi-cart-check-fill"></i> Compra N° {{ compra.ID_Compra }}</h2>
+                <p class="section-subtitle d-none d-md-block opacity-75">Detalle de la compra registrada</p>
+            </div>
+            <div class="header-controls">
+                <a href="{{ url_for('compras.historial_compras') }}" 
+                    class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-arrow-left"></i> 
+                    <span class="d-none d-md-inline">Volver al historial</span>
+                    <span class="d-md-none">Volver</span>
+                </a>
+                <a href="{{ url_for('compras.editar_compra', id_compra=compra.ID_Compra) }}" 
+                    class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-pencil-square"></i> 
+                    <span class="d-none d-md-inline">Editar</span>
+                </a>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+                <div class="calendar-badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i><span id="current-date"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cuerpo -->
+    <div class="row g-4">
+        <!-- Información de compra -->
+        <div class="col-lg-8">
+            <div class="card-section hidden-item">
+                <h3 class="section-title mb-3"><i class="bi bi-receipt"></i> Información General</h3>
+                <div class="row g-4" style="margin: 0.5em;">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold"><i class="bi bi-person-badge"></i> Proveedor</label>
+                        <div class="form-control-plaintext">
+                            {{ compra.Nombre_Proveedor or 'Desconocido' }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold"><i class="bi bi-box"></i> Componente</label>
+                        <div class="form-control-plaintext">
+                            {{ compra.Nombre_Componente or 'Eliminado o no asignado' }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold text-end"> Cantidad 
+                            <i class="bi bi-hash"></i></label>
+                        <div class="form-control-plaintext text-end">{{ compra.Cantidad }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold text-end"> Precio Total 
+                            <i class="bi bi-calculator"></i></label>
+                        <div class="form-control-plaintext text-end">
+                            ${{ '%.2f' | format(compra.Cantidad * compra.Precio_Unitario) }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold text-end"> Fecha 
+                            <i class="bi bi-calendar-check"></i></label>
+                        <div class="form-control-plaintext text-end">{{ compra.Fecha[:10] }}</div>
+                    </div>
+
+                    {% if compra.Observacion %}
+                    <div class="col-md-12">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-chat-dots"></i> Observación</label>
+                        <div class="form-control-plaintext">{{ compra.Observacion }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Acciones y links -->
+        <div class="col-lg-4">
+            <div class="card-section hidden-item compact-panel">
+                <h4 class="section-title mb-3"><i class="bi bi-lightning"></i> Acciones Rápidas</h4>
+
+                {% if compra.ID_Componente %}
+                <a href="{{ url_for('componentes.vista_componente', id=compra.ID_Componente) }}" class="btn btn-agri-secondary btn-sm w-100 mb-2">
+                    <i class="bi bi-box-seam"></i> Ver Componente
+                </a>
+                {% else %}
+                <button class="btn btn-agri-secondary btn-sm w-100 mb-2" disabled>No hay componente</button>
+                {% endif %}
+
+                {% if compra.ID_Proveedor %}
+                <a href="{{ url_for('proveedores.ver_proveedor', id=compra.ID_Proveedor) }}" class="btn btn-agri-primary btn-sm w-100 mb-2">
+                    <i class="bi bi-person-lines-fill"></i> Ver Proveedor
+                </a>
+                {% else %}
+                <button class="btn btn-agri-primary btn-sm w-100 mb-2" disabled>No hay proveedor</button>
+                {% endif %}
+
+                <a href="{{ url_for('compras.registrar_compra') }}" class="btn btn-outline-tertiary btn-sm w-100">
+                    <i class="bi bi-cart-plus"></i> Nueva Compra
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<style>
+h3 > i {
+    font-size: 1.8rem;
+    vertical-align: middle;
+}
+label > i {
+    font-size: 1.5rem;
+    vertical-align: middle;
+    text-align: right;
+}
+.form-control-plaintext {
+    padding-left: 2.3em;
+    padding-right: 1.7em;
+}
+</style>
+{% endblock %}

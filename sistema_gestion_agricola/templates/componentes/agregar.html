@@ -5,73 +5,106 @@
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
-    <div class="dashboard-header mb-4">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div class="flex-grow-1">
-                <h2><i class="bi bi-boxes"></i> Agregar Nuevo Componente</h2>
-                <p class="d-none d-md-block opacity-75">Registrar un nuevo componente para la gestión agrícola</p>
+    <div class="dashboard-header hidden-item p-4 shadow rounded">
+        <div class="header-topbar">
+            <div class="header-title">
+                <h2 class="section-title"><i class="bi bi-boxes"></i> Agregar Nuevo Componente</h2>
+                <p class="section-subtitle d-none d-md-block opacity-75">Registrar un nuevo componente para la gestión agrícola</p>
             </div>
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <a href="{{ url_for('componentes.lista_componentes') }}" class="btn btn-outline-light btn-sm ms-2" style="border: none; font-size: 1.25rem;">
-                    <i class="bi bi-arrow-left"></i> 
-                    <span class="d-none d-md-block d-md-inline">Volver a Componentes</span>
+            <div class="header-controls">
+                <a href="{{ url_for('index') }}" 
+                    class="btn btn-outline-primary btn-sm ms-2">
+                    <i class="bi bi-house"></i> 
+                    <span class="d-none d-md-block d-md-inline">Inicio</span>
                 </a>
+                <a href="{{ url_for('componentes.lista_componentes') }}" 
+                    class="btn btn-outline-primary btn-sm ms-2">
+                    <i class="bi bi-arrow-left-fill"></i> 
+                    <span class="d-none d-md-block d-md-inline">Volver a Componentes</span>
+                    <span class="d-md-none">Volver</span>
+                </a>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+                <div class="calendar-badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="card-section">
-        <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
-            <div class="mb-3">
-                <label for="codigo" class="form-label">Código</label>
-                <input type="text" class="form-control" name="codigo" id="codigo" required>
-                <div class="invalid-feedback">
-                    Por favor ingrese el código del componente.
+    <!-- Formulario -->
+    <div class="card-section hidden-item mb-4">
+        <div class="mt-0 card-section hidden-item" style="box-shadow: none;">
+            <form method="POST" enctype="multipart/form-data" novalidate 
+                class="mt-0 hidden-item row g-3 needs-validation">
+                <!-- Código -->
+                <div class="mb-3">
+                    <label for="codigo" class="form-label">Código</label>
+                    <input type="text" class="form-control" name="codigo" id="codigo" required>
+                    <div class="invalid-feedback">
+                        Por favor ingrese el código del componente.
+                    </div>
                 </div>
-            </div>
-
-            <div class="mb-3">
-                <label for="nombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control" name="nombre" id="nombre" required>
-                <div class="invalid-feedback">
-                    Por favor ingrese el nombre del componente.
+                <!-- Nombre -->
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" name="nombre" id="nombre" required>
+                    <div class="invalid-feedback">
+                        Por favor ingrese el nombre del componente.
+                    </div>
                 </div>
-            </div>
+                <!-- Descripción -->
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <textarea class="form-control" name="descripcion" id="descripcion" rows="3"></textarea>
+                </div>
+                <!-- Tipo -->
+                <div class="mb-3">
+                    <label for="tipo" class="form-label">Tipo</label>
+                    <input type="text" class="form-control" name="tipo" id="tipo">
+                </div>
+                <!-- Imagen -->
+                <div class="custom-file-upload mb-3">
+                    <label for="foto" class="upload-label">
+                        <i class="bi bi-image"></i> Subir imagen
+                    </label>
 
-            <div class="mb-3">
-                <label for="descripcion" class="form-label">Descripción</label>
-                <textarea class="form-control" name="descripcion" id="descripcion" rows="3"></textarea>
-            </div>
-
-            <div class="mb-3">
-                <label for="tipo" class="form-label">Tipo</label>
-                <input type="text" class="form-control" name="tipo" id="tipo">
-            </div>
-
-            <div class="mb-3">
-                <label for="foto" class="form-label">Foto</label>
-                <input type="file" class="form-control" name="foto" id="foto" accept="image/*">
-            </div>
-
-            <button type="submit" class="btn btn-primary">Guardar Componente</button>
-        </form>
+                    <input type="file" id="foto" name="foto" accept="image/*" style="display: none;">
+                    
+                    <!-- Vista previa del nombre del archivo -->
+                    <div id="file-name" class="file-name-preview">
+                        {% if componente and componente.Foto %}
+                            Imagen actual: {{ componente.Foto }}
+                        {% else %}
+                            No se ha seleccionado ningún archivo.
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="d-flex gap-3 mt-2 pt-2 custom-border justify-content-center">
+                    <button type="submit" class="btn btn-agri-primary w-100" style="border: transparent;">
+                        <i class="bi bi-check-lg"></i> Guardar Componente
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <script>
-    // Bootstrap form validation
-    (() => {
-        'use strict'
-        const forms = document.querySelectorAll('.needs-validation')
-        Array.from(forms).forEach(form => {
-            form.addEventListener('submit', event => {
-                if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                }
-                form.classList.add('was-validated')
-            }, false)
-        })
-    })()
+// Bootstrap form validation
+(() => {
+    'use strict'
+    const forms = document.querySelectorAll('.needs-validation')
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
 </script>
 {% endblock %}

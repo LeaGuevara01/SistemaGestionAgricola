@@ -39,8 +39,8 @@ def ver_compra(id_compra):
             comp.Tipo,
             comp.Foto
         FROM compras c
-        JOIN proveedores p ON c.ID_Proveedor = p.ID
-        JOIN componentes comp ON c.ID_Componente = comp.ID
+        LEFT JOIN proveedores p ON c.ID_Proveedor = p.ID
+        LEFT JOIN componentes comp ON c.ID_Componente = comp.ID
         WHERE c.ID_Compra = ?
     ''', (id_compra,)).fetchone()
 
@@ -91,3 +91,46 @@ def registrar_compra():
         proveedores=proveedores,
         componentes=componentes
     )
+
+# Purchase Edit
+@compras_bp.route('/editar/<int:id_compra>', methods=['GET', 'POST'])
+def editar_compra(id_compra):
+    conn = get_db_connection()
+
+    # Obtener la compra actual
+    compra = conn.execute('''
+        SELECT * FROM compras WHERE ID_Compra = ?
+    ''', (id_compra,)).fetchone()
+
+    if compra is None:
+        conn.close()
+        return render_template('404.html', message='Compra no encontrada'), 404
+
+    # Obtener datos auxiliares
+    proveedores = conn.execute('SELECT ID, Nombre FROM proveedores').fetchall()
+    componentes = conn.execute('SELECT ID, Nombre FROM componentes').fetchall()
+
+    if request.method == 'POST':
+        proveedor_id = request.form['proveedor']
+        componente_id = request.form['componente']
+        cantidad = request.form['cantidad']
+        precio_unitario = request.form['precio_unitario']
+        observacion = request.form.get('observacion', '').strip()
+
+        # Actualizar compra
+        conn.execute('''
+            UPDATE compras
+            SET ID_Proveedor = ?, ID_Componente = ?, Cantidad = ?, Precio_Unitario = ?, Observacion = ?
+            WHERE ID_Compra = ?
+        ''', (proveedor_id, componente_id, cantidad, precio_unitario, observacion, id_compra))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for('compras.ver_compra', id_compra=id_compra))
+
+    conn.close()
+    return render_template('compras/editar.html',
+                           compra=compra,
+                           proveedores=proveedores,
+                           componentes=componentes)
+

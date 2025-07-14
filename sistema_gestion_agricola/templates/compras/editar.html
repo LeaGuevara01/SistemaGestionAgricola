@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Compra{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+
+    <!-- Header -->
+    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
+        <div class="header-topbar">
+            <div class="header-title">
+                <h2 class="section-title"><i class="bi bi-pencil-square"></i> Editar Compra N° {{ compra.ID_Compra }}</h2>
+                <p class="section-subtitle d-none d-md-block opacity-75">Modificar información de la compra registrada</p>
+            </div>
+            <div class="header-controls">
+                <a href="{{ url_for('compras.ver_compra', id_compra=compra.ID_Compra) }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Volver al detalle
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="card-section hidden-item mx-auto" style="max-width: 700px;">
+        <div class="mt-0 card-section hidden-item" style="box-shadow: none; max-width: 650px;">
+            <form method="POST" novalidate id="editPurchaseForm"
+                class="mt-0 form-edit hidden-item row g-3 needs-validation" 
+                style="margin-left: 0.1em;">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Proveedor</label>
+                    <select name="proveedor" class="form-select" required>
+                        {% for p in proveedores %}
+                            <option value="{{ p.ID }}" {% if p.ID == compra.ID_Proveedor %}selected{% endif %}>{{ p.Nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Componente</label>
+                    <select name="componente" class="form-select" required>
+                        {% for c in componentes %}
+                            <option value="{{ c.ID }}" {% if c.ID == compra.ID_Componente %}selected{% endif %}>{{ c.Nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Cantidad</label>
+                    <input type="number" name="cantidad" class="form-control" value="{{ compra.Cantidad }}" min="1" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Precio Unitario</label>
+                    <input type="number" step="0.01" name="precio_unitario" class="form-control" value="{{ compra.Precio_Unitario }}" required>
+                </div>
+
+                <div class="col-md-12">
+                    <label class="form-label fw-semibold">Observación</label>
+                    <input type="text" name="observacion" class="form-control" value="{{ compra.Observacion or '' }}">
+                </div>
+
+                <div class="col-md-12 text-end">
+                    <button type="submit" class="btn btn-agri-primary">
+                        <i class="bi bi-save"></i> Guardar cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

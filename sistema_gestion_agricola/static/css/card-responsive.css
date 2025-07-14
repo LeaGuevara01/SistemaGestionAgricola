@@ -1,0 +1,21 @@
+@media (max-width: 576px) {
+  .stat-card[data-delay="100"] { order: 1; }
+  .stat-card[data-delay="200"] { order: 3; }
+  .stat-card[data-delay="300"] { order: 2; }
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

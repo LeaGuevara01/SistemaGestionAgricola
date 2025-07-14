@@ -12,8 +12,13 @@ load_dotenv()
 cache = Cache()
 
 def create_app():
+    api_key = os.getenv('WEATHER_API_KEY')
+    if not api_key:
+        raise RuntimeError("La variable de entorno WEATHER_API_KEY no está definida")
+    
     app = Flask(__name__)
     app.secret_key = os.getenv("SECRET_KEY", "elorza")
+    app.config['WEATHER_API_KEY'] = api_key
 
     # Weather Config
     app.config['WEATHER_API_KEY'] = os.getenv('WEATHER_API_KEY')

@@ -3,16 +3,21 @@
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
-    <div class="dashboard-header p-4 shadow rounded">
+    <div class="dashboard-header hidden-item p-4 shadow rounded">
         <div class="header-topbar">
             <div class="header-title">
                 <h2 class="section-title"><i class="bi bi-pencil-fill"></i> Editar Componente</h2>
                 <p class="section-subtitle d-none d-md-block opacity-75">Modifica la información del componente seleccionado</p>
             </div>
             <div class="header-controls">
+                <a href="{{ url_for('index') }}" 
+                    class="btn btn-outline-primary btn-sm ms-2">
+                    <i class="bi bi-house"></i> 
+                    <span class="d-none d-md-block d-md-inline">Inicio</span>
+                </a>
                 <a href="{{ url_for('componentes.lista_componentes') }}" 
-                    class="btn btn-outline-primary btn-sm">
-                    <i class="bi bi-arrow-left"></i> 
+                    class="btn btn-outline-primary btn-sm ms-2">
+                    <i class="bi bi-arrow-left-fill"></i> 
                     <span class="d-none d-md-inline">Volver a Componentes</span>
                     <span class="d-md-none">Volver</span>
                 </a>
@@ -33,14 +38,11 @@
     </div>
     
     <!-- Formulario -->
-    <section class="page-section">
-        <h3 class="section-title mb-3">
-        <i class="bi bi-info-circle"></i> Información del Componente</h3>
-        <form method="POST" 
-            enctype="multipart/form-data" 
-            id="editComponentForm" 
-            class="form-edit">
-            <div class="row g-3">
+    <div class="card-section hidden-item mx-auto" style="max-width: 700px;">
+        <div class="mt-0 card-section hidden-item" style="box-shadow: none; max-width: 650px;">
+            <form method="POST" enctype="multipart/form-data" id="editComponentForm" 
+                class="mt-0 form-edit hidden-item row g-3"
+                style="margin-left: 0.1em;">
                 <!-- Código -->
                 <div class="col-12 col-md-6">
                     <label for="codigo" class="form-label">
@@ -111,9 +113,12 @@
                 <!-- Imagen -->
                 <div class="col-12 custom-file-upload">
                     <label for="foto" class="upload-label">
-                        <i class="bi bi-upload"></i> Subir imagen del componente
-                        <input type="file" name="foto" id="foto" class="form-control" accept=".jpg,.jpeg,.png">
+                        <i class="bi bi-image"></i> Subir imagen
                     </label>
+
+                    <input type="file" id="foto" name="foto" accept="image/*" style="display: none;">
+                    
+                    <!-- Vista previa del nombre del archivo -->
                     <div id="file-name" class="file-name-preview">
                         {% if componente and componente.Foto %}
                             Imagen actual: {{ componente.Foto }}
@@ -123,28 +128,29 @@
                     </div>
                 </div>
                 <!-- Botones de acción -->
-                <div class="custom-border d-flex gap-3 mt-4 pt-3 border-top justify-content-between align-items-center flex-wrap">
-                    <button type="submit" class="btn btn-agri-primary" style="border: transparent;">
+                <div class="d-flex gap-3 mt-2 pt-2 custom-border justify-content-center">
+                    <button type="submit" class="btn btn-agri-primary w-100" style="border: transparent;">
                         <i class="bi bi-check-lg"></i> Guardar
                     </button>
-                    <a href="{{ url_for('componentes.lista_componentes') }}" class="btn btn-outline-secondary">
+                </div>
+                <div class="d-flex gap-3 mt-2">
+                    <a href="{{ url_for('componentes.lista_componentes') }}" class="btn btn-outline-secondary w-50">
                         <i class="bi bi-x-lg"></i> Cancelar
-                    </a>
+                    </a>    
                     {% if componente %}
-                    <button type="button" class="btn btn-outline-danger" onclick="confirmDelete()">
+                    <button type="button" class="btn btn-outline-danger w-50" onclick="confirmDelete()">
                         <i class="bi bi-trash"></i> Eliminar
                     </button>
                     {% endif %}
                 </div>
-            </div>
-        </form>
-        <form id="deleteForm" method="POST" action="{{ url_for('componentes.eliminar_componente', id=componente.ID) }}"></form>
+            </form>
+        </div>
     </section>
 
     <!-- Carta con cartas embebidas -->
-    <div class="card detail-card p-4 shadow-sm mx-auto" style="max-width: 700px;">
+    <div class="card detail-card hidden-item p-4 mx-auto" style="max-width: 700px; border: none; box-shadow: none;">
         <h4 class="card-title mb-0 d-flex align-items-center gap-2 justify-content-center">
-            <i class="bi bi-box-seam"></i> Detalles del Componente
+            <i class="bi bi-box-seam"></i> Detalles del componente
         </h4>
 
         <div class="row g-4 mt-3">

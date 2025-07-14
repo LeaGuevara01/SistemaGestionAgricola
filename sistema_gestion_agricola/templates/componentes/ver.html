@@ -3,22 +3,22 @@
 {% block content %}
 <div class="page-wrapper">
     <!-- Header  -->
-    <div class="dashboard-header">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div class="flex-grow-1">
+    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
+        <div class="header-topbar">
+            <div class="header-title">
                 <h2 class="section-title"><i class="bi bi-puzzle-fill"></i> {{ componente.Nombre }}
                     <!-- {% if componente.ID_Componente %} ({{ componente.ID_Componente }}){% endif %} --></h2>
                 <p class="section-subtitle mb-0 d-none d-md-block opacity-75">{{ componente.Descripcion or 'Componente del sistema agrícola' }}</p>
             </div>
-            <div class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="header-controls">
                 <a href="{% if request.args.get('next') %}
                             {{ request.args.get('next') }}
                         {% elif id_maquina %}
-                            {{ url_for('vista_maquina', id=id_maquina) }}
+                            {{ url_for('maquinas.vista_maquina', id=id_maquina) }}
                         {% else %}
-                            {{ url_for('lista_componentes') }}
+                            {{ url_for('componentes.lista_componentes') }}
                         {% endif %}"
-                   class="btn btn-outline-primary btn-sm">
+                    class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-arrow-left"></i>
                     <span class="d-none d-md-inline">
                         {% if request.args.get('next') %}
@@ -31,7 +31,8 @@
                     </span>
                     <span class="d-md-none">Volver</span>
                 </a>
-                <a href="{{ url_for('componentes.editar_componente', id=componente.ID) }}" class="btn btn-outline-primary btn-sm">
+                <a href="{{ url_for('componentes.editar_componente', id=componente.ID) }}" 
+                    class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-pencil-square"></i> 
                     <span class="d-none d-md-inline">Editar Componente</span>
                     <span class="d-md-none">Editar</span>
@@ -50,7 +51,7 @@
         <!-- Columna principal - Información -->
         <div class="col-lg-8">
             <!-- Tarjeta de información principal -->
-            <div class="card-section mb-0" style="max-height: fit-content;">
+            <div class="card-section hidden-item mb-0" style="max-height: fit-content;">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3 class="section-title mb-0">
                         <i class="bi bi-info-circle"></i> Información
@@ -67,7 +68,7 @@
                 <div class="row g-4 mt-3">
                     <!-- Imagen del componente -->
                     <div class="col-12 col-md-6 mx-auto" style="max-width: 100%;">
-                        <div class="card h-100 shadow-sm border-tertiary">
+                        <div class="card hidden-item h-100 shadow-sm border-tertiary">
                             <div class="card-body d-flex flex-column justify-content-between text-center p-4">
                                 <h5 class="card-title mb-2 d-flex align-items-center justify-content-center gap-2">
                                     <i class="bi bi-image"></i> Vista Previa
@@ -89,8 +90,8 @@
                     </div>
                     
                     <!-- Detalles del componente -->
-                    <div class="col-md-7">
-                        <div class="component-details">
+                    <div class="col-md-12">
+                        <div class="component-details hidden-item">
                             <div class="detail-grid">
                                 <div class="detail-item">
                                     <label class="detail-label">
@@ -146,7 +147,7 @@
                 
                 <!-- Descripción completa -->
                 {% if componente.Descripcion %}
-                <div class="mt-4 pt-4 border-top">
+                <div class="mt-4 pt-4 custom-border">
                     <h5 class="text-agri-primary mb-3 mx-3" style="font-size: 1.3rem;">
                         <i class="bi bi-card-text"></i> Descripción
                     </h5>
@@ -159,26 +160,26 @@
         <!-- Columna lateral - Proveedores y acciones -->
         <div class="col-lg-4">
             <!-- Acciones Rápidas -->
-            <div class="card-section compact-panel">
+            <div class="card-section hidden-item compact-panel">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4 class="section-title mb-0">
                         <i class="bi bi-lightning-fill"></i> Acciones Rápidas
                     </h4>
                 </div>
                 
-                <div class="compact-actions">
+                <div class="compact-actions hidden-item">
                     <!-- Botón de editar arriba -->
-                    <a href="{{ url_for('componentes.editar_componente', id=componente.ID) }}" class="btn btn-agri-primary btn-sm w-100 mb-3">
+                    <a href="{{ url_for('componentes.editar_componente', id=componente.ID) }}" class="btn btn-agri-secondary btn-sm w-100 mb-3">
                         <i class="bi bi-pencil-square"></i>
                         <span class="d-none d-lg-inline ms-1">Editar</span>
                     </a>
                     <!-- Botón de compra -->
-                    <a href="{{ url_for('compras.registrar_compra') }}?componente={{ componente.ID }}" class="btn btn-agri-primary btn-sm w-100 mb-3" title="Registrar Compra">
+                    <a href="{{ url_for('compras.registrar_compra') }}?componente={{ componente.ID }}" class="btn btn-agri-secondary btn-sm w-100 mb-3" title="Registrar Compra">
                         <i class="bi bi-cart-plus"></i>
                         <span class="d-none d-lg-inline ms-1">Comprar</span>
                     </a>
                     <!-- Botón de stock -->
-                    <a href="{{ url_for('stock.vista_stock') }}?filtro={{ componente.Nombre }}" class="btn btn-agri-primary btn-sm w-100 mb-3" title="Ver Stock">
+                    <a href="{{ url_for('stock.vista_stock') }}?filtro={{ componente.Nombre }}" class="btn btn-agri-secondary btn-sm w-100 mb-3" title="Ver Stock">
                         <i class="bi bi-boxes"></i>
                         <span class="d-none d-lg-inline ms-1">Stock</span>
                     </a>                    
@@ -194,7 +195,7 @@
                 </div>
 
                 <!-- Footer con información del componente -->
-                <div class="actions-footer">
+                <div class="actions-footer hidden-item">
                     <div class="d-flex justify-content-between align-items-center">
                         <small class="text-muted">ID: {{ componente.ID }}</small>
                         {% if id_maquina %}
@@ -211,7 +212,7 @@
             </div>
             
             <!-- Proveedores - Carta Separada -->
-            <div class="card-section providers-card mt-3">
+            <div class="card-section providers-card hidden-item mt-3">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="section-title mb-0">
                         <i class="bi bi-people-fill"></i> Proveedores
@@ -222,7 +223,7 @@
                 </div>
 
                 {% if proveedores %}
-                    <div class="providers-list">
+                    <div class="providers-list hidden-item">
                         {% for p in proveedores %}
                         <div class="provider-row" tabindex="0" role="link" data-href="{{ url_for('proveedores.ver_proveedor', id=p.ID) }}">
                             <div class="provider-info">

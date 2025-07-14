@@ -1,16 +1,24 @@
 {% extends "base.html" %}
 
+{% block title %}Editar Máquina{% endblock %}
+
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
-    <div class="dashboard-header">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div class="flex-grow-1">
+    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
+        <div class="header-topbar">
+            <div class="header-title">
                 <h2 class="section-title"><i class="bi bi-pencil-square"></i> Editar Máquina</h2>
                 <p class="section-subtitle d-none d-md-block opacity-75">Modifica la información de la máquina</p>
             </div>
-            <div class="d-flex align-items-center gap-2 flex-wrap ms-auto">
-                <a href="{{ url_for('maquinas.listar_maquinas') }}" class="btn btn-outline-primary btn-sm">
+            <div class="header-controls">
+                <a href="{{ url_for('index') }}" 
+                    class="btn btn-outline-primary btn-sm ms-2">
+                    <i class="bi bi-house"></i> 
+                    <span class="d-none d-md-block d-md-inline">Inicio</span>
+                </a>
+                <a href="{{ url_for('maquinas.listar_maquinas') }}" 
+                    class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-arrow-left"></i> 
                     <span class="d-none d-md-inline">Volver a Máquinas</span>
                     <span class="d-md-none">Volver</span>
@@ -22,117 +30,123 @@
                     <span class="d-md-none">Ver</span>
                 </a>
                 {% endif %}
-                <div class="badge fs-6 d-none d-lg-block">
-                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
-                </div>
                 <button class="theme-toggle" id="themeToggle">
                     <i class="bi bi-moon-fill" id="themeIcon"></i>
                 </button>
+                <div class="badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Formulario -->
-    <div class="card-section mb-4 mx-auto" style="max-width: 700px;">
-        <h3 class="section-title mb-0 d-flex align-items-center gap-2 justify-content-center">
-            <i class="bi bi-info-circle"></i> Información
-        </h3>
-        <form method="POST" enctype="multipart/form-data" id="editMachineForm" 
-            class="form-edit row g-3">
-            <!-- Nombre -->
-            <div class="col-12 col-md-6">
-                <label for="nombre" class="form-label required">
-                    <i class="bi bi-tag"></i> Nombre
-                </label>
-                <input type="text" class="form-control" id="nombre" name="nombre"
-                    value="{{ maquina.Nombre if maquina and maquina.Nombre is not none else '' }}"
-                    required placeholder="Ej: Tractor John Deere">
-            </div>
-            <!-- Marca -->
-            <div class="col-12 col-md-6">
-                <label for="marca" class="form-label">
-                    <i class="bi bi-award"></i> Marca
-                </label>
-                <input type="text" class="form-control" id="marca" name="marca"
-                    value="{{ maquina.Marca if maquina and maquina.Marca is not none else '' }}"
-                    placeholder="Ej: John Deere">
-            </div>
-            <!-- Modelo -->
-            <div class="col-12 col-md-6">
-                <label for="modelo" class="form-label">
-                    <i class="bi bi-gear"></i> Modelo
-                </label>
-                <input type="text" class="form-control" id="modelo" name="modelo"
-                    value="{{ maquina.Modelo if maquina and maquina.Modelo is not none else '' }}"
-                    placeholder="Ej: 5050E">
-            </div>
-            <!-- Año -->
-            <div class="col-12 col-md-6">
-                <label for="anio" class="form-label">
-                    <i class="bi bi-calendar"></i> Año
-                </label>
-                <input type="number" class="form-control" id="anio" name="anio"
-                    value="{{ maquina.Año if maquina and maquina.Año is not none else '' }}"
-                    placeholder="Ej: 2020">
-            </div>
-            <!-- Tipo -->
-            <div class="col-12 col-md-6">
-                <label for="tipo" class="form-label">
-                    <i class="bi bi-collection"></i> Estado
-                </label>
-                <select class="form-select" id="tipo" name="tipo">
-                    <option value="">Seleccionar estado...</option>
-                    {% set tipo_actual = maquina.Estado if maquina and maquina.Estado is not none else '' %}
-                    <option value="Operativa" {{ 'selected' if tipo_actual == 'Operativa' else '' }}>Operativa</option>
-                    <option value="En Taller" {{ 'selected' if tipo_actual == 'En Taller' else '' }}>En Taller</option>
-                    <option value="Reserva" {{ 'selected' if tipo_actual == 'Reserva' else '' }}>Reserva</option>
-                    <option value="Fuera de servicio" {{ 'selected' if tipo_actual == 'Fuera de servicio' else '' }}>Fuera de servicio</option>
-                </select>
-            </div>
-            <!-- Observaciones -->
-            <div class="col-12">
-                <label for="observaciones" class="form-label">
-                    <i class="bi bi-card-text"></i> Observaciones
-                </label>
-                <textarea class="form-control" id="observaciones" name="observaciones"
-                    rows="3"
-                    placeholder="Observaciones, detalles de mantenimiento, etc.">{{ maquina.Observaciones if maquina and maquina.Observaciones is not none else '' }}</textarea>
-            </div>
-            <!-- Imagen -->
-            <div class="col-12 custom-file-upload">
-                <label for="foto" class="upload-label">
-                    <i class="bi bi-image"></i> Imagen
-                </label>
-                <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
-                <div id="file-name" class="file-name-preview">
-                    {% if componente and componente.Foto %}
-                        Imagen actual: {{ componente.Foto }}
-                    {% else %}
-                        No se ha seleccionado ningún archivo.
+    <div class="card-section hidden-item mx-auto" style="max-width: 700px;">
+        <div class="mt-0 card-section hidden-item" style="box-shadow: none; max-width: 650px;">
+            <form method="POST" enctype="multipart/form-data" id="editMachineForm" 
+                class="mt-0 form-edit hidden-item row g-3"
+                style="margin-left: 0.1em;">
+                <!-- Nombre -->
+                <div class="col-12">
+                    <label for="nombre" class="form-label required">
+                        <i class="bi bi-tag"></i> Nombre
+                    </label>
+                    <input type="text" class="form-control" id="nombre" name="nombre"
+                        value="{{ maquina.Nombre if maquina and maquina.Nombre is not none else '' }}"
+                        required placeholder="Ej: Tractor John Deere">
+                </div>
+                <!-- Marca -->
+                <div class="col-12 col-md-6">
+                    <label for="marca" class="form-label">
+                        <i class="bi bi-award"></i> Marca
+                    </label>
+                    <input type="text" class="form-control" id="marca" name="marca"
+                        value="{{ maquina.Marca if maquina and maquina.Marca is not none else '' }}"
+                        placeholder="Ej: John Deere">
+                </div>
+                <!-- Modelo -->
+                <div class="col-12 col-md-6">
+                    <label for="modelo" class="form-label">
+                        <i class="bi bi-gear"></i> Modelo
+                    </label>
+                    <input type="text" class="form-control" id="modelo" name="modelo"
+                        value="{{ maquina.Modelo if maquina and maquina.Modelo is not none else '' }}"
+                        placeholder="Ej: 5050E">
+                </div>
+                <!-- Año -->
+                <div class="col-12 col-md-6">
+                    <label for="anio" class="form-label">
+                        <i class="bi bi-calendar"></i> Año
+                    </label>
+                    <input type="number" class="form-control" id="anio" name="anio"
+                        value="{{ maquina.Año if maquina and maquina.Año is not none else '' }}"
+                        placeholder="Ej: 2020">
+                </div>
+                <!-- Tipo -->
+                <div class="col-12 col-md-6">
+                    <label for="tipo" class="form-label">
+                        <i class="bi bi-collection"></i> Estado
+                    </label>
+                    <select class="form-select" id="tipo" name="tipo">
+                        <option value="">Seleccionar estado...</option>
+                        {% set tipo_actual = maquina.Estado if maquina and maquina.Estado is not none else '' %}
+                        <option value="Operativa" {{ 'selected' if tipo_actual == 'Operativa' else '' }}>Operativa</option>
+                        <option value="En Taller" {{ 'selected' if tipo_actual == 'En Taller' else '' }}>En Taller</option>
+                        <option value="Reserva" {{ 'selected' if tipo_actual == 'Reserva' else '' }}>Reserva</option>
+                        <option value="Fuera de servicio" {{ 'selected' if tipo_actual == 'Fuera de servicio' else '' }}>Fuera de servicio</option>
+                    </select>
+                </div>
+                <!-- Observaciones -->
+                <div class="col-12">
+                    <label for="observaciones" class="form-label">
+                        <i class="bi bi-card-text"></i> Observaciones
+                    </label>
+                    <textarea class="form-control" id="observaciones" name="observaciones"
+                        rows="3"
+                        placeholder="Observaciones, detalles de mantenimiento, etc.">{{ maquina.Observaciones if maquina and maquina.Observaciones is not none else '' }}</textarea>
+                </div>
+                <!-- Imagen -->
+                <div class="col-12 custom-file-upload">
+                    <label for="foto" class="upload-label">
+                        <i class="bi bi-image"></i> Subir imagen
+                    </label>
+
+                    <input type="file" id="foto" name="foto" accept="image/*" style="display: none;">
+                    
+                    <!-- Vista previa del nombre del archivo -->
+                    <div id="file-name" class="file-name-preview">
+                        {% if maquina and maquina.Foto %}
+                            Imagen actual: {{ maquina.Foto }}
+                        {% else %}
+                            No se ha seleccionado ningún archivo.
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- Botones de acción -->
+                <div class="d-flex gap-3 mt-2 pt-2 custom-border justify-content-center">
+                    <button type="submit" class="btn btn-agri-primary w-100" style="border: transparent;">
+                        <i class="bi bi-check-lg"></i> Guardar
+                    </button>
+                </div>
+                <div class="d-flex gap-3 mt-2">
+                    <a href="{{ url_for('maquinas.listar_maquinas') }}" class="btn btn-outline-secondary w-50">
+                        <i class="bi bi-x-lg"></i> Cancelar
+                    </a>    
+                    {% if maquina %}
+                    <button type="button" class="btn btn-outline-danger w-50" onclick="confirmDelete()">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </button>
                     {% endif %}
                 </div>
-            </div>
-            <!-- Botones de acción -->
-            <div class="d-flex gap-3 mt-4 pt-3 border-top justify-content-between align-items-center flex-wrap">
-                <button type="submit" class="btn btn-agri-primary" style="border: transparent;">
-                    <i class="bi bi-check-lg"></i> Guardar
-                </button>
-                <a href="{{ url_for('maquinas.listar_maquinas') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-x-lg"></i> Cancelar
-                </a>
-                {% if maquina %}
-                <button type="button" class="btn btn-outline-danger" onclick="confirmDelete()">
-                    <i class="bi bi-trash"></i> Eliminar
-                </button>
-                {% endif %}
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 
     <!-- Carta con cartas embebidas -->
-    <div class="card detail-card p-4 shadow-sm mx-auto" style="max-width: 700px;">
+    <div class="card detail-card hidden-item p-4 shadow-sm mx-auto" 
+        style="max-width: 700px; border: none; box-shadow: none;">
         <h4 class="card-title mb-0 d-flex align-items-center gap-2 justify-content-center">
-            <i class="bi bi-box-seam"></i> Detalles
+            <i class="bi bi-box-seam"></i> Detalles de la máquina
         </h4>
 
         <div class="row g-4 mt-0">
@@ -143,8 +157,8 @@
                         <h5 class="card-title mb-3 d-flex align-items-center justify-content-center gap-2">
                             <i class="bi bi-image"></i> Vista Previa
                         </h5>
-                        {% if componente and componente.Foto %}
-                            <img src="{{ url_for('static', filename='fotos/componentes/' ~ componente.Foto) }}"
+                        {% if maquina and maquina.Foto %}
+                            <img src="{{ url_for('static', filename='fotos/maquinas/' ~ maquina.Foto) }}"
                                 alt="Vista previa"
                                 class="img-fluid rounded shadow mx-auto d-block"
                                 style="max-height: 220px; object-fit: contain;">
@@ -160,33 +174,67 @@
             </div>
 
             <!-- Información rápida -->
-            <div class="col-12 col-md-6 mx-auto" style="max-width: 100%;">
+            <div class="col-12 col-md-6 mx-auto" style="max-width: 100%; min-width: 320px;">
                 <div class="card h-100 shadow-sm border-primary">
                     <div class="card-body">
                         <h5 class="card-title mb-3 d-flex align-items-center gap-2 justify-content-center">
                             <i class="bi bi-info-circle"></i> Información rápida
                         </h5>
-                        <div class="info-list text-start mx-auto" style="max-width: 320px;">
-                            {% if componente %}
-                            <div class="info-item d-flex justify-content-between py-1 border-bottom">
-                                <span class="info-label fw-semibold">ID</span>
-                                <span class="info-value text-muted">{{ componente.ID }}</span>
-                            </div>
-                            {% if componente.ID_Componente %}
-                            <div class="info-item d-flex justify-content-between py-1 border-bottom">
-                                <span class="info-label fw-semibold">Código</span>
-                                <span class="info-value text-muted">{{ componente.ID_Componente }}</span>
-                            </div>
+                        {% if maquina %}
+                        <ul class="list-group list-group-flush small">
+                            {% if maquina.ID_Maquina %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span><i class="bi bi-upc-scan me-1 text-secondary"></i><strong>Código:</strong></span>
+                                <span class="text-muted">{{ maquina.ID_Maquina }}</span>
+                            </li>
                             {% endif %}
+                            {% if maquina.Nombre %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span><i class="bi bi-tag me-1 text-secondary"></i><strong>Nombre:</strong></span>
+                                <span class="text-muted">{{ maquina.Nombre }}</span>
+                            </li>
                             {% endif %}
-                            <div class="info-item d-flex justify-content-between py-1">
-                                <span class="info-label fw-semibold">Estado</span>
-                                <span class="info-value">
-                                    <span class="badge bg-agri-primary">En edición</span>
+                            {% if maquina.Marca %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span><i class="bi bi-award me-1 text-secondary"></i><strong>Marca:</strong></span>
+                                <span class="text-muted">{{ maquina.Marca }}</span>
+                            </li>
+                            {% endif %}
+                            {% if maquina.Modelo %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span><i class="bi bi-gear me-1 text-secondary"></i><strong>Modelo:</strong></span>
+                                <span class="text-muted">{{ maquina.Modelo }}</span>
+                            </li>
+                            {% endif %}
+                            {% if maquina.Año %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span><i class="bi bi-calendar me-1 text-secondary"></i><strong>Año:</strong></span>
+                                <span class="text-muted">{{ maquina.Año }}</span>
+                            </li>
+                            {% endif %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span><i class="bi bi-circle-half me-1 text-secondary"></i><strong>Estado:</strong></span>
+                                <span>
+                                    {% set badge_class = 
+                                        'bg-success' if maquina.Estado == 'Operativa' else
+                                        'bg-warning text-dark' if maquina.Estado == 'En Taller' else
+                                        'bg-secondary' if maquina.Estado == 'Reserva' else
+                                        'bg-danger' if maquina.Estado == 'Fuera de servicio' else
+                                        'bg-secondary'
+                                    %}
+                                    <span class="badge {{ badge_class }}">{{ maquina.Estado or 'Desconocido' }}</span>
                                 </span>
-                            </div>
-                        </div>
+                            </li>
+                            {% if maquina.Observaciones %}
+                            <li class="list-group-item">
+                                <span class="d-block mb-1"><i class="bi bi-card-text me-1 text-secondary"></i><strong>Notas:</strong></span>
+                                <span class="text-muted d-block small">{{ maquina.Observaciones }}</span>
+                            </li>
+                            {% endif %}
+                        </ul>
+                        {% endif %}
                     </div>
+
                 </div>
             </div>
         </div>
@@ -194,17 +242,24 @@
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const detailCard = document.querySelector('.card.detail-card');
-    if (detailCard) {
-        detailCard.classList.add('show');
-        // Agregar .show a cartas embebidas
-        detailCard.querySelectorAll('.card:not(.detail-card)').forEach(card => {
-            card.classList.add('show');
-        });
-    }
+const detailCard = document.querySelector('.card.detail-card');
+if (detailCard) {
+    detailCard.classList.add('show');
+    // Agregar .show a cartas embebidas
+    detailCard.querySelectorAll('.card:not(.detail-card)').forEach(card => {
+        card.classList.add('show');
+    });
+}
 });
 </script>
 <style>
+.list-group-item {
+    padding: 0.6rem 1rem;
+    background: var(--card-bg);
+    color: var(--text-color);
+    border-bottom: none;
+}
+
 .btn-agri-primary {
     display: flex;
     align-items: center;
@@ -214,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
 .badge.bg-agri-primary {
     background-color: var(--agri-green-primary);
     color: #fff;
-    font-weight: 700;
+    font-weight: 500;
 }
 
 .card.detail-card .card {
@@ -227,6 +282,9 @@ document.addEventListener('DOMContentLoaded', function () {
 .card.detail-card .card.show {
     opacity: 1;
     transform: translateY(0);
+}
+.border-top {
+  border-top: 2px solid var(--bg-color) !important;
 }
 </style>
 {% endblock %}

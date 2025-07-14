@@ -3,21 +3,24 @@
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
-    <div class="dashboard-header p-4 shadow rounded">
+    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
         <div class="header-topbar">
             <div class="header-title">
                 <h2 class="section-title"><i class="bi bi-people-fill"></i> Proveedor: {{ proveedor['Nombre'] }}</h2>
                 <p class="section-subtitle d-none d-md-block opacity-75">Detalles y gestión del proveedor</p>
             </div>
             <div class="header-controls">
-                <a href="{{ url_for('proveedores.listar_proveedores') }}" class="btn btn-outline-primary btn-sm ">
+                <a href="{{ url_for('proveedores.listar_proveedores') }}" 
+                    class="btn btn-outline-primary btn-sm ms-auto">
                     <i class="bi bi-arrow-left"></i> 
-                    <span class="d-none d-md-inline">Volver</span></a>
+                    <span class="d-md-none">Volver</span>
+                </a>
                 <a href="{{ url_for('proveedores.editar_proveedor', id=proveedor.ID) }}" 
-                    class="btn btn-outline-primary btn-sm" 
-                    title="Editar proveedor"
-                    onclick="event.stopPropagation();">
-                    <i class="bi bi-pencil-square"></i></a>
+                    class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-pencil-square"></i>
+                    <span class="d-none d-md-inline">Editar Proveedor</span>
+                    <span class="d-md-none">Editar</span>
+                </a>
                 <button class="theme-toggle" id="themeToggle">
                     <i class="bi bi-moon-fill" id="themeIcon"></i>
                 </button>
@@ -28,8 +31,8 @@
         </div>
     </div>
     <!-- Datos básicos proveedor -->
-    <div class="card-section providers-card">
-        <div class="dark-strong" style="background: var(--bg-color); border-radius: 10px; padding: 1rem;">
+    <div class="card-section providers-card hidden-item">
+        <div class="dark-strong hidden-item" style="background: var(--bg-color); border-radius: 10px; padding: 1rem;">
             <p class="copyable d-flex gap-2 align-items-center">
                 <strong style="flex-shrink: 0;">Localidad:</strong> 
                 <span class="copy-text" 
@@ -77,13 +80,13 @@
     </div>
 
     <!-- Componentes asociados -->
-    <div class="componentes-card machine-card mt-4">
+    <div class="mt-4 componentes-card machine-card hidden-item">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <h3 class="section-title mb-0">
                 <i class="bi bi-puzzle"></i> Componentes asociados
             </h3>
             <a href="{{ url_for('proveedores.asignar_componente_proveedor', id_proveedor=proveedor['ID']) }}" 
-            class="btn btn-outline-secondary btn-sm">
+            class="btn btn-outline-tertiary btn-sm">
                 <i class="bi bi-plus-lg"></i> Asignar componente
             </a>
         </div>
@@ -122,24 +125,9 @@
     </div>
 </div>
 <style>
-.action-buttons {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  justify-content: center;
-}
-.action-buttons a.btn,
-.action-buttons button.btn {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.85rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
 .providers-card {
   background: var(--card-bg, #fff);
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   padding: 1.5rem;
   margin-bottom: 2rem;
   color: var(--text-color, #222);
@@ -175,39 +163,6 @@
     font-weight: 500;
     margin-left: 0.5rem;
     margin-right: -1rem;
-}
-.copyable:hover {
-    background-color: rgba(0, 128, 0, 0.05);
-    transition: background-color 0.3s ease;
-}
-.copyable.copied {
-    color: var(--agri-green-darker);
-    font-weight: 600;
-}
-.copy-toast {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background-color: var(--agri-green-dark, #28a745);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    opacity: 0;
-    transition: all 0.3s ease;
-    z-index: 9999;
-}
-.copy-toast.visible {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-.copy-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
 }
 </style>
 <script>

@@ -4,12 +4,14 @@ from flask import current_app
 
 def obtener_datos_clima():
     try:
+        api_key = current_app.config['WEATHER_API_KEY']
+        current_app.logger.info(f"API Key usada: {api_key}")  # Para verificar que se lee
         response = requests.get(
             "https://api.openweathermap.org/data/2.5/weather",
             params={
                 'lat': current_app.config['COORDENADAS_UCACHA']['lat'],
                 'lon': current_app.config['COORDENADAS_UCACHA']['lon'],
-                'appid': current_app.config['WEATHER_API_KEY'],
+                'appid': api_key,
                 'units': 'metric',
                 'lang': 'es'
             },

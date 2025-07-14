@@ -3,13 +3,14 @@
 .btn-agri-secondary,
 .btn-outline-primary,
 .btn-outline-secondary,
+.btn-outline-tertiary,
 .btn-outline-light,
 .btn-outline-danger,
 .btn-outline-info {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 0.5rem;
+    justify-content: center;
+    gap: 0.4em;
     padding: 0.5rem 1rem;
     font-weight: 600;
     font-size: 1.2rem !important;
@@ -17,6 +18,7 @@
     transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     min-height: 40px;
     outline: none;
+    text-align: center;
 }
 /* ====== BOTÓN PRIMARY ====== */
 .btn-agri-primary {
@@ -91,6 +93,30 @@
 .btn-outline-secondary:focus {
     color: var(--btn-text-secondary) !important;
 }
+/* ====== OUTLINE TERTIARY ====== */
+.btn-outline-tertiary {
+    background: var(--btn-bg-tertiary);
+    color: var(--btn-text-tertiary);
+    border: var(--btn-border-tertiary);
+    outline: none !important;
+    box-shadow: none !important;
+    text-decoration: none !important;
+}
+.btn-outline-tertiary:hover,
+.btn-outline-tertiary:focus,
+.btn-outline-tertiary:active,
+.btn-outline-tertiary.focus,
+.btn-outline-tertiary.show {
+    background: var(--hover-bg);
+    color: var(--hover-text);
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    text-decoration: none !important;
+}
+.btn-outline-tertiary:focus {
+    color: var(--btn-text-tertiary) !important;
+}
 /* ====== OUTLINE DANGER ====== */
 .btn-outline-danger {
     background: transparent;
@@ -119,7 +145,7 @@
 }
 /* ====== ICONOS EN BOTONES ====== */
 .btn i {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     flex-shrink: 0;
     vertical-align: middle;
 }
@@ -135,13 +161,13 @@
     text-align: left;
     min-height: 40px;
     margin-bottom: 1rem;
-    gap: 0.75rem;
+    gap: 1rem;
 }
 .btn-dashboard:hover,
 .btn-dashboard:focus {
     background-color: var(--hover-bg);
-    color: var(--btn-text-primary);
-    border: var(--btn-primary-hover);
+    color: var(--hover-text);
+    border: var(--btn-border-primary);
     font-weight: 500;
     filter: brightness(1.1);
     transform: translateX(2px);
@@ -205,6 +231,7 @@
 .btn-agri-secondary:focus,
 .btn-outline-primary:focus,
 .btn-outline-secondary:focus,
+.btn-outline-tertiary:focus,
 .btn-outline-light:focus,
 .btn-outline-danger:focus,
 .btn-outline-info:focus,
@@ -213,6 +240,7 @@
 .btn-agri-secondary:active,
 .btn-outline-primary:active,
 .btn-outline-secondary:active,
+.btn-outline-tertiary:active,
 .btn-outline-light:active,
 .btn-outline-danger:active,
 .btn-outline-info:active,
@@ -220,14 +248,15 @@
   outline: none !important;
   box-shadow: none !important;
   background-color: transparent !important;
-  text-decoration: none !important;  /* Quitar subrayado si lo tiene */
-  -webkit-tap-highlight-color: transparent; /* Para móviles */
+  text-decoration: none !important;
+  -webkit-tap-highlight-color: transparent;
 }
 /* Mantener foco visible accesible con sombra suave */
 .btn-agri-primary:focus-visible,
 .btn-agri-secondary:focus-visible,
 .btn-outline-primary:focus-visible,
 .btn-outline-secondary:focus-visible,
+.btn-outline-tertiary:focus-visible,
 .btn-outline-light:focus-visible,
 .btn-outline-danger:focus-visible,
 .btn-outline-info:focus-visible,
@@ -235,10 +264,10 @@
   outline: none !important;
   box-shadow: none !important;
   background-color: transparent !important;
-  text-decoration: none !important;  /* Quitar subrayado si lo tiene */
-  -webkit-tap-highlight-color: transparent; /* Para móviles */
+  text-decoration: none !important;
+  -webkit-tap-highlight-color: transparent;
 }
-/* Para todos los botones (opcional) */
+/* Para todos los botones */
 .btn-outline-primary.btn-sm,
 .btn-outline-primary.btn-sm:hover,
 .btn-outline-primary.btn-sm:focus,

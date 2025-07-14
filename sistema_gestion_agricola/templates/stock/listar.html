@@ -3,53 +3,55 @@
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
-    <div class="dashboard-header mb-4">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div class="flex-grow-1">
+    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
+        <div class="header-topbar">
+            <div class="header-title">
                 <h2 class="section-title"><i class="bi bi-box-seam"></i> Stock de Componentes</h2>
                 <p class="section-subtitle d-none d-md-block opacity-75">Consulta el stock en sistema</p>
             </div>
-            <div class="d-flex align-items-center flex-wrap gap-2">
-                <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-sm ms-2">
-                    <i class="bi bi-house"></i>
+            <div class="header-controls">
+                <a href="{{ url_for('index') }}" 
+                    class="btn btn-outline-primary btn-sm ms-2" 
+                    style="font-size: 1rem;">
+                    <i class="bi bi-house"></i> 
                     <span class="d-none d-md-block d-md-inline">Inicio</span>
                 </a>
-
-                <a href="{{ url_for('stock.registrar_stock') }}" class="btn btn-outline-primary btn-sm">
+                <a href="{{ url_for('stock.registrar_stock') }}" 
+                    class="btn btn-outline-primary btn-sm" 
+                    style="font-size: 1rem;">
                     <i class="bi bi-plus-lg"></i>
-                    <span class="d-none d-md-inline">Registrar Stock</span>
+                    <span class="d-none d-md-block d-md-inline">Registrar Stock</span>
+                    <span class="d-md-none">Stock</span>
                 </a>
-
                 <a href="{{ url_for('compras.registrar_compra') }}" class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-cart-plus"></i>
-                    <span class="d-none d-md-inline">Registrar Compra</span>
+                    <span class="d-none d-md-block d-md-inline">Registrar Compra</span>
+                    <span class="d-md-none">Compra</span>
                 </a>
-
-                <div class="badge fs-6 d-none d-lg-block">
-                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
-                </div>
-
                 <button class="theme-toggle" id="themeToggle">
                     <i class="bi bi-moon-fill" id="themeIcon"></i>
                 </button>
+                <div class="calendar-badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Lista de stock -->
-    <section class="page-section">
+    <section class="page-section hidden-item mb-0">
         <h3 class="section-title">
             <i class="bi bi-list-ul"></i> Lista de Stock
         </h3>
         <!-- Tabla de Stock -->
-        <div class="card-section hidden-item">
-            <div id="tableView" class="table-view">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
+        <div class="card-section hidden-item mb-0" style="border: none; box-shadow: none;">
+            <div id="tableView" class="table-view hidden-item">
+                <div class="table-responsive hidden-item">
+                    <table class="table table-hover hidden-item align-middle">
                         <thead>
                             <tr>
                                 <th class="d-none d-md-table-cell text-center" width="120">Imagen</th>
-                                <th class="d-none d-md-table-cell">Código</th>
+                                <th>Código</th>
                                 <th>Nombre</th>
                                 <th class="d-none d-md-table-cell text-center">Tipo</th>
                                 <th class="text-center">Cantidad</th>
@@ -70,7 +72,7 @@
                                     {% endif %}
                                 </td>
                                 <!-- Código -->
-                                <td class="d-none d-md-table-cell">
+                                <td>
                                     <span class="component-code">{{ c.ID_Componente or 'N/A' }}</span>
                                 </td>
                                 <!-- Nombre -->
@@ -91,7 +93,7 @@
                                 <!-- Stock -->
                                 <td class="text-center">
                                     <span class="badge rounded-pill px-3 py-2 fw-semibold"
-                                        style="background-color: var(--agri-green-dark); color: #fff; font-size: 0.85rem;">
+                                        style="background-color: var(--bg-color); color: var(--text-color); font-size: 0.85rem;">
                                         {{ c.Stock_Actual or 0 }}
                                     </span>
                                 </td>

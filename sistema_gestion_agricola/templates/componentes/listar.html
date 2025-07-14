@@ -3,7 +3,7 @@
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
-    <div class="dashboard-header p-4 shadow rounded">
+    <div class="dashboard-header hidden-item p-4 shadow rounded">
         <div class="header-topbar">
             <div class="header-title">
                 <h2 class="section-title"><i class="bi bi-puzzle-fill"></i> Gestión de Componentes</h2>
@@ -32,7 +32,7 @@
     </div>
     {% if componentes %}
     <!-- Estadísticas rápidas -->
-    <div class="stats-grid mixed mb-3">
+    <div class="auto-grid hidden-item mb-2">
         <div class="stat-card compact hidden-item" data-delay="100">
             <div class="stat-icon"><i class="bi bi-puzzle"></i></div>
             <div class="stat-content">
@@ -40,7 +40,6 @@
                 <p>Componentes</p>
             </div>
         </div>
-
         <div class="stat-card compact hidden-item" data-delay="200">
             <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
             <div class="stat-content">
@@ -48,7 +47,6 @@
                 <p>Con Imagen</p>
             </div>
         </div>
-
         <div class="stat-card compact hidden-item" data-delay="300">
             <div class="stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
             <div class="stat-content">
@@ -57,7 +55,7 @@
             </div>
         </div>
     </div>
-    <div class="stats-grid panel mb-3">
+    <div class="stats-grid panel hidden-item mb-3">
         <div class="stat-card panel hidden-item" data-delay="400">
             <div class="stat-icon"><i class="bi bi-cash"></i></div>
             <div class="stat-content">
@@ -69,7 +67,6 @@
                 <p>Precio Promedio</p>
             </div>
         </div>
-
         <div class="stat-card panel hidden-item" data-delay="500">
             <div class="stat-icon"><i class="bi bi-graph-up-arrow"></i></div>
             <div class="stat-content">
@@ -78,7 +75,6 @@
                 <p>{{ max_comp.Nombre }}</p>
             </div>
         </div>
-
         <div class="stat-card panel hidden-item" data-delay="600">
             <div class="stat-icon"><i class="bi bi-bank"></i></div>
             <div class="stat-content">
@@ -91,15 +87,15 @@
     {% endif %}
     {% if componentes %}
     <!-- Filtros y búsqueda -->
-    <div class="card-section mb-4 hidden-item" style="padding: 2rem 2.5rem;">
+    <div class="card-section hidden-item mb-4" style="padding: 2rem 2.5rem;">
         <div class="row g-3 align-items-end">
-            <div class="col-md-6">
+            <div class="col-md-6 hidden-item">
                 <label for="searchInput" class="form-label">
                     <i class="bi bi-search"></i> Buscar componente
                 </label>
                 <input type="text" class="form-control" id="searchInput" placeholder="Buscar por nombre, descripción...">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 hidden-item">
                 <label for="filterType" class="form-label">
                     <i class="bi bi-funnel"></i> Filtrar por tipo
                 </label>
@@ -112,10 +108,7 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="d-flex flex-column flex-md-row gap-2">
-                <button type="button" class="btn btn-outline-secondary w-100 w-md-auto" onclick="filterComponents()">
-                    <i class="bi bi-funnel-fill"></i> Aplicar filtros
-                </button>
+            <div class="d-flex flex-column flex-md-row gap-2 hidden-item">
                 <button type="button" class="btn btn-outline-secondary w-100 w-md-auto" onclick="clearFilters()">
                     <i class="bi bi-x-circle"></i> Limpiar filtros
                 </button>
@@ -124,30 +117,29 @@
     </div>
     {% endif %}
     <!-- Lista de componentes -->
-    <section class="page-section">
+    <section class="page-section hidden-item">
         <h3 class="section-title">
                 <i class="bi bi-list-ul"></i> Lista de Componentes</h3>
-            <div class="view-toggle">
-                <button class="btn btn-sm btn-outline-tertiary active" onclick="toggleView('table')" id="tableViewBtn">
+            <div class="view-toggle hidden-item">
+                <button class="btn btn-sm btn-outline-secondary hidden-item" onclick="toggleView('table')" id="tableViewBtn">
                     <i class="bi bi-table"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-tertiary" onclick="toggleView('cards')" id="cardsViewBtn">
+                <button class="btn btn-sm btn-outline-secondary hidden-item" onclick="toggleView('cards')" id="cardsViewBtn">
                     <i class="bi bi-grid-3x3-gap"></i>
                 </button>
             </div>
         {% if componentes %}
         <!-- Vista de tabla -->
-        <div id="tableView" class="table-view">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
+        <div id="tableView" class="table-view hidden-item">
+            <div class="table-responsive hidden-item">
+                <table class="table table-hover hidden-item align-middle">
                     <thead>
                         <tr>
                             <th class="d-none d-md-table-cell" width="120">Imagen</th>
-                            <th class="d-none d-lg-table-cell">Código</th>
+                            <th>Código</th>
                             <th>Nombre</th>
                             <th class="d-none d-sm-table-cell">Tipo</th>
                             <th class="d-none d-lg-table-cell">Descripción</th>
-                            <th width="80" style="text-align: right;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="componentsTableBody">
@@ -167,7 +159,7 @@
                                     </div>
                                 {% endif %}
                             </td>
-                            <td class="d-none d-lg-table-cell">
+                            <td>
                                 <span class="component-code">{{ c.ID_Componente or 'N/A' }}</span>
                             </td>
                             <td>
@@ -183,15 +175,6 @@
                             <td class="d-none d-lg-table-cell">
                                 <span class="component-description">{{ c.Descripcion[:50] }}{% if c.Descripcion|length > 50 %}...{% endif %}</span>
                             </td>
-                            <td class="action-cell">
-                                <div class="btn-group-horizontal"> 
-                                    <a href="{{ url_for('componentes.editar_componente', id=c.ID) }}" 
-                                    class="btn btn-outline-secondary btn-sm" 
-                                    title="Editar componente">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                </div>
-                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -199,41 +182,35 @@
             </div>
         </div>    
         <!-- Vista de cards -->
-        <div id="cardsView" class="cards-view d-none">
-            <div class="row g-3" id="componentsCardsContainer">
+        <div id="cardsView" class="cards-view hidden-item">
+            <div class="custom-cards-grid" id="componentsCardsContainer">
                 {% for c in componentes %}
-                
-                {% set data_attrs = {
-                    "name": c.Nombre|lower,
-                    "description": c.Descripcion|lower,
-                    "type": c.Tipo or ""
+                    {% set wrapper_class = "component-card-wrapper" %}
+                    {% set card_class = "component-card" %}
+                    {% set id = c.ID %}
+                    {% set image = url_for('static', filename='fotos/componentes/' ~ c.Foto) if c.Foto else None %}
+                    {% set placeholder_icon = "bi bi-puzzle" %}
+                    {% set badge_text = c.Tipo or "Sin tipo" %}
+                    {% set badge_class = "bg-dark" if c.Tipo else "bg-secondary" %}
+                    {% set title = c.Nombre %}
+                    {% set descripcion = c.Descripcion or "" %}
+                    {% set detalles_recortados = descripcion[:50] ~ ("..." if descripcion|length > 50 else "") %}
+                    {% set details = "
+                        <strong>Código:</strong> " ~ (c.ID_Componente or "N/A") ~ "<br>" ~
+                        ("<strong>Marca:</strong> " ~ c.Marca ~ "<br>" if c.Marca) ~
+                        ("<strong>Descripción:</strong> " ~ detalles_recortados if descripcion)
+                    %}
+                    {% set edit_url = url_for('componentes.editar_componente', id=c.ID) %}
+                    {% set data_attrs = {
+                        "name": c.Nombre|lower,
+                        "description": descripcion|lower,
+                        "type": c.Tipo or ""
                     } %}
-                {% include 'partials/card.html' %}
-                
-                {% set wrapper_class = "component-card-wrapper" %}
-                {% set card_class = "component-card" %}
-                {% set id = c.ID %}
-                {% set image = url_for('static', filename='fotos/componentes/' ~ c.Foto) if c.Foto else None %}
-                {% set placeholder_icon = "bi bi-puzzle" %}
-                {% set badge_text = c.Tipo or "Sin tipo" %}
-                {% set badge_class = "bg-dark" if c.Tipo else "bg-secondary" %}
-                {% set title = c.Nombre %}
-                {% set descripcion = c.Descripcion or "" %}
-                {% set detalles_recortados = descripcion[:50] ~ ("..." if descripcion|length > 50 else "") %}
-                {% set details = "
-                    <strong>Código:</strong> " ~ (c.ID_Componente or "N/A") ~ "<br>" ~
-                    ("<strong>Marca:</strong> " ~ c.Marca ~ "<br>" if c.Marca) ~
-                    ("<strong>Descripción:</strong> " ~ detalles_recortados if descripcion)
-                %}
-                {% set edit_url = url_for('componentes.editar_componente', id=c.ID) %}
-                {% set data_attrs = {
-                    "name": c.Nombre|lower,
-                    "description": descripcion|lower,
-                    "type": c.Tipo or ""
-                } %}
+                    {% include 'partials/card.html' with context %}
                 {% endfor %}
             </div>
-            </div>
+        </div>
+
         {% endif %}
         <!-- Estado vacío -->
         {% if not componentes %}
@@ -248,59 +225,19 @@
         </div>
         {% endif %}
     </section>
-<style>
-td.action-cell .btn-group-horizontal {
-    justify-content: flex-end;
-    display: flex;
-}
-.btn-outline-secondary {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.btn-outline-tertiary {
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    
-    background: transparent;
-    color: var(--btn-text-tertiary, var(--agri-green-tertiary));
-    border: none;
-    border-radius: 6px;
-
-    padding: 0.5rem 1rem;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
-    min-height: 40px;
-    text-align: center;
-    outline: none;
-}
-.btn-outline-tertiary:hover,
-.btn-outline-tertiary:focus {
-    background: var(--btn-primary-hover, var(--agri-green-dark));
-    color: #fff;
-    border-color: var(--btn-primary-hover, var(--agri-green-dark));
-}
-.section-title{
-    margin-top: 0.75rem;
-}
-@media (min-width: 768px) {
-    .stats-grid {
-        grid-template-columns: repeat(3, 1fr) !important;
-    }
-}
-
-</style>
+<style></style>
 <script>
-document.querySelectorAll('.stat-card').forEach((section, index) => {
-    section.style.opacity = '0';
-    section.style.transform = 'translateY(20px)';
-    setTimeout(() => {
-        section.style.opacity = '1';
-        section.style.transform = 'translateY(0)';
-        section.style.transition = `all 0.5s cubic-bezier(.4,2,.6,1) ${index * 60}ms`;
-    }, 200 + index * 60);
-});
+function toggleView(view) {
+  const tableView = document.getElementById('tableView');
+  const cardsView = document.getElementById('cardsView');
+
+  if (view === 'table') {
+    tableView.classList.remove('hidden-item');
+    cardsView.classList.add('hidden-item');
+  } else {
+    cardsView.classList.remove('hidden-item');
+    tableView.classList.add('hidden-item');
+  }
+}
 </script>
 {% endblock %}

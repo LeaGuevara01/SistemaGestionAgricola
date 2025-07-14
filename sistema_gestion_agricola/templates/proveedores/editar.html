@@ -5,17 +5,31 @@
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
-    <div class="dashboard-header mb-4 shadow rounded">
+    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
         <div class="header-topbar">
             <div class="header-title">
                 <h2 class="section-title"><i class="bi bi-pencil-square"></i> Editar Proveedor</h2>
                 <p class="section-subtitle d-none d-md-block opacity-75">Modificá los datos del proveedor registrado</p>
             </div>
             <div class="header-controls">
+                <a href="{{ url_for('index') }}" 
+                    class="btn btn-outline-primary btn-sm ms-2">
+                    <i class="bi bi-house"></i> 
+                    <span class="d-none d-md-block d-md-inline">Inicio</span>
+                </a>
+                {% if proveedor %}
                 <a href="{{ url_for('proveedores.ver_proveedor', id=proveedor.ID) }}" 
-                   class="btn btn-outline-primary btn-sm">
+                    class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-arrow-left"></i>
-                    <span class="d-none d-md-inline">Volver</span>
+                    <span class="d-none d-md-inline">Volver a Proveedor</span>
+                    <span class="d-md-none"></span>
+                </a>
+                {% endif %}
+                <a href="{{ url_for('proveedores.listar_proveedores') }}" 
+                    class="btn btn-outline-primary btn-sm ms-auto">
+                    <i class="bi bi-people-fill"></i> 
+                    <span class="d-none d-md-inline">Proveedores</span>
+                    <span class="d-md-none"></span>
                 </a>
                 <button class="theme-toggle" id="themeToggle">
                     <i class="bi bi-moon-fill" id="themeIcon"></i>
@@ -26,10 +40,12 @@
             </div>
         </div>
     </div>
-    <section class="page-section">
     <!-- Formulario -->
-        <div class="card-section">
-            <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+    <section class="page-section hidden-item mx-auto" style="max-width: 700px;">
+        <div class="mt-0 card-section hidden-item" style="box-shadow: none; max-width: 650px;">
+            <form method="POST" enctype="multipart/form-data" id="editProviderForm" 
+                class="mt-0 form-edit hidden-item row g-3"
+                style="margin-left: 0.1em;">
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre</label>
                     <input type="text" class="form-control" id="nombre" name="nombre" value="{{ proveedor.Nombre }}" required>
@@ -71,10 +87,21 @@
                     <textarea class="form-control" id="observaciones" name="observaciones" rows="3">{{ proveedor.Observaciones or '' }}</textarea>
                 </div>
 
-                <div class="text-end">
-                    <button type="submit" class="btn btn-outline-secondary">
-                        <i class="bi bi-save"></i> Guardar Cambios
+                <!-- Botones de acción -->
+                <div class="d-flex gap-3 mt-2 pt-2 custom-border justify-content-center">
+                    <button type="submit" class="btn btn-agri-primary w-100" style="border: transparent;">
+                        <i class="bi bi-check-lg"></i> Guardar
                     </button>
+                </div>
+                <div class="d-flex gap-3 mt-2">
+                    <a href="{{ url_for('proveedores.listar_proveedores') }}" class="btn btn-outline-secondary w-50">
+                        <i class="bi bi-x-lg"></i> Cancelar
+                    </a>    
+                    {% if proveedor %}
+                    <button type="button" class="btn btn-outline-danger w-50" onclick="confirmDelete()">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </button>
+                    {% endif %}
                 </div>
             </form>
         </div>

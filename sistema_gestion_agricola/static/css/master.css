@@ -13,7 +13,11 @@
 @import url('buttons.css');
 
 /* Cards styles */
-@import url('cards.css');
+@import url('base-card.css');
+@import url('card-animations.css');
+@import url('card-content.css');
+@import url('card-hover.css');
+@import url('card-responsive.css');
 
 /* Forms styles */
 @import url('forms.css');
@@ -24,11 +28,8 @@
 /* Responsive styles */
 @import url('responsive.css');
 
-/* Legacy styles (review if needed) */
-@import url('styles_old.css');
-
-/* Main consolidated styles */
-@import url('styles.css');
+/* Section styles */
+@import url('sections.css');
 
 /* Tables styles */
 @import url('tables.css');

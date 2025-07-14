@@ -1,9 +1,9 @@
 {# templates/partials/card.html #}
-<div class="col-md-6 col-lg-4 {{ wrapper_class }}"
+<div class="{{ wrapper_class }}"
      {% for key, value in data_attrs.items() %}
          data-{{ key }}="{{ value }}"
      {% endfor %}>
-    <div class="card clickable-card {{ card_class }}" data-id="{{ id }}">
+    <div class="card clickable-card hidden-item {{ card_class }}" data-id="{{ id }}">
         <div class="card-image">
             {% if image %}
                 <img src="{{ image }}" alt="{{ title }}">

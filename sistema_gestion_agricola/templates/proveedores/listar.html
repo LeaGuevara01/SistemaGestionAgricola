@@ -3,23 +3,31 @@
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
-    <div class="dashboard-header p-4 shadow rounded">
+    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
         <div class="header-topbar">
             <div class="header-title">
                 <h2 class="section-title"><i class="bi bi-people-fill"></i> Lista de Proveedores</h2>
-                <p class="section-subtitle d-none d-md-block">Administra el cuaderno de cuentas proveedoras</p>
+                <p class="section-subtitle d-md-block opacity-75">Administra el cuaderno de cuentas proveedoras</p>
             </div>
         </div>
         <div class="header-controls">
             <a href="{{ url_for('index') }}" 
-                class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-house"></i>
-                <span class="d-none d-md-inline">Inicio</span></a>
+                class="btn btn-outline-primary btn-sm ms-2" 
+                style="font-size: 1rem;">
+                <i class="bi bi-house"></i> 
+                <span class="d-none d-md-block d-md-inline">Inicio</span>
+            </a>
             <a href="{{ url_for('proveedores.agregar_proveedor') }}" 
                 class="btn btn-outline-primary btn-sm">
                 <i class="bi bi-plus-lg"></i>
                 <span class="d-none d-md-inline">Agregar Proveedor</span>
-                <span class="d-md-none">Agregar</span></a>
+                <span class="d-md-none">Agregar</span>
+            </a>
+            <a href="{{ url_for('compras.registrar_compra') }}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-cart-plus"></i>
+                <span class="d-none d-md-block d-md-inline">Registrar Compra</span>
+                <span class="d-md-none">Compra</span>
+            </a>
             <button class="theme-toggle" id="themeToggle">
                 <i class="bi bi-moon-fill" id="themeIcon"></i>
             </button>
@@ -29,49 +37,49 @@
         </div>
     </div>
 
-  <section class="page-section">
-  <!-- Tabla de Proveedores -->
-      {% if proveedores %}
-      <div class="table-responsive">
-              <table class="table table-hover align-middle">
-                  <thead>
-                      <tr>
-                          <th>Nombre</th>
-                          <th class="d-none d-lg-table-cell">Localidad</th>
-                          <th class="d-none d-lg-table-cell">Contacto</th>
-                          <th class="d-none d-md-table-cell">Teléfono</th>
-                          <th>Rubro</th>
-                          <th class="text-center d-none d-md-table-cell" 
-                              width="80">Acciones</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      {% for p in proveedores %}
-                      <tr class="clickable-row" 
-                          data-href="{{ url_for('proveedores.ver_proveedor', id=p.ID) }}"
-                          role="button"
-                          tabindex="0">
-                          <td><strong>{{ p.Nombre }}</strong></td>
-                          <td class="d-none d-lg-table-cell">{{ p.Localidad or '-' }}</td>
-                          <td class="d-none d-lg-table-cell">{{ p.Contacto or '-' }}</td>
-                          <td class="d-none d-md-table-cell">{{ p.Telefono or '-' }}</td>
-                          <td>{{ p.Rubro or '-' }}</td>
-                          <td class="action-cell d-none d-md-table-cell">
-                          <a href="{{ url_for('proveedores.editar_proveedor', id=p.ID) }}" 
-                            class="btn btn-outline-secondary btn-sm" 
-                            title="Editar proveedor"
-                            onclick="event.stopPropagation();">
-                            <i class="bi bi-pencil"></i></a></td>
-                      </tr>
-                      {% endfor %}
-                  </tbody>
-              </table>
-          </div>
-          {% else %}
-          <p class="text-muted fst-italic">No hay proveedores registrados.</p>
-          {% endif %}
-      </div>
-  </section>
+  
+    <!-- Lista de Proveedores -->
+    <section class="page-section hidden-item mb-0">
+        <h3 class="section-title">
+            <i class="bi bi-list-ul"></i> Lista de Stock
+        </h3>
+        <!-- Tabla de Proveedores -->
+        <div class="card-section hidden-item mb-0" style="border: none; box-shadow: none;">
+            {% if proveedores %}
+            <div id="tableView" class="table-view hidden-item">
+                <div class="table-responsive hidden-item">
+                    <table class="table table-hover hidden-item align-middle">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th class="d-none d-lg-table-cell">Localidad</th>
+                                <th class="d-none d-lg-table-cell">Contacto</th>
+                                <th>Teléfono</th>
+                                <th class="d-none d-md-table-cell">Rubro</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in proveedores %}
+                            <tr class="clickable-row" 
+                                data-href="{{ url_for('proveedores.ver_proveedor', id=p.ID) }}"
+                                role="button"
+                                tabindex="0">
+                                <td><strong>{{ p.Nombre }}</strong></td>
+                                <td class="d-none d-lg-table-cell">{{ p.Localidad or '-' }}</td>
+                                <td class="d-none d-lg-table-cell">{{ p.Contacto or '-' }}</td>
+                                <td>{{ p.Telefono or '-' }}</td>
+                                <td class="d-none d-md-table-cell">{{ p.Rubro or '-' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-muted fst-italic">No hay proveedores registrados.</p>
+            {% endif %}
+        </div>
+    </section>
 
 {% endblock %}
 

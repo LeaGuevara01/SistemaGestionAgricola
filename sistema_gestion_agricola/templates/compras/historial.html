@@ -2,64 +2,97 @@
 
 {% block content %}
 <div class="page-wrapper">
-
     <!-- Header -->
-    <div class="dashboard-header mb-4">
-        <div class="d-flex flex-column">
-            <div class="mb-2">
-                <h2><i class="bi bi-clock-history"></i> Historial de Compras</h2>
+    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
+        <div class="header-topbar">
+            <div class="header-title">
+                <h2 class="section-title"><i class="bi bi-clock-history"></i> Historial de Compras</h2>
+                <p class="section-subtitle d-none d-md-block opacity-75"></p>
             </div>
-            <div class="d-flex align-items-center flex-wrap gap-2">
-                <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-sm" style="border: none; font-size: 1.15rem;">
-                    <i class="bi bi-house"></i>
-                    <span class="d-none d-md-inline">Inicio</span>
+            <div class="header-controls">
+                <a href="{{ url_for('index') }}" 
+                    class="btn btn-outline-primary btn-sm ms-2">
+                    <i class="bi bi-house"></i> 
+                    <span class="d-none d-md-block d-md-inline">Inicio</span>
                 </a>
-                <div class="badge fs-6 d-none d-lg-block">
-                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
-                </div>
-                <button class="theme-toggle btn btn-outline-light btn-sm" id="themeToggle">
+                <a href="{{ url_for('compras.registrar_compra') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-cart-plus"></i>
+                    <span class="d-none d-md-block d-md-inline">Registrar Compra</span>
+                    <span class="d-md-none">Compra</span>
+                </a>
+                <button class="theme-toggle" id="themeToggle">
                     <i class="bi bi-moon-fill" id="themeIcon"></i>
                 </button>
+                <div class="calendar-badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Tabla de historial -->
-    <div class="card-section">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Fecha</th>
-                        <th class="d-none d-md-table-cell">ID</th>
-                        <th>Proveedor</th>
-                        <th>Componente</th>
-                        <th class="text-end d-none d-md-table-cell">Cantidad</th>
-                        <th class="text-end d-none d-md-table-cell">Precio Unitario</th>
-                        <th class="d-none d-md-table-cell">Observación</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for compra in compras %}
-                    <tr>
-                        <td>{{ compra['Fecha'] }}</td>
-                        <td class="d-none d-md-table-cell">{{ compra['ID_Compra'] }}</td>
-                        <td>{{ compra['Nombre_Proveedor'] }}</td>
-                        <td>{{ compra['Nombre_Componente'] }}</td>
-                        <td class="d-none d-md-table-cell text-end">{{ compra['Cantidad'] }}</td>
-                        <td class="d-none d-md-table-cell text-end">${{ '%.2f' | format(compra['Precio_Unitario']) }}</td>
-                        <td class="d-none d-md-table-cell">{{ compra['Observacion'] or '-' }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <!-- Historial de Compras -->
+    <section class="page-section hidden-item mb-0">
+        <h3 class="section-title">
+            <i class="bi bi-list-ul"></i> Historial de Compras
+        </h3>
+        <!-- Tabla de historial -->
+        <div class="card-section hidden-item mb-0" style="border: none; box-shadow: none;">
+            <div id="tableView" class="table-view hidden-item">
+                <div class="table-responsive hidden-item">
+                    <table class="table table-hover hidden-item align-middle">
+                        <thead>
+                            <tr>
+                                <th class="d-none d-md-table-cell">Fecha</th>
+                                <th class="d-none d-lg-table-cell">ID</th>
+                                <th>Proveedor</th>
+                                <th>Componente</th>
+                                <th class="text-end d-none d-md-table-cell">Cantidad</th>
+                                <th class="text-end d-none d-md-table-cell">Precio Unitario</th>
+                                <th class="d-none d-lg-table-cell">Observación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for compra in compras %}
+                            <tr class="clickable-row" data-id="{{ compra['ID_Compra'] }}">
+                                <td class="d-none d-md-table-cell">{{ compra['Fecha'] }}</td>
+                                <td class="d-none d-lg-table-cell">{{ compra['ID_Compra'] }}</td>
+                                <td>{{ compra['Nombre_Proveedor'] }}</td>
+                                <td>{{ compra['Nombre_Componente'] }}</td>
+                                <td class="d-none d-md-table-cell text-end">{{ compra['Cantidad'] }}</td>
+                                <td class="d-none d-md-table-cell text-end">${{ '%.2f' | format(compra['Precio_Unitario']) }}</td>
+                                <td class="d-none d-lg-table-cell">{{ compra['Observacion'] or '-' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>        
         </div>
-    </div>
-
+        {% if not compra %}
+        <div class="empty-state text-center py-5">
+            <i class="bi bi-box-seam text-muted" style="font-size: 4rem;"></i>
+            <h4 class="text-muted mt-3">No hay compras registradas</h4>
+            <p class="text-muted mb-5">Comienza registrando tu primer compra al sistema</p>
+                <a href="{{ url_for('compras.registrar_compra') }}" 
+                    class="btn btn-outline-secondary">
+                    <i class="bi bi-plus-lg"></i> Registrar Primer Compra
+                </a>
+        </div>
+        {% endif %}
+    </section>
 </div>
-
-<!-- Script de fecha -->
 <script>
-    document.getElementById('current-date').textContent = new Date().toLocaleDateString('es-AR');
+document.addEventListener("DOMContentLoaded", function () {
+    const rows = document.querySelectorAll(".clickable-row");
+    rows.forEach(row => {
+        row.addEventListener("click", function () {
+            const id = this.dataset.id;
+            if (id) {
+                window.location.href = `/compras/${id}`; // Cambia esta ruta si usás otra
+            }
+        });
+    });
+});
 </script>
+<style></style>
 {% endblock %}

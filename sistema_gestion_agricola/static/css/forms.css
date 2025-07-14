@@ -204,7 +204,6 @@ form button[type="submit"]:hover,
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  margin-bottom: 0.7rem;
 }
 
 .form-edit .form-check-input {

@@ -51,11 +51,11 @@ a:hover, a:focus {
 
 /* ====== LISTAS ====== */
 ul, ol {
-    margin-left: 1.25em;
-    margin-bottom: 1em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 li {
-    margin-bottom: 0.25em;
+    margin-bottom: 0.5em;
 }
 
 /* ====== IMÁGENES ====== */
@@ -114,4 +114,10 @@ button {
 ::-webkit-scrollbar-thumb {
     background: #e0e7ef;
     border-radius: 4px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }

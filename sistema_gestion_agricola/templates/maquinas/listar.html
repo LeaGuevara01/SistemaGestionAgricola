@@ -3,7 +3,7 @@
 {% block content %}
 <div class="page-wrapper">
     <!-- Header de máquinas -->
-    <div class="dashboard-header p-4 shadow rounded">
+    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
         <div class="header-topbar">
             <div class="header-title">
                 <h2 class="section-title"><i class="bi bi-gear"></i>Gestión de Maquinaria</h2>
@@ -34,29 +34,29 @@
     </div>
 
     <!-- Estadísticas rápidas -->
-    <div class="stats-grid mixed mb-3">
-        <div class="stat-card compact">
+    <div class="stats-grid hidden-item">
+        <div class="stat-card compact hidden-item">
             <div class="stat-icon hidden-item" data-delay="100"><i class="bi bi-gear"></i></div>
             <div class="stat-content">
                 <h3>{{ maquinas|length }}</h3>
                 <p>Máquinas</p>
             </div>
         </div>
-        <div class="stat-card compact">
+        <div class="stat-card compact hidden-item">
             <div class="stat-icon hidden-item" data-delay="100"><i class="bi bi-check-circle"></i></div>
             <div class="stat-content">
                 <h3>{{ maquinas|selectattr('Estado', 'equalto', 'Operativa')|list|length }}</h3>
                 <p>Operativas</p>
             </div>
         </div>
-        <div class="stat-card compact">
+        <div class="stat-card compact hidden-item">
             <div class="stat-icon hidden-item" data-delay="100"><i class="bi bi-tools"></i></div>
             <div class="stat-content">
                 <h3>{{ maquinas|selectattr('Estado', 'equalto', 'En taller')|list|length }}</h3>
                 <p>Taller</p>
             </div>
         </div>
-        <div class="stat-card compact">
+        <div class="stat-card compact hidden-item">
         <div class="stat-icon hidden-item" data-delay="100"><i class="bi bi-life-preserver"></i></div>
             <div class="stat-content">
                 <h3>{{ maquinas|selectattr('Estado', 'equalto', 'Reserva')|list|length }}</h3>
@@ -81,6 +81,8 @@
                     <option value="">Todos los estados</option>
                     <option value="Operativa">Operativa</option>
                     <option value="En taller">En taller</option>
+                    <option value="En revisión">En revisión</option>
+                    <option value="En reparación">En reparación</option>
                     <option value="Fuera de servicio">Fuera de servicio</option>
                 </select>
             </div>
@@ -106,22 +108,22 @@
     </div>
 
     <!-- Lista de máquinas -->
-    <section class="page-section">
+    <section class="page-section hidden-item">
         <h3 class="section-title">
             <i class="bi bi-list-ul"></i> Lista de Máquinas
         </h3>
-        <div class="view-toggle">
-            <button class="btn btn-sm btn-outline-tertiary active" onclick="toggleView('table')" id="tableViewBtn">
+        <div class="view-toggle hidden-item">
+            <button class="btn btn-sm btn-outline-secondary hidden-item" onclick="toggleView('table')" id="tableViewBtn">
                 <i class="bi bi-table"></i>
             </button>
-            <button class="btn btn-sm btn-outline-tertiary" onclick="toggleView('cards')" id="cardsViewBtn">
+            <button class="btn btn-sm btn-outline-secondary hidden-item" onclick="toggleView('cards')" id="cardsViewBtn">
                 <i class="bi bi-grid-3x3-gap"></i>
             </button>
         </div>
         <!-- Vista de tabla -->
-        <div id="tableView" class="table-view">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
+        <div id="tableView" class="table-view hidden-item">
+            <div class="table-responsive hidden-item">
+                <table class="table table-hover hidden-item align-middle">
                     <thead>
                         <tr>
                             <th>Nombre</th>
@@ -129,7 +131,6 @@
                             <th class="d-none d-md-table-cell">Modelo</th>
                             <th class="d-none d-lg-table-cell text-center">Año</th>
                             <th class="text-center">Estado</th>
-                            <th class="text-center" width="100">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="maquinasTableBody">
@@ -150,21 +151,16 @@
                                 {% if m.Estado == 'Operativa' %}
                                     <span class="badge" style="background-color: var(--agri-green-primary);">Operativa</span>
                                 {% elif m.Estado == 'En taller' %}
-                                    <span class="badge" style="background-color: var(--agri-green-dark);">En taller</span>
+                                    <span class="badge" style="background-color: var(--agri-green-secondary);">En taller</span>
+                                {% elif m.Estado == 'En revisión' %}
+                                    <span class="badge" style="background-color: var(--agri-green-dark);">En revisión</span>
+                                {% elif m.Estado == 'En reparación' %}
+                                    <span class="badge" style="background-color: var(--agri-green-darker);">En reparación</span>
                                 {% elif m.Estado == 'Fuera de servicio' %}
-                                    <span class="badge" style="background-color: var(--agri-green-darker);">Fuera de servicio</span>
+                                    <span class="badge" style="background-color: var(--agri-dark);">Fuera de servicio</span>
                                 {% else %}
-                                    <span class="badge text-dark" style="background-color: var(--agri-green-muted);">{{ m.Estado }}</span>
+                                    <span class="badge text-dark" style="background-color: var(--agri-light);">{{ m.Estado }}</span>
                                 {% endif %}
-                            </td>
-                            <td class="action-cell text-center">
-                                <div class="btn-group-horizontal">
-                                    <a href="{{ url_for('maquinas.editar_maquina', id=m.ID) }}" 
-                                    class="btn btn-outline-secondary btn-sm" 
-                                    title="Editar máquina">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                </div>
                             </td>
                         </tr>
                         {% endfor %}
@@ -174,49 +170,34 @@
         </div>
 
         <!-- Vista de cards -->
-        <div id="cardsView" class="cards-view d-none">
-            <div class="row g-3" id="maquinasCardsContainer">
+        <div id="cardsView" class="cards-view hidden-item">
+            <div class="custom-cards-grid" id="maquinasCardsContainer">
                 {% for m in maquinas %}
-                
-                {% set data_attrs = {
-                    "name": m.Nombre|lower,
-                    "marca": m.Marca|lower,
-                    "modelo": m.Modelo|lower,
-                    "estado": m.Estado
+                    {% set wrapper_class = "machine-card-wrapper" %}
+                    {% set card_class = "machine-card maquina-card" %}
+                    {% set id = m.ID %}
+                    {% set image = url_for('static', filename='fotos/maquinas/' ~ m.Foto) if m.Foto else None %}
+                    {% set placeholder_icon = "bi bi-tractor" %}
+                    {% set badge_text, badge_class = (
+                        ('Operativa', 'bg-success') if m.Estado == 'Operativa' else
+                        ('En taller', 'bg-warning text-dark') if m.Estado == 'En taller' else
+                        ('Fuera de servicio', 'bg-danger') if m.Estado == 'Fuera de servicio' else
+                        (m.Estado, 'bg-secondary')
+                    ) %}
+                    {% set title = m.Nombre %}
+                    {% set details = "<strong>Marca:</strong> " ~ m.Marca ~ "<br><strong>Modelo:</strong> " ~ m.Modelo ~ "<br><strong>Año:</strong> " ~ m.Año %}
+                    {% set edit_url = url_for('maquinas.editar_maquina', id=m.ID) %}
+                    {% set data_attrs = {
+                        "name": m.Nombre|lower,
+                        "marca": m.Marca|lower,
+                        "modelo": m.Modelo|lower,
+                        "estado": m.Estado
                     } %}
-                {% include 'partials/card.html' %}
-
-                {% set badge_text, badge_class = (
-                    ('Operativa', 'bg-success') if m.Estado == 'Operativa' else
-                    ('En taller', 'bg-warning text-dark') if m.Estado == 'En taller' else
-                    ('Fuera de servicio', 'bg-danger') if m.Estado == 'Fuera de servicio' else
-                    (m.Estado, 'bg-secondary')
-                ) %}
-
-                {% include 'partials/card.html' with context %}
-                {% set wrapper_class = "machine-card-wrapper" %}
-                {% set card_class = "machine-card maquina-card" %}
-                {% set id = m.ID %}
-                {% set image = url_for('static', filename='fotos/maquinas/' ~ m.Foto) if m.Foto else None %}
-                {% set placeholder_icon = "bi bi-tractor" %}
-                {% set badge_text = badge_text %}
-                {% set badge_class = badge_class %}
-                {% set title = m.Nombre %}
-                {% set details = "
-                    <strong>Marca:</strong> " ~ m.Marca ~ "<br>
-                    <strong>Modelo:</strong> " ~ m.Modelo ~ "<br>
-                    <strong>Año:</strong> " ~ m.Año
-                %}
-                {% set edit_url = url_for('maquinas.editar_maquina', id=m.ID) %}
-                {% set data_attrs = {
-                    "name": m.Nombre|lower,
-                    "marca": m.Marca|lower,
-                    "modelo": m.Modelo|lower,
-                    "estado": m.Estado
-                } %}
+                    
+                    {% include 'partials/card.html' with context %}
                 {% endfor %}
             </div>
-            </div>
+        </div>
 
         <!-- Estado vacío -->
         {% if not maquinas %}
@@ -231,52 +212,20 @@
         {% endif %}
     </section>
 </div>
-<style>
-.btn-outline-secondary {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-outline-tertiary {
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    
-    background: transparent;
-    color: var(--btn-text-tertiary, var(--agri-green-tertiary));
-    border: none;
-    border-radius: 6px;
-
-    padding: 0.5rem 1rem;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
-    min-height: 40px;
-    text-align: center;
-    outline: none;
-}
-.btn-outline-tertiary:hover,
-.btn-outline-tertiary:focus {
-    background: var(--btn-primary-hover, var(--agri-green-dark));
-    color: #fff;
-    border-color: var(--btn-primary-hover, var(--agri-green-dark));
-}
-
-.section-title{
-    margin-top: 0.75rem;
-}
-</style>
+<style></style>
 <script>
-// Animar stats
-document.querySelectorAll('.stat-card').forEach((section, index) => {
-    section.style.opacity = '0';
-    section.style.transform = 'translateY(20px)';
-    setTimeout(() => {
-        section.style.opacity = '1';
-        section.style.transform = 'translateY(0)';
-        section.style.transition = `all 0.5s cubic-bezier(.4,2,.6,1) ${index * 60}ms`;
-    }, 200 + index * 60);
-});
+// Función toggleView para cambiar entre cards y tabla
+function toggleView(view) {
+  const tableView = document.getElementById('tableView');
+  const cardsView = document.getElementById('cardsView');
+
+  if (view === 'table') {
+    tableView.classList.remove('hidden-item');
+    cardsView.classList.add('hidden-item');
+  } else {
+    cardsView.classList.remove('hidden-item');
+    tableView.classList.add('hidden-item');
+  }
+}
 </script>
 {% endblock %}
