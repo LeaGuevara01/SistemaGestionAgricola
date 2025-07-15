@@ -6,7 +6,7 @@
     background-color: var(--card-bg);
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+    box-shadow: none;
 }
 
 .table th,
@@ -74,7 +74,7 @@ td.action-cell a.btn {
     }
 
     .clickable-row:active td {
-        background-color: var(--hover-bg, #f0f4f0);
+        background-color: var(--hover-bg);
     }
 }
 

@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
+{% block title %}Componentes{% endblock %}
+
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
-    <div class="dashboard-header hidden-item p-4 shadow rounded">
+    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
         <div class="header-topbar">
             <div class="header-title">
                 <h2 class="section-title"><i class="bi bi-puzzle-fill"></i> Gestión de Componentes</h2>
@@ -11,15 +13,14 @@
             </div>
             <div class="header-controls">
                 <a href="{{ url_for('index') }}" 
-                    class="btn btn-outline-primary btn-sm ms-2">
+                    class="btn btn-outline-primary btn-sm ms-auto">
                     <i class="bi bi-house"></i> 
                     <span class="d-none d-md-block d-md-inline">Inicio</span>
                 </a>
                 <a href="{{ url_for('componentes.registrar_componente') }}" 
                     class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-plus-lg"></i> 
-                    <span class="d-none d-md-block d-md-inline">Nuevo Componente</span>
-                    <span class="d-md-none">Nuevo</span>
+                    <span class="d-none d-md-block d-md-inline">Nuevo</span>
                 </a>
                 <button class="theme-toggle" id="themeToggle">
                     <i class="bi bi-moon-fill" id="themeIcon"></i>
@@ -32,7 +33,7 @@
     </div>
     {% if componentes %}
     <!-- Estadísticas rápidas -->
-    <div class="auto-grid hidden-item mb-2">
+    <div class="auto-grid mb-2">
         <div class="stat-card compact hidden-item" data-delay="100">
             <div class="stat-icon"><i class="bi bi-puzzle"></i></div>
             <div class="stat-content">
@@ -55,7 +56,7 @@
             </div>
         </div>
     </div>
-    <div class="stats-grid panel hidden-item mb-3">
+    <div class="stats-grid panel mb-3">
         <div class="stat-card panel hidden-item" data-delay="400">
             <div class="stat-icon"><i class="bi bi-cash"></i></div>
             <div class="stat-content">
@@ -83,19 +84,16 @@
             </div>
         </div>
     </div>
-
-    {% endif %}
-    {% if componentes %}
     <!-- Filtros y búsqueda -->
-    <div class="card-section hidden-item mb-4" style="padding: 2rem 2.5rem;">
+    <div class="card-section hidden-item mb-4">
         <div class="row g-3 align-items-end">
-            <div class="col-md-6 hidden-item">
+            <div class="col-md-6">
                 <label for="searchInput" class="form-label">
                     <i class="bi bi-search"></i> Buscar componente
                 </label>
                 <input type="text" class="form-control" id="searchInput" placeholder="Buscar por nombre, descripción...">
             </div>
-            <div class="col-md-6 hidden-item">
+            <div class="col-md-6">
                 <label for="filterType" class="form-label">
                     <i class="bi bi-funnel"></i> Filtrar por tipo
                 </label>
@@ -108,7 +106,7 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="d-flex flex-column flex-md-row gap-2 hidden-item">
+            <div class="d-flex flex-column flex-md-row gap-2">
                 <button type="button" class="btn btn-outline-secondary w-100 w-md-auto" onclick="clearFilters()">
                     <i class="bi bi-x-circle"></i> Limpiar filtros
                 </button>
@@ -131,7 +129,7 @@
         {% if componentes %}
         <!-- Vista de tabla -->
         <div id="tableView" class="table-view hidden-item">
-            <div class="table-responsive hidden-item">
+            <div class="table-responsive hidden-item" style="margin-left: 1rem !important;">
                 <table class="table table-hover hidden-item align-middle">
                     <thead>
                         <tr>
@@ -185,7 +183,7 @@
         <div id="cardsView" class="cards-view hidden-item">
             <div class="custom-cards-grid" id="componentsCardsContainer">
                 {% for c in componentes %}
-                    {% set wrapper_class = "component-card-wrapper" %}
+                    {% set wrapper_class = "cards-view-wrapper" %}
                     {% set card_class = "component-card" %}
                     {% set id = c.ID %}
                     {% set image = url_for('static', filename='fotos/componentes/' ~ c.Foto) if c.Foto else None %}
@@ -202,6 +200,7 @@
                     %}
                     {% set edit_url = url_for('componentes.editar_componente', id=c.ID) %}
                     {% set data_attrs = {
+                        "component-id": c.ID,
                         "name": c.Nombre|lower,
                         "description": descripcion|lower,
                         "type": c.Tipo or ""
@@ -225,8 +224,15 @@
         </div>
         {% endif %}
     </section>
-<style></style>
+</div>
+
+<style>
+    
+
+</style>
+
 <script>
+
 function toggleView(view) {
   const tableView = document.getElementById('tableView');
   const cardsView = document.getElementById('cardsView');
@@ -239,5 +245,7 @@ function toggleView(view) {
     tableView.classList.add('hidden-item');
   }
 }
+
 </script>
+
 {% endblock %}

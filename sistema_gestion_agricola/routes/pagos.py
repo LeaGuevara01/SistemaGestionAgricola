@@ -53,3 +53,17 @@ def resumen_cuentas():
     ''').fetchall()
     conn.close()
     return render_template('pagos/resumen.html', resumen=resumen)
+
+@pagos_bp.route('/proveedor/<int:id_proveedor>')
+def listar_pagos(id_proveedor):
+    conn = get_db_connection()
+    proveedor = conn.execute('SELECT Nombre FROM proveedores WHERE ID = ?', (id_proveedor,)).fetchone()
+    pagos = conn.execute('''
+        SELECT Monto, Metodo, Observacion, Fecha
+        FROM pagos_proveedores
+        WHERE ID_Proveedor = ?
+        ORDER BY Fecha DESC
+    ''', (id_proveedor,)).fetchall()
+    conn.close()
+
+    return render_template('pagos/listar.html', pagos=pagos, proveedor=proveedor)

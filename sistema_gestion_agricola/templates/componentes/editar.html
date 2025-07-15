@@ -10,22 +10,21 @@
                 <p class="section-subtitle d-none d-md-block opacity-75">Modifica la información del componente seleccionado</p>
             </div>
             <div class="header-controls">
+                <a href="{{ url_for('componentes.lista_componentes') }}" 
+                    class="btn btn-outline-primary btn-sm ms-auto">
+                    <i class="bi bi-arrow-left"></i> 
+                    <span class="d-none d-md-block d-md-inline">Volver</span>
+                </a>
                 <a href="{{ url_for('index') }}" 
-                    class="btn btn-outline-primary btn-sm ms-2">
+                    class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-house"></i> 
                     <span class="d-none d-md-block d-md-inline">Inicio</span>
-                </a>
-                <a href="{{ url_for('componentes.lista_componentes') }}" 
-                    class="btn btn-outline-primary btn-sm ms-2">
-                    <i class="bi bi-arrow-left-fill"></i> 
-                    <span class="d-none d-md-inline">Volver a Componentes</span>
-                    <span class="d-md-none">Volver</span>
                 </a>
                 {% if componente %}
                 <a href="{{ url_for('componentes.vista_componente', id=componente.ID) }}" 
                     class="btn btn-outline-primary btn-sm">
-                    <i class="bi bi-eye"></i> <span class="d-none d-md-inline">Ver Componente</span>
-                    <span class="d-md-none">Ver</span></a>
+                    <i class="bi bi-eye"></i> 
+                    <span class="d-none d-md-block d-md-inline">Ver</span></a>
                 {% endif %}
                 <button class="theme-toggle" id="themeToggle">
                     <i class="bi bi-moon-fill" id="themeIcon"></i>
@@ -126,6 +125,15 @@
                             No se ha seleccionado ningún archivo.
                         {% endif %}
                     </div>
+                    <!-- Vista previa de imagen seleccionada -->
+                    <div id="image-preview" class="mt-3">
+                        {% if componente and componente.Foto %}
+                            <img src="{{ url_for('static', filename='fotos/componente/' ~ componente.Foto) }}" 
+                                alt="Imagen actual" 
+                                class="img-thumbnail" 
+                                style="max-width: 200px;">
+                        {% endif %}
+                    </div>
                 </div>
                 <!-- Botones de acción -->
                 <div class="d-flex gap-3 mt-2 pt-2 custom-border justify-content-center">
@@ -143,6 +151,9 @@
                     </button>
                     {% endif %}
                 </div>
+            </form>
+            <form id="deleteForm" method="POST" action="{{ url_for('componentes.eliminar_componente', id=componente.ID) }}">
+                <input type="hidden" name="_method" value="DELETE">
             </form>
         </div>
     </section>
@@ -210,17 +221,32 @@
         </div>
     </div>
 </div>
+
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const detailCard = document.querySelector('.card.detail-card');
-    if (detailCard) {
-        detailCard.classList.add('show');
-        // Agregar .show a cartas embebidas
-        detailCard.querySelectorAll('.card:not(.detail-card)').forEach(card => {
-            card.classList.add('show');
-        });
+
+// Evento para subir la foto
+document.getElementById('foto').addEventListener('change', function (e) {
+    const fileInput = e.target;
+    const fileName = fileInput.files[0] ? fileInput.files[0].name : "No se ha seleccionado ningún archivo.";
+    document.getElementById('file-name').textContent = "Imagen seleccionada: " + fileName;
+
+    // Vista previa de la imagen
+    const preview = document.getElementById('image-preview');
+    preview.innerHTML = ''; // Limpiar cualquier imagen previa
+
+    if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'img-thumbnail';
+            img.style.maxWidth = '200px';
+            preview.appendChild(img);
+        }
+        reader.readAsDataURL(fileInput.files[0]);
     }
 });
+
 function showFileName(input) {
     const fileName = input.files.length > 0 ? input.files[0].name : 'No se ha seleccionado ningún archivo.';
     document.getElementById('file-name').textContent = fileName;
@@ -233,8 +259,33 @@ function confirmDelete() {
         console.error("Formulario de eliminación no encontrado.");
     }
 }
+
+document.getElementById('clearImage')?.addEventListener('click', () => {
+    const fileInput = document.getElementById('foto');
+    const fileName = document.getElementById('file-name');
+    const preview = document.getElementById('image-preview');
+
+    fileInput.value = '';
+    fileName.textContent = "No se ha seleccionado ningún archivo.";
+    preview.innerHTML = '';
+});
+
+// Animación de cartas
+document.addEventListener('DOMContentLoaded', function () {
+    const detailCard = document.querySelector('.card.detail-card');
+    if (detailCard) {
+        detailCard.classList.add('show');
+        // Agregar .show a cartas embebidas
+        detailCard.querySelectorAll('.card:not(.detail-card)').forEach(card => {
+            card.classList.add('show');
+        });
+    }
+});
+
 </script>
+
 <style>
+
 .btn-agri-primary {
     display: flex;
     align-items: center;
@@ -261,5 +312,7 @@ function confirmDelete() {
 .col-md-6 {
     flex: 0 0 100% !important;
 }
+
 </style>
+
 {% endblock %}

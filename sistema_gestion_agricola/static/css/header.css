@@ -20,7 +20,7 @@
     margin-bottom: 0.1rem;
     margin-left: 0rem;
     margin-top: 0rem;
-    margin-right: 2.6rem;
+    margin-right: 1.2rem;
     font-size: 1.45rem;
 }
 .dashboard-header .section-title {
@@ -45,6 +45,7 @@
     display: flex;
     align-items: center;
     margin-bottom: 0.25rem;
+    padding-right: 0.5rem;
 }
 /* ====== HEADER TOPBAR ====== */
 .header-topbar {
@@ -68,8 +69,8 @@
 }
 /* ====== CALENDAR BADGE PERSONALIZADO ====== */
 .calendar-badge {
-  background-color: var(--bg-color);
-  color: var(--text-color);
+  background-color: transparent;
+  color: var(--btn-neutral);
   padding: 0.75em 1.25em;
   border-radius: 0.75rem;
   font-weight: 500;
@@ -82,8 +83,8 @@
 }
 .calendar-badge i,
 .calendar-badge span {
-  font-size: 1.2rem;
-  color: var(--text-color);
+  font-size: 1.3rem;
+  color: var(--btn-neutral);
 }
 .calendar-badge span {
   margin-left: 0.5rem;
@@ -111,8 +112,8 @@
 .theme-toggle.active,
 .theme-toggle.show {
     background: var(--btn-neutral-hover);
-    transform: scale(1.03);
-    color: var(--btn-text-hover);
+    border-color: var(--btn-neutral-hover);
+    color: var(--btn-neutral);
 }
 .theme-toggle .bi {
     font-size: 1.2rem;

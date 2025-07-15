@@ -7,9 +7,7 @@ from ..utils.db import get_db_connection
 from ..utils.files import allowed_file
 from ..utils.stock_utils import obtener_stock_actual
 
-
 componentes_bp = Blueprint('componentes', __name__, url_prefix='/componente')
-
 
 # Component Management
 
@@ -21,19 +19,22 @@ def lista_componentes():
     conn.close()
     return render_template('componentes/listar.html', componentes=componentes)
 
-
 # Create Component
 # This route allows users to register a new component with its details and photo.
 @componentes_bp.route('/agregar', methods=['GET', 'POST'])
 def registrar_componente():
-
-    # If the request is POST, process the form data
+    conn = get_db_connection()
+    
     if request.method == 'POST':
         codigo = request.form.get('codigo')
         nombre = request.form['nombre']
-        descripcion = request.form['descripcion']
-        tipo = request.form['tipo']
+        descripcion = request.form.get('descripcion', '')
+        tipo = request.form.get('tipo', '')
+        marca = request.form.get('marca', '')
+        modelo = request.form.get('modelo', '')
+        precio = request.form.get('precio', 0)
         foto = request.files.get('foto')
+        proveedores_ids = request.form.getlist('proveedores_seleccionados')
 
         foto_filename = None
         if foto and foto.filename != '':
@@ -41,17 +42,33 @@ def registrar_componente():
             ruta = os.path.join(current_app.config['UPLOAD_FOLDER_COMPONENTES'], foto_filename)
             foto.save(ruta)
 
-        # Guardar en base de datos
-        conn = get_db_connection()
+        # Guardar el componente en la base de datos
         cursor = conn.cursor()
-        cursor.execute('''INSERT INTO componentes (ID_Componente, Nombre, Descripcion, Tipo, Foto) VALUES (?, ?, ?, ?, ?)''', (codigo, nombre, descripcion, tipo, foto_filename))
+        cursor.execute('''
+            INSERT INTO componentes (ID_Componente, Nombre, Descripcion, Tipo, Foto, Marca, Modelo, Precio)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (codigo, nombre, descripcion, tipo, foto_filename, marca, modelo, precio))
+        
         nuevo_id = cursor.lastrowid
+
+        # Insertar relaciones con proveedores
+        for id_proveedor in proveedores_ids:
+            cursor.execute('''
+                INSERT INTO componentes_proveedores (ID_Proveedor, ID_Componente)
+                VALUES (?, ?)
+            ''', (id_proveedor, nuevo_id))
+
         conn.commit()
         conn.close()
-        return redirect(url_for('componentes.vista_componente', id=nuevo_id))
-    # If the request is GET, render the form
-    return render_template('componentes/agregar.html')
 
+        flash(f'Componente "{nombre}" agregado con éxito.')
+        return redirect(url_for('componentes.vista_componente', id=nuevo_id))
+
+    # Si es GET: cargar proveedores para mostrarlos en el formulario
+    proveedores = conn.execute('SELECT * FROM proveedores').fetchall()
+    proveedores = conn.execute('SELECT * FROM proveedores').fetchall()
+    conn.close()
+    return render_template('componentes/agregar.html', proveedores=proveedores)
 
 # Read Component
 # This route allows users to view the details of a specific component, including its suppliers and frequencies
@@ -81,7 +98,6 @@ def vista_componente(id):
 
     conn.close()
     return render_template('componentes/ver.html', componente=componente, stock_actual=stock_actual, proveedores=proveedores, id_maquina=id_maquina)
-
 
 # Update Component
 @componentes_bp.route('/<int:id>/editar', methods=['GET', 'POST'])
@@ -189,7 +205,6 @@ def editar_componente(id):
     # GET: mostrar formulario
     conn.close()
     return render_template('componentes/editar.html', componente=componente)
-
 
 # Component Deletion
 @componentes_bp.route('/<int:id>/eliminar', methods=['POST'])

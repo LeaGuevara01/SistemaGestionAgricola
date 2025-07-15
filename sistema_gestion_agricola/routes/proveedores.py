@@ -148,8 +148,8 @@ def asignar_componente_proveedor(id_proveedor):
                 continue
 
             conn.execute('''
-                INSERT OR IGNORE INTO componentes_proveedores (ID_Proveedor, ID_Componente)
-                VALUES (?, ?)
+                INSERT OR IGNORE INTO componentes_proveedores (ID_Proveedor, ID_Componente, Cantidad)
+                VALUES (?, ?, 1)
             ''', (id_proveedor, id_comp))
 
         conn.commit()
@@ -176,7 +176,6 @@ def asignar_componente_proveedor(id_proveedor):
 def editar_componente_proveedor(id_proveedor, id_componente):
     conn = get_db_connection()
 
-    # Obtener asociación actual
     assoc = conn.execute('''
         SELECT * FROM componentes_proveedores
         WHERE ID_Proveedor = ? AND ID_Componente = ?
@@ -188,20 +187,50 @@ def editar_componente_proveedor(id_proveedor, id_componente):
         return redirect(url_for('proveedores.ver_proveedor', id=id_proveedor))
 
     if request.method == 'POST':
-        cantidad = request.form.get('cantidad', 1)
+        try:
+            nuevo_componente_id = int(request.form.get('componente'))
+            cantidad = int(request.form.get('cantidad', 1))
+            if cantidad < 1:
+                raise ValueError
+        except (TypeError, ValueError):
+            flash("Datos inválidos.")
+            conn.close()
+            return redirect(request.url)
 
-        conn.execute('''
-            UPDATE componentes_proveedores
-            SET cantidad = ?
-            WHERE ID_Proveedor = ? AND ID_Componente = ?
-        ''', (cantidad, id_proveedor, id_componente))
+        if nuevo_componente_id != id_componente:
+            existe = conn.execute('''
+                SELECT 1 FROM componentes_proveedores
+                WHERE ID_Proveedor = ? AND ID_Componente = ?
+            ''', (id_proveedor, nuevo_componente_id)).fetchone()
+
+            if existe:
+                flash("Este componente ya está asignado al proveedor.")
+                conn.close()
+                return redirect(request.url)
+
+            conn.execute('''
+                DELETE FROM componentes_proveedores
+                WHERE ID_Proveedor = ? AND ID_Componente = ?
+            ''', (id_proveedor, id_componente))
+
+            conn.execute('''
+                INSERT INTO componentes_proveedores (ID_Proveedor, ID_Componente, Cantidad)
+                VALUES (?, ?, ?)
+            ''', (id_proveedor, nuevo_componente_id, cantidad))
+        else:
+            conn.execute('''
+                UPDATE componentes_proveedores
+                SET Cantidad = ?
+                WHERE ID_Proveedor = ? AND ID_Componente = ?
+            ''', (cantidad, id_proveedor, id_componente))
+
         conn.commit()
         conn.close()
-
         flash("Componente asociado actualizado.")
         return redirect(url_for('proveedores.ver_proveedor', id=id_proveedor))
 
-    # Obtener datos para mostrar en el formulario
+    # GET: mostrar formulario
+    todos_los_componentes = conn.execute('SELECT ID, Nombre FROM componentes').fetchall()
     componente = conn.execute('SELECT * FROM componentes WHERE ID = ?', (id_componente,)).fetchone()
     proveedor = conn.execute('SELECT * FROM proveedores WHERE ID = ?', (id_proveedor,)).fetchone()
     conn.close()
@@ -209,8 +238,8 @@ def editar_componente_proveedor(id_proveedor, id_componente):
     return render_template('proveedores/editar_componente_proveedor.html',
                            proveedor=proveedor,
                            componente=componente,
-                           cantidad=assoc['cantidad'])
-
+                           cantidad=assoc['Cantidad'],
+                           todos_los_componentes=todos_los_componentes)
 
 # Delete Provider-Component Reference
 @proveedores_bp.route('/<int:id_proveedor>/componentes/<int:id_componente>/eliminar', methods=['POST'])

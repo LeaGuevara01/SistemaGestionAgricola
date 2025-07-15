@@ -45,16 +45,16 @@
 /* ====== OUTLINE LIGHT ====== */
 .btn-outline-light {
     background: transparent;
-    border: none;
+    border: var(--agri-green-muted);
     color: var(--btn-text-primary);
 }
 .btn-outline-light:hover,
 .btn-outline-light:focus,
 .btn-outline-light.active,
 .btn-outline-light.show {
-    background: var(--agri-light);
+    background: var(--agri-green-muted);
     color: var(--btn-text-primary);
-    border-color: var(--agri-light);
+    border-color: var(--agri-green-muted);
 }
 /* ====== OUTLINE PRIMARY ====== */
 .btn-outline-primary {
@@ -71,9 +71,9 @@
 }
 /* ====== OUTLINE SECONDARY ====== */
 .btn-outline-secondary {
-    background: transparent;
+    background: var(--btn-bg-secondary);
     color: var(--btn-text-secondary);
-    border: none !important;
+    border: var(--btn-border-secondary);
     outline: none !important;
     box-shadow: none !important;
     text-decoration: none !important;
@@ -213,7 +213,8 @@
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
-  margin: 1rem auto;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
   flex-wrap: wrap;
 }
 .view-toggle .btn {

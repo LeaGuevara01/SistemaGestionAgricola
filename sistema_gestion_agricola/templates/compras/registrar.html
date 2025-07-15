@@ -4,73 +4,74 @@
 
 {% block content %}
 <div class="page-wrapper">
-    <div class="dashboard-header hidden-item p-4 shadow rounded">
+    <!-- Header -->
+    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
         <div class="header-topbar">
             <div class="header-title">
-                <h2 class="section-title"><i class="bi bi-cart-plus"></i> Registrar compra de componente</h2>
+                <h2 class="section-title"><i class="bi bi-cart-plus"></i> Registrar Compra</h2>
                 <p class="section-subtitle opacity-75 d-none d-md-block mb-2">Asigná una nueva compra a un proveedor</p>
             </div>
-        </div>
-        <div class="header-controls">
-            <a href="{{ url_for('index') }}" 
-                    class="btn btn-outline-primary btn-sm ms-2">
-                    <i class="bi bi-house"></i> 
-                    <span class="d-none d-md-block d-md-inline">Inicio</span>
-            </a>
-            <button class="theme-toggle" id="themeToggle">
-                <i class="bi bi-moon-fill" id="themeIcon"></i>
-            </button>
-            <div class="calendar-badge fs-6 d-none d-lg-block">
-                <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+            <div class="header-controls">
+                <a href="{{ url_for('index') }}" 
+                        class="btn btn-outline-primary btn-sm ms-auto">
+                        <i class="bi bi-house"></i> 
+                        <span class="d-none d-md-block d-md-inline">Inicio</span>
+                </a>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+                <div class="calendar-badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
             </div>
         </div>
     </div>
     <!-- Formulario -->
     <div class="card-section hidden-item mb-4 mx-auto" style="max-width: 700px;">
         <div class="mt-0 card-section hidden-item" style="box-shadow: none; max-width: 650px;">
-            <form method="POST"
-                class="mt-0 hidden-item row needs-validation"
-                style="margin-left: 0.1em;">
-                <!-- Código proveedor -->
-                <div class="mb-3">
-                    <label class="form-label"><strong>Proveedor</strong></label>
-                    <select name="proveedor" class="form-select" required>
-                        <option value="" disabled selected>Seleccionar proveedor</option>
-                        {% for p in proveedores %}
-                            <option value="{{ p['ID'] }}">{{ p['Nombre'] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <!-- Componente -->
-                <div class="mb-3">
-                    <label class="form-label"><strong>Componente</strong></label>
-                    <select name="componente" class="form-select" required>
-                        <option value="" disabled selected>Seleccionar componente</option>
-                        {% for c in componentes %}
-                            <option value="{{ c['ID'] }}">{{ c['Nombre'] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <!-- Cantidad -->
-                <div class="mb-3">
-                    <label class="form-label"><strong>Cantidad</strong></label>
-                    <input type="number" name="cantidad" class="form-control" min="1" required>
-                </div>
-                <!-- Precio unitario -->
-                <div class="mb-3">
-                    <label class="form-label"><strong>Precio Unitario</strong></label>
-                    <input type="number" name="precio_unitario" class="form-control" step="0.01" min="0" required>
-                </div>
-                <!-- Observación -->
-                <div class="mb-3">
-                    <label class="form-label"><strong>Observación</strong></label>
-                    <input type="text" name="observacion" class="form-control" placeholder="Opcional">
-                </div>
-                <!-- Botón -->
-                <button type="submit" class="btn btn-outline-secondary mt-3">
-                    <i class="bi bi-save"></i> Registrar pago
-                </button>
-            </form>
+        <form method="POST"
+            class="mt-0 hidden-item row g-3 needs-validation"
+            style="margin-left: 0.1rem;">
+            <!-- Código proveedor -->
+            <div class="mb-3">
+                <label class="form-label"><strong>Proveedor</strong></label>
+                <select name="proveedor" class="form-select" required>
+                    <option value="" disabled selected>Seleccionar proveedor</option>
+                    {% for p in proveedores %}
+                        <option value="{{ p['ID'] }}">{{ p['Nombre'] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <!-- Componente -->
+            <div class="mb-3">
+                <label class="form-label"><strong>Componente</strong></label>
+                <select name="componente" class="form-select" required>
+                    <option value="" disabled selected>Seleccionar componente</option>
+                    {% for c in componentes %}
+                        <option value="{{ c['ID'] }}">{{ c['Nombre'] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <!-- Cantidad -->
+            <div class="mb-3">
+                <label class="form-label"><strong>Cantidad</strong></label>
+                <input type="number" name="cantidad" class="form-control" min="1" required>
+            </div>
+            <!-- Precio unitario -->
+            <div class="mb-3">
+                <label class="form-label"><strong>Precio Unitario</strong></label>
+                <input type="number" name="precio_unitario" class="form-control" step="0.01" min="0" required>
+            </div>
+            <!-- Observación -->
+            <div class="mb-3">
+                <label class="form-label"><strong>Observación</strong></label>
+                <input type="text" name="observacion" class="form-control" placeholder="Opcional">
+            </div>
+            <!-- Botón -->
+            <button type="submit" class="btn btn-outline-secondary mt-3">
+                <i class="bi bi-cart"></i> Registrar compra
+            </button>
+        </form>
         </div>
     </div>
 </div>

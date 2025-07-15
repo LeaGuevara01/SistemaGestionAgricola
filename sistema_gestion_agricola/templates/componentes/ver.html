@@ -11,6 +11,11 @@
                 <p class="section-subtitle mb-0 d-none d-md-block opacity-75">{{ componente.Descripcion or 'Componente del sistema agrícola' }}</p>
             </div>
             <div class="header-controls">
+                <a href="{{ url_for('index') }}" 
+                    class="btn btn-outline-primary btn-sm ms-auto">
+                    <i class="bi bi-house"></i> 
+                    <span class="d-none d-md-block d-md-inline">Inicio</span>
+                </a>
                 <a href="{% if request.args.get('next') %}
                             {{ request.args.get('next') }}
                         {% elif id_maquina %}
@@ -29,13 +34,11 @@
                             Volver al listado
                         {% endif %}
                     </span>
-                    <span class="d-md-none">Volver</span>
                 </a>
                 <a href="{{ url_for('componentes.editar_componente', id=componente.ID) }}" 
                     class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-pencil-square"></i> 
-                    <span class="d-none d-md-inline">Editar Componente</span>
-                    <span class="d-md-none">Editar</span>
+                    <span class="d-none d-md-inline">Editar</span>
                 </a>
                 <button class="theme-toggle" id="themeToggle">
                     <i class="bi bi-moon-fill" id="themeIcon"></i>
@@ -160,7 +163,7 @@
         <!-- Columna lateral - Proveedores y acciones -->
         <div class="col-lg-4">
             <!-- Acciones Rápidas -->
-            <div class="card-section hidden-item compact-panel">
+            <div class="card-section hidden-item compact-panel" style="border: 3px dashed var(--bg-color);">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4 class="section-title mb-0">
                         <i class="bi bi-lightning-fill"></i> Acciones Rápidas
@@ -197,22 +200,26 @@
                 <!-- Footer con información del componente -->
                 <div class="actions-footer hidden-item">
                     <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">ID: {{ componente.ID }}</small>
-                        {% if id_maquina %}
-                        <small class="text-muted">Máquina: {{ id_maquina }}</small>
+                        <span class="badge rounded-pill px-3 py-2 text-uppercase fw-semibold"
+                            style="background-color: var(--agri-dark); color: var(--text-color); font-size: 0.75rem;">
+                            ID: {{ componente.ID_Componente }}</span>
+                        {% if ID_Maquina %}
+                        <span class="badge rounded-pill px-3 py-2 text-uppercase fw-semibold"
+                            style="background-color: var(--agri-dark); color: var(--text-color); font-size: 0.75rem;">
+                            Máquina: {{ ID_Maquina }}</span>
                         {% endif %}
                         <span class="badge rounded-pill px-3 py-2 text-uppercase fw-semibold"
-                              style="background-color: var(--agri-green-dark); color: #fff; font-size: 0.75rem;">
-                            Stock: {{ stock_actual }}</span>
-                        <span class="badge rounded-pill px-3 py-2 text-uppercase fw-semibold"
-                              style="background-color: var(--agri-green-dark); color: #fff; font-size: 0.75rem;">
+                            style="background-color: var(--agri-dark); color: var(--text-color); font-size: 0.75rem;">
                             Disponible</span>
+                        <span class="badge rounded-pill px-3 py-2 text-uppercase fw-semibold"
+                            style="background-color: var(--agri-dark); color: var(--text-color); font-size: 0.75rem;">
+                            Stock: {{ stock_actual }}</span>
                     </div>
                 </div>
             </div>
             
             <!-- Proveedores - Carta Separada -->
-            <div class="card-section providers-card hidden-item mt-3">
+            <div class="card-section providers-card hidden-item mt-3" style="max-height: fit-content;">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="section-title mb-0">
                         <i class="bi bi-people-fill"></i> Proveedores

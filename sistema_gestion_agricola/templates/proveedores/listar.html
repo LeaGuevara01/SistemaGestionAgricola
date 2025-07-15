@@ -7,12 +7,12 @@
         <div class="header-topbar">
             <div class="header-title">
                 <h2 class="section-title"><i class="bi bi-people-fill"></i> Lista de Proveedores</h2>
-                <p class="section-subtitle d-md-block opacity-75">Administra el cuaderno de cuentas proveedoras</p>
+                <p class="section-subtitle d-md-block opacity-75">Administra el cuaderno de proveedores</p>
             </div>
         </div>
         <div class="header-controls">
             <a href="{{ url_for('index') }}" 
-                class="btn btn-outline-primary btn-sm ms-2" 
+                class="btn btn-outline-primary btn-sm ms-auto" 
                 style="font-size: 1rem;">
                 <i class="bi bi-house"></i> 
                 <span class="d-none d-md-block d-md-inline">Inicio</span>
@@ -20,13 +20,12 @@
             <a href="{{ url_for('proveedores.agregar_proveedor') }}" 
                 class="btn btn-outline-primary btn-sm">
                 <i class="bi bi-plus-lg"></i>
-                <span class="d-none d-md-inline">Agregar Proveedor</span>
-                <span class="d-md-none">Agregar</span>
+                <span class="d-none d-md-block d-md-inline">Proveedor</span>
             </a>
-            <a href="{{ url_for('compras.registrar_compra') }}" class="btn btn-outline-primary btn-sm">
+            <a href="{{ url_for('compras.registrar_compra') }}" 
+                class="btn btn-outline-primary btn-sm">
                 <i class="bi bi-cart-plus"></i>
-                <span class="d-none d-md-block d-md-inline">Registrar Compra</span>
-                <span class="d-md-none">Compra</span>
+                <span class="d-none d-md-block d-md-inline">Compra</span>
             </a>
             <button class="theme-toggle" id="themeToggle">
                 <i class="bi bi-moon-fill" id="themeIcon"></i>

@@ -1,33 +1,32 @@
 {% extends "base.html" %}
 
-{% block title %}Editar Máquina{% endblock %}
+{% block title %}Editar {{ maquina['Nombre'] }}{% endblock %}
 
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
-    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
+    <div class="dashboard-header hidden-item p-4 shadow rounded mb-4">
         <div class="header-topbar">
             <div class="header-title">
-                <h2 class="section-title"><i class="bi bi-pencil-square"></i> Editar Máquina</h2>
+                <h2 class="section-title"><i class="bi bi-pencil-square"></i> Editar <br> {{ maquina['Nombre'] }}</h2>
                 <p class="section-subtitle d-none d-md-block opacity-75">Modifica la información de la máquina</p>
             </div>
             <div class="header-controls">
+                <a href="{{ url_for('maquinas.listar_maquinas') }}" 
+                    class="btn btn-outline-primary btn-sm ms-auto">
+                    <i class="bi bi-arrow-left"></i> 
+                    <span class="d-none d-md-inline">Volver</span>
+                </a>
                 <a href="{{ url_for('index') }}" 
-                    class="btn btn-outline-primary btn-sm ms-2">
+                    class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-house"></i> 
                     <span class="d-none d-md-block d-md-inline">Inicio</span>
                 </a>
-                <a href="{{ url_for('maquinas.listar_maquinas') }}" 
-                    class="btn btn-outline-primary btn-sm">
-                    <i class="bi bi-arrow-left"></i> 
-                    <span class="d-none d-md-inline">Volver a Máquinas</span>
-                    <span class="d-md-none">Volver</span>
-                </a>
                 {% if maquina %}
-                <a href="{{ url_for('maquinas.ver_maquina', id=maquina.ID) }}" class="btn btn-outline-primary btn-sm">
+                <a href="{{ url_for('maquinas.ver_maquina', id=maquina.ID) }}" 
+                    class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-eye"></i> 
-                    <span class="d-none d-md-inline">Ver Máquina</span>
-                    <span class="d-md-none">Ver</span>
+                    <span class="d-none d-md-inline">Ver</span>
                 </a>
                 {% endif %}
                 <button class="theme-toggle" id="themeToggle">
@@ -41,11 +40,10 @@
     </div>
 
     <!-- Formulario -->
-    <div class="card-section hidden-item mx-auto" style="max-width: 700px;">
+    <section class="page-section hidden-item mx-auto" style="max-width: 700px;">
         <div class="mt-0 card-section hidden-item" style="box-shadow: none; max-width: 650px;">
             <form method="POST" enctype="multipart/form-data" id="editMachineForm" 
-                class="mt-0 form-edit hidden-item row g-3"
-                style="margin-left: 0.1em;">
+                class="mt-0 form-edit hidden-item row g-3">
                 <!-- Nombre -->
                 <div class="col-12">
                     <label for="nombre" class="form-label required">
@@ -121,6 +119,15 @@
                             No se ha seleccionado ningún archivo.
                         {% endif %}
                     </div>
+                    <!-- Vista previa de imagen seleccionada -->
+                    <div id="image-preview" class="mt-3">
+                        {% if maquina and maquina.Foto %}
+                            <img src="{{ url_for('static', filename='fotos/maquina/' ~ maquina.Foto) }}" 
+                                alt="Imagen actual" 
+                                class="img-thumbnail" 
+                                style="max-width: 200px;">
+                        {% endif %}
+                    </div>
                 </div>
                 <!-- Botones de acción -->
                 <div class="d-flex gap-3 mt-2 pt-2 custom-border justify-content-center">
@@ -139,8 +146,11 @@
                     {% endif %}
                 </div>
             </form>
+            <form id="deleteForm" method="POST" action="{{ url_for('maquinas.eliminar_maquina', id=maquina.ID) }}">
+                <input type="hidden" name="_method" value="DELETE">
+            </form>
         </div>
-    </div>
+    </section>
 
     <!-- Carta con cartas embebidas -->
     <div class="card detail-card hidden-item p-4 shadow-sm mx-auto" 
@@ -234,13 +244,59 @@
                         </ul>
                         {% endif %}
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <script>
+
+// Evento para subir la foto
+document.getElementById('foto').addEventListener('change', function (e) {
+    const fileInput = e.target;
+    const fileName = fileInput.files[0] ? fileInput.files[0].name : "No se ha seleccionado ningún archivo.";
+    document.getElementById('file-name').textContent = "Imagen seleccionada: " + fileName;
+
+    // Vista previa de la imagen
+    const preview = document.getElementById('image-preview');
+    preview.innerHTML = ''; // Limpiar cualquier imagen previa
+
+    if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'img-thumbnail';
+            img.style.maxWidth = '200px';
+            preview.appendChild(img);
+        }
+        reader.readAsDataURL(fileInput.files[0]);
+    }
+});
+document.getElementById('clearImage')?.addEventListener('click', () => {
+    const fileInput = document.getElementById('foto');
+    const fileName = document.getElementById('file-name');
+    const preview = document.getElementById('image-preview');
+
+    fileInput.value = '';
+    fileName.textContent = "No se ha seleccionado ningún archivo.";
+    preview.innerHTML = '';
+});
+
+function showFileName(input) {
+    const fileName = input.files.length > 0 ? input.files[0].name : 'No se ha seleccionado ningún archivo.';
+    document.getElementById('file-name').textContent = fileName;
+}
+function confirmDelete() {
+    const form = document.getElementById('deleteForm');
+    if (form && confirm("¿Estás seguro de que querés eliminar este componente? Esta acción no se puede deshacer.")) {
+        form.submit();
+    } else {
+        console.error("Formulario de eliminación no encontrado.");
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
 const detailCard = document.querySelector('.card.detail-card');
 if (detailCard) {
@@ -251,34 +307,33 @@ if (detailCard) {
     });
 }
 });
+
 </script>
+
 <style>
+
 .list-group-item {
     padding: 0.6rem 1rem;
     background: var(--card-bg);
     color: var(--text-color);
     border-bottom: none;
 }
-
 .btn-agri-primary {
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
 .badge.bg-agri-primary {
     background-color: var(--agri-green-primary);
     color: #fff;
     font-weight: 500;
 }
-
 .card.detail-card .card {
     border: none;
     opacity: 0;
     transform: translateY(20px);
     transition: all 0.5s cubic-bezier(.4,2,.6,1);
 }
-
 .card.detail-card .card.show {
     opacity: 1;
     transform: translateY(0);
@@ -286,5 +341,6 @@ if (detailCard) {
 .border-top {
   border-top: 2px solid var(--bg-color) !important;
 }
+
 </style>
 {% endblock %}

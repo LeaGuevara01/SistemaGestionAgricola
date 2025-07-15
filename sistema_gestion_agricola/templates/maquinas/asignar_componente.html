@@ -1,50 +1,106 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Asignar Componente</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-<div class="container py-4">
-    <a href="{{ url_for('vista_maquina', id=id_maquina) }}" class="btn btn-secondary mb-3">← Volver</a>
-    <h2>Asignar componente a máquina</h2>
+{% extends "base.html" %}
 
-    {% if mensaje_error %}
-        <div class="alert alert-warning">{{ mensaje_error }}</div>
-    {% endif %}
+{% block title %}Asignar Componente a Máquina{% endblock %}
 
-    <form method="POST">
-        <div class="mb-3">
-            <label for="componente" class="form-label">Componente</label>
-            <select name="componente" id="componente" class="form-select" required>
-                {% for c in componentes %}
-                    <option value="{{ c.ID }}">{{ c.Nombre }}</option>
-                {% endfor %}
-            </select>
+{% block content %}
+<div class="page-wrapper">
+    <!-- Header -->
+    <div class="dashboard-header hidden-item p-4 shadow rounded mb-4">
+        <div class="header-topbar">
+            <div class="header-title">
+                <h2 class="section-title"><i class="bi bi-puzzle"></i> Asignar Componente a Máquina</h2>
+                <p class="section-subtitle d-none d-md-block opacity-75">Selecciona un componente y define su frecuencia</p>
+            </div>
+            <div class="header-controls">
+                <a href="{{ url_for('index') }}" 
+                    class="btn btn-outline-primary btn-sm ms-auto">
+                    <i class="bi bi-house"></i> 
+                    <span class="d-none d-md-block d-md-inline">Inicio</span>
+                </a>
+                <a href="{{ url_for('maquinas.ver_maquina', id=id_maquina) }}" 
+                    class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-arrow-left"></i> 
+                    <span class="d-none d-md-block d-md-inline">Volver</span>
+                </a>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+                <div class="calendar-badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <div class="mb-3">
-            <label for="frecuencia" class="form-label">Frecuencia</label>
-            <input type="number" name="frecuencia" class="form-control" required>
-        </div>
+    <!-- Formulario Asignar Componente -->
+    <div class="card-section hidden-item mx-auto" style="max-width: 600px;">
+        {% if mensaje_error %}
+            <div class="alert alert-warning">{{ mensaje_error }}</div>
+        {% endif %}
+        <form method="POST" class="needs-validation" novalidate>
+            <!-- Componente -->
+            <div class="mb-3">
+                <label for="componente" class="form-label">Componente</label>
+                <select name="componente" id="componente" class="form-select" required>
+                    <option value="" disabled selected>Seleccione un componente</option>
+                    {% for c in componentes %}
+                        <option value="{{ c.ID }}">{{ c.Nombre }}</option>
+                    {% endfor %}
+                </select>
+                <div class="invalid-feedback">Por favor seleccione un componente.</div>
+            </div>
 
-        <div class="mb-3">
-            <label for="unidad_tiempo" class="form-label">Unidad de tiempo</label>
-            <select name="unidad_tiempo" class="form-select" required>
-                <option value="horas">Horas</option>
-                <option value="días">Días</option>
-                <option value="meses">Meses</option>
-            </select>
-        </div>
+            <!-- Frecuencia -->
+            <div class="mb-3">
+                <label for="frecuencia" class="form-label">Frecuencia</label>
+                <input type="number" name="frecuencia" id="frecuencia" class="form-control" min="1" required>
+                <div class="invalid-feedback">Por favor ingrese la frecuencia (número mayor a 0).</div>
+            </div>
 
-        <div class="mb-3">
-            <label for="criterio_adicional" class="form-label">Criterio adicional (opcional)</label>
-            <textarea name="criterio_adicional" class="form-control"></textarea>
-        </div>
+            <!-- Unidad de tiempo -->
+            <div class="mb-3">
+                <label for="unidad_tiempo" class="form-label">Unidad de tiempo</label>
+                <select name="unidad_tiempo" id="unidad_tiempo" class="form-select" required>
+                    <option value="" disabled selected>Seleccione unidad de tiempo</option>
+                    <option value="horas">Horas</option>
+                    <option value="días">Días</option>
+                    <option value="semanas">Semanas</option>
+                    <option value="meses">Meses</option>
+                </select>
+                <div class="invalid-feedback">Por favor seleccione una unidad de tiempo.</div>
+            </div>
 
-        <button type="submit" class="btn btn-primary">Asignar</button>
-    </form>
+            <!-- Criterio adicional (opcional) -->
+            <div class="mb-3">
+                <label for="criterio_adicional" class="form-label">Criterio adicional (opcional)</label>
+                <textarea name="criterio_adicional" id="criterio_adicional" class="form-control" rows="3" placeholder="Detalles adicionales..."></textarea>
+            </div>
+
+            <!-- Botón submit -->
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <button type="submit" class="btn btn-agri-primary px-5">
+                    <i class="bi bi-check-lg"></i> Asignar
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
-</body>
-</html>
+
+<script>
+// Validación Bootstrap 5 para formularios
+(() => {
+    'use strict'
+    const forms = document.querySelectorAll('.needs-validation')
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+</script>
+
+{% endblock %}

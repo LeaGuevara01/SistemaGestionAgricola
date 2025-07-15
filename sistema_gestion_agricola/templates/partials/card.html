@@ -24,18 +24,17 @@
             <p class="card-details">
                 {{ details | safe }}
             </p>
-            {% if edit_url %}
-            <div class="card-actions">
-                <a href="{{ edit_url }}" class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-pencil"></i> Editar
-                </a>
-            </div>
-            {% endif %}
         </div>
+        {% if edit_url %}
+        <footer class="card-footer">
+          <a href="{{ edit_url }}" class="btn btn-outline-tertiary btn-sm w-100">Editar</a>
+        </footer>
+        {% endif %}
     </div>
 </div>
 <style>
 .card {
+  height: 100%;
   display: flex;
   flex-direction: column;
   cursor: pointer;
@@ -45,7 +44,6 @@
   box-shadow: 0 4px 16px rgba(0,0,0,0.10);
   transform: translateY(-2px) scale(1.01);
 }
-
 .card-image {
   width: 100%;
   height: 180px;
@@ -58,14 +56,12 @@
   align-items: center;
   justify-content: center;
 }
-
 .card-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: inherit;
 }
-
 .card-placeholder {
   color: var(--agri-green-muted);
   font-size: 2.5rem;
@@ -86,27 +82,34 @@
   font-weight: 500;
   font-size: 1rem;
 }
-
 .card-title {
   font-size: 1.15rem;
   font-weight: 600;
-  color: var(--text-color, #222);
+  color: var(--text-color);
+  opacity: 90%;
   margin-bottom: 0.5rem;
 }
-
 .card-details {
   font-size: 0.95rem;
-  color: var(--agri-green, #388e3c);
+  color: var(--text-color);
+  opacity: 75%;
   margin-bottom: 0.25rem;
 }
-
+.card-content {
+  flex-grow: 1;
+}
+.card-footer {
+  margin-top: auto;
+  background: transparent;
+  border-top: none;
+}
 .card-actions {
   margin-top: auto;
   display: flex;
+  flex-grow: 1;
   gap: 0.5rem;
   align-items: center;
 }
-
 .card-badge {
   position: absolute;
   top: 8px;

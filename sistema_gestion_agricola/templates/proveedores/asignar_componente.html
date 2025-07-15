@@ -1,73 +1,132 @@
 {% extends "base.html" %}
 
+{% block title %}Asignar Componentes{% endblock %}
+
 {% block content %}
 <div class="page-wrapper">
-    <div class="card-section providers-card">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="section-title">
-                <i class="bi bi-box-seam"></i> Asignar Componentes a Proveedor: {{ proveedor['Nombre'] }}
-            </h2>
-            <a href="{{ url_for('ver_proveedor', id=proveedor['ID']) }}" class="btn btn-outline-secondary mx-auto">
-                ← Volver
-            </a>
+    <!-- Encabezado -->
+    <div class="dashboard-header hidden-item p-4 shadow rounded">
+        <div class="header-topbar">
+            <div class="header-title">
+                <h2 class="section-title"><i class="bi bi-box-seam"></i> Asignar Componentes</h2>
+                <p class="section-subtitle d-none d-md-block opacity-75">
+                    Asigna componentes al proveedor <strong>{{ proveedor['Nombre'] }}</strong>.
+                </p>
+            </div>
+            <div class="header-controls">
+                <a href="{{ url_for('proveedores.ver_proveedor', id=proveedor['ID']) }}" 
+                   class="btn btn-outline-primary btn-sm ms-auto">
+                    <i class="bi bi-arrow-left"></i> 
+                    <span class="d-none d-md-inline">Volver</span>
+                </a>
+                <a href="{{ url_for('index') }}" 
+                   class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-house"></i> 
+                    <span class="d-none d-md-inline">Inicio</span>
+                </a>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="bi bi-moon-fill" id="themeIcon"></i>
+                </button>
+                <div class="calendar-badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <form method="POST" action="{{ url_for('asignar_componente_proveedor', id_proveedor=proveedor['ID']) }}">
+    <!-- Formulario -->
+    <div class="card-section hidden-item mx-auto mt-4" style="max-width: 700px;">
+        <form method="POST" action="{{ url_for('proveedores.asignar_componente_proveedor', id_proveedor=proveedor['ID']) }}" class="needs-validation" novalidate>
             <div class="mb-3">
-                <label for="componentes" class="form-label">Seleccione componentes para asignar</label>
-                <select name="componentes[]" id="componentes" class="form-select" multiple size="10" required>
-                    {% for c in componentes_disponibles %}
-                    <option value="{{ c['ID'] }}">{{ c['Nombre'] }}{% if c['Tipo'] %} — {{ c['Tipo'] }}{% endif %}</option>
-                    {% endfor %}
-                </select>
-                <small class="form-text text-muted">Mantenga presionado Ctrl para seleccionar múltiples componentes.</small>
+              <label class="form-label fw-semibold" style="font-size: 1.6rem; margin-bottom: 1rem;">
+                <i class="bi bi-puzzle-fill"></i> Componentes disponibles
+              </label>
+              <div class="card-body d-flex flex-column">
+                {% for c in componentes_disponibles %}
+                  <div class="custom-checkbox-wrapper d-flex align-items-center gap-2 mb-2">
+                    <input class="custom-checkbox-input" type="checkbox" 
+                          name="componentes[]" 
+                          value="{{ c['ID'] }}" 
+                          id="comp{{ c['ID'] }}">
+                    <label class="custom-checkbox-label fw-semibold fs-5" for="comp{{ c['ID'] }}">
+                      {{ c['Nombre'] }}{% if c['Tipo'] %} — {{ c['Tipo'] }}{% endif %}
+                    </label>
+                  </div>
+                {% endfor %}
+              </div>
             </div>
 
-            <button type="submit" class="btn btn-agri-primary">
-                <i class="bi bi-plus-lg"></i> Asignar Componentes
-            </button>
+            <div class="d-flex gap-3 mt-2 pt-2 custom-border justify-content-center">
+                <button type="submit" class="btn btn-agri-primary w-100" style="border: transparent;">
+                    <i class="bi bi-check-lg"></i> Asignar Componentes
+                </button>
+            </div>
         </form>
     </div>
 </div>
+
+<script>
+  (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+
 <style>
-.providers-card {
-  background: var(--card-bg, #fff);
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  color: var(--text-color, #222);
+/* Contenedor checkbox personalizado */
+.custom-checkbox-wrapper {
+    position: relative;
+    gap: 0.5rem;
 }
-
-.providers-card p {
-  margin-bottom: 0.6rem;
-  font-size: 1rem;
-  line-height: 1.4;
+/* Escondemos el input nativo */
+.custom-checkbox-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
 }
-
-.providers-card p strong {
-  color: var(--agri-green-primary, #2a7a2a);
-  width: 110px;
-  display: inline-block;
-}
-
-.providers-card > .row > .col-md-6:first-child {
-  background: var(--bg-color, #f8f9fa);
-  border-radius: 10px;
-  padding: 1.25rem 1.5rem;
-}
-
-.providers-card > .row > .col-md-6:last-child {
-  display: flex;
-  justify-content: center;
+/* Cuadro checkbox personalizado */
+.custom-checkbox-label {
+  position: relative;
+  padding-left: 2rem;
+  cursor: pointer;
+  color: var(--text-color);
+  display: inline-flex;
   align-items: center;
 }
-
-.providers-card img {
-  max-height: 250px;
-  object-fit: contain;
-  border-radius: 10px;
-  box-shadow: 0 3px 7px rgba(0,0,0,0.15);
+/* Checkbox visual */
+.custom-checkbox-label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.2rem;
+  height: 1.2rem;
+  background-color: var(--card-bg);
+  border: 2px solid var(--text-color);
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: 70%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+/* Check activo */
+.custom-checkbox-input:checked + .custom-checkbox-label::before {
+  background-color: var(--text-color);
+  border-color: var(--text-color);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.003 10.803 3.201 8 2 9.202l4.003 4L14 5.207 12.798 4l-6.795 6.803z'/%3E%3C/svg%3E");
 }
 </style>
 {% endblock %}

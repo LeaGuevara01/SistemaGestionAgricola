@@ -6,20 +6,25 @@
     <div class="dashboard-header hidden-item p-4 mb-3 rounded">
         <div class="header-topbar">
             <div class="header-title">
-                <h2 class="section-title"><i class="bi bi-people-fill"></i> Proveedor: {{ proveedor['Nombre'] }}</h2>
+                <h2 class="section-title"><i class="bi bi-people-fill"></i> Proveedor:<br>{{ proveedor['Nombre'] }}</h2>
                 <p class="section-subtitle d-none d-md-block opacity-75">Detalles y gestión del proveedor</p>
             </div>
             <div class="header-controls">
                 <a href="{{ url_for('proveedores.listar_proveedores') }}" 
                     class="btn btn-outline-primary btn-sm ms-auto">
                     <i class="bi bi-arrow-left"></i> 
-                    <span class="d-md-none">Volver</span>
+                    <span class="d-none d-md-block d-md-inline">Volver</span>
+                </a>
+                <a href="{{ url_for('index') }}" 
+                    class="btn btn-outline-primary btn-sm" 
+                    style="font-size: 1rem;">
+                    <i class="bi bi-house"></i> 
+                    <span class="d-none d-md-block d-md-inline">Inicio</span>
                 </a>
                 <a href="{{ url_for('proveedores.editar_proveedor', id=proveedor.ID) }}" 
                     class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-pencil-square"></i>
-                    <span class="d-none d-md-inline">Editar Proveedor</span>
-                    <span class="d-md-none">Editar</span>
+                    <span class="d-none d-md-block d-md-inline">Editar</span>
                 </a>
                 <button class="theme-toggle" id="themeToggle">
                     <i class="bi bi-moon-fill" id="themeIcon"></i>
@@ -97,7 +102,7 @@
                 <thead>
                     <tr>
                         <th>Componente</th>
-                        <th>Cantidad</th>
+                        <th class="text-end">Cantidad</th>
                         <th class="d-none d-md-table-cell">Descripción</th>
                         <th class="text-center">Acciones</th>
                     </tr>
@@ -106,7 +111,7 @@
                     {% for c in componentes_asociados %}
                     <tr class="clickable-row component-row" data-component-id="{{ c['ID'] }}" data-provider-id="{{ proveedor['ID'] }}" data-action="ver">
                         <td><strong>{{ c['Nombre'] }}</strong></td>
-                        <td><strong>{{ c['Cantidad'] }}</strong></td>
+                        <td class="text-end"><strong>{{ c['Cantidad'] }}</strong></td>
                         <td class="d-none d-md-table-cell">{{ c['Descripcion'] }}</td>
                         <td class="action-cell text-center">
                             <a href="{{ url_for('proveedores.editar_componente_proveedor', id_proveedor=proveedor['ID'], id_componente=c['ID']) }}"

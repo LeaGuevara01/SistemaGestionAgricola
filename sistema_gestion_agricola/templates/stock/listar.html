@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block title %}Stock{% endblock %}
+
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
@@ -11,22 +13,18 @@
             </div>
             <div class="header-controls">
                 <a href="{{ url_for('index') }}" 
-                    class="btn btn-outline-primary btn-sm ms-2" 
-                    style="font-size: 1rem;">
+                    class="btn btn-outline-primary btn-sm ms-auto">
                     <i class="bi bi-house"></i> 
                     <span class="d-none d-md-block d-md-inline">Inicio</span>
                 </a>
                 <a href="{{ url_for('stock.registrar_stock') }}" 
-                    class="btn btn-outline-primary btn-sm" 
-                    style="font-size: 1rem;">
+                    class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-plus-lg"></i>
-                    <span class="d-none d-md-block d-md-inline">Registrar Stock</span>
-                    <span class="d-md-none">Stock</span>
+                    <span class="d-none d-md-block d-md-inline">Stock</span>
                 </a>
                 <a href="{{ url_for('compras.registrar_compra') }}" class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-cart-plus"></i>
-                    <span class="d-none d-md-block d-md-inline">Registrar Compra</span>
-                    <span class="d-md-none">Compra</span>
+                    <span class="d-none d-md-block d-md-inline">Compra</span>
                 </a>
                 <button class="theme-toggle" id="themeToggle">
                     <i class="bi bi-moon-fill" id="themeIcon"></i>

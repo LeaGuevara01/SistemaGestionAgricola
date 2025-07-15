@@ -13,15 +13,14 @@
             </div>
             <div class="header-controls">
                 <a href="{{ url_for('index') }}" 
-                    class="btn btn-outline-primary btn-sm ms-2">
+                    class="btn btn-outline-primary btn-sm ms-auto">
                     <i class="bi bi-house"></i> 
                     <span class="d-none d-md-block d-md-inline">Inicio</span>
                 </a>
                 <a href="{{ url_for('componentes.lista_componentes') }}" 
-                    class="btn btn-outline-primary btn-sm ms-2">
-                    <i class="bi bi-arrow-left-fill"></i> 
-                    <span class="d-none d-md-block d-md-inline">Volver a Componentes</span>
-                    <span class="d-md-none">Volver</span>
+                    class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-arrow-left"></i> 
+                    <span class="d-none d-md-block d-md-inline">Volver</span>
                 </a>
                 <button class="theme-toggle" id="themeToggle">
                     <i class="bi bi-moon-fill" id="themeIcon"></i>
@@ -64,6 +63,23 @@
                     <label for="tipo" class="form-label">Tipo</label>
                     <input type="text" class="form-control" name="tipo" id="tipo">
                 </div>
+                <!-- Marca -->
+                <div class="mb-3">
+                    <label for="marca" class="form-label">Marca</label>
+                    <input type="text" class="form-control" name="marca" id="marca">
+                </div>
+
+                <!-- Modelo -->
+                <div class="mb-3">
+                    <label for="modelo" class="form-label">Modelo</label>
+                    <input type="text" class="form-control" name="modelo" id="modelo">
+                </div>
+
+                <!-- Precio -->
+                <div class="mb-3">
+                    <label for="precio" class="form-label">Precio</label>
+                    <input type="number" step="0.01" class="form-control" name="precio" id="precio">
+                </div>
                 <!-- Imagen -->
                 <div class="custom-file-upload mb-3">
                     <label for="foto" class="upload-label">
@@ -71,40 +87,203 @@
                     </label>
 
                     <input type="file" id="foto" name="foto" accept="image/*" style="display: none;">
-                    
+
                     <!-- Vista previa del nombre del archivo -->
-                    <div id="file-name" class="file-name-preview">
+                    <div id="file-name" class="file-name-preview mt-2 text-muted small">
                         {% if componente and componente.Foto %}
                             Imagen actual: {{ componente.Foto }}
                         {% else %}
                             No se ha seleccionado ningún archivo.
                         {% endif %}
                     </div>
+
+                    <!-- Vista previa de imagen seleccionada -->
+                    <div id="image-preview" class="mt-3">
+                        {% if componente and componente.Foto %}
+                            <img src="{{ url_for('static', filename='fotos/componente/' ~ componente.Foto) }}" 
+                                alt="Imagen actual" 
+                                class="img-thumbnail" 
+                                style="max-width: 200px;">
+                        {% endif %}
+                    </div>
                 </div>
+                <!-- Submit -->
                 <div class="d-flex gap-3 mt-2 pt-2 custom-border justify-content-center">
                     <button type="submit" class="btn btn-agri-primary w-100" style="border: transparent;">
                         <i class="bi bi-check-lg"></i> Guardar Componente
                     </button>
+                    <button type="button" id="clearImage" class="btn btn-sm btn-outline-tertiary w-100 mt-2" style="border: transparent;">
+                        <i class="bi bi-x-circle"></i> Quitar imagen
+                    </button>
                 </div>
+                <!-- Proveedores -->
+                <h4 class="mt-4 section-title">Proveedores asociados</h4>
+                <p class="section-subtitle ms-1">Seleccioná los proveedores que abastecen este componente</p>
+
+                <!-- Filtros para proveedores -->
+                <div class="card-section hidden-item mb-4" style="padding: 2rem 2.5rem; box-shadow: none;">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-6">
+                            <label for="searchInput" class="form-label">
+                                <i class="bi bi-search"></i> Buscar proveedor
+                            </label>
+                            <input type="text" 
+                                class="form-control" 
+                                id="searchInput" 
+                                placeholder="Buscar por nombre o localidad...">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="filterType" class="form-label">
+                                <i class="bi bi-funnel"></i> Filtrar por rubro
+                            </label>
+                            <select class="form-select" id="filterType">
+                                <option value="">Todos los rubros</option>
+                                {% for rubro in proveedores|map(attribute='Rubro')|unique|list %}
+                                    {% if rubro %}
+                                        <option value="{{ rubro|lower }}">{{ rubro }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjetas de proveedores -->
+                {% for p in proveedores %}
+                <div class="card-section shadow-sm mb-3 hidden-item clickable-card"
+                    data-name="{{ p.Nombre|lower }}"
+                    data-description="{{ p.Localidad|lower }} {{ p.Observaciones|lower }}"
+                    data-type="{{ p.Rubro|lower if p.Rubro else '' }}">
+                    
+                    <div class="card-body d-flex flex-column">
+                        <div class="custom-checkbox-wrapper d-flex align-items-center gap-2 mb-2">
+                            <input type="checkbox"
+                                id="prov_{{ p.ID }}"
+                                name="proveedores_seleccionados"
+                                value="{{ p.ID }}"
+                                class="custom-checkbox-input">
+
+                            <label for="prov_{{ p.ID }}" 
+                                class="custom-checkbox-label fw-semibold fs-5">
+                                <i class="bi bi-truck me-1"></i> {{ p.Nombre }}
+                            </label>
+                        </div>
+                        <p class="text-muted ms-4">
+                            {{ p.Localidad or "Localidad desconocida" }}<br>
+                            {{ p.Telefono or "Sin teléfono" }}<br>
+                            {{ p.Email or "Sin email" }}
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
             </form>
         </div>
     </div>
 </div>
 
 <script>
-// Bootstrap form validation
-(() => {
-    'use strict'
-    const forms = document.querySelectorAll('.needs-validation')
-    Array.from(forms).forEach(form => {
-        form.addEventListener('submit', event => {
-            if (!form.checkValidity()) {
-                event.preventDefault()
-                event.stopPropagation()
-            }
-            form.classList.add('was-validated')
-        }, false)
-    })
-})()
+document.getElementById('foto').addEventListener('change', function (e) {
+    const fileInput = e.target;
+    const fileName = fileInput.files[0] ? fileInput.files[0].name : "No se ha seleccionado ningún archivo.";
+    document.getElementById('file-name').textContent = "Imagen seleccionada: " + fileName;
+
+    // Vista previa de la imagen
+    const preview = document.getElementById('image-preview');
+    preview.innerHTML = ''; // Limpiar cualquier imagen previa
+
+    if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'img-thumbnail';
+            img.style.maxWidth = '200px';
+            preview.appendChild(img);
+        }
+        reader.readAsDataURL(fileInput.files[0]);
+    }
+});
+document.getElementById('clearImage')?.addEventListener('click', () => {
+    const fileInput = document.getElementById('foto');
+    const fileName = document.getElementById('file-name');
+    const preview = document.getElementById('image-preview');
+
+    fileInput.value = '';
+    fileName.textContent = "No se ha seleccionado ningún archivo.";
+    preview.innerHTML = '';
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("searchInput");
+  const filterType = document.getElementById("filterType");
+  const cards = document.querySelectorAll(".clickable-card");
+
+  function applyFilters() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const selectedType = filterType.value.toLowerCase();
+
+    cards.forEach(card => {
+      const name = card.dataset.name || "";
+      const desc = card.dataset.description || "";
+      const type = card.dataset.type || "";
+
+      const matchesSearch =
+        name.includes(searchTerm) || desc.includes(searchTerm);
+      const matchesType = !selectedType || selectedType === type;
+
+      card.style.display = (matchesSearch && matchesType) ? "" : "none";
+    });
+  }
+
+  searchInput.addEventListener("input", applyFilters);
+  filterType.addEventListener("change", applyFilters);
+});
 </script>
+<style>
+/* Contenedor checkbox personalizado */
+.custom-checkbox-wrapper {
+    position: relative;
+    gap: 0.5rem;
+}
+/* Escondemos el input nativo */
+.custom-checkbox-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+/* Cuadro checkbox personalizado */
+.custom-checkbox-label {
+  position: relative;
+  padding-left: 2rem;
+  cursor: pointer;
+  color: var(--text-color);
+  display: inline-flex;
+  align-items: center;
+}
+/* Checkbox visual */
+.custom-checkbox-label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.2rem;
+  height: 1.2rem;
+  background-color: var(--card-bg);
+  border: 2px solid var(--text-color);
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: 70%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+/* Check activo */
+.custom-checkbox-input:checked + .custom-checkbox-label::before {
+  background-color: var(--text-color);
+  border-color: var(--text-color);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.003 10.803 3.201 8 2 9.202l4.003 4L14 5.207 12.798 4l-6.795 6.803z'/%3E%3C/svg%3E");
+}
+</style>
 {% endblock %}

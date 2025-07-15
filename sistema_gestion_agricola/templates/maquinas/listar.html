@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 
+{% block title %}Máquinas{% endblock %}
+
 {% block content %}
 <div class="page-wrapper">
-    <!-- Header de máquinas -->
+    <!-- Header -->
     <div class="dashboard-header hidden-item p-4 mb-3 rounded">
         <div class="header-topbar">
             <div class="header-title">
@@ -11,17 +13,14 @@
             </div>
             <div class="header-controls">
                 <a href="{{ url_for('index') }}" 
-                    class="btn btn-outline-primary btn-sm ms-2" 
-                    style="font-size: 1rem;">
+                    class="btn btn-outline-primary btn-sm ms-auto">
                     <i class="bi bi-house"></i> 
                     <span class="d-none d-md-block d-md-inline">Inicio</span>
                 </a>
                 <a href="{{ url_for('maquinas.agregar_maquina') }}" 
-                    class="btn btn-outline-primary btn-sm" 
-                    style="font-size: 1rem;">
+                    class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-plus-lg"></i> 
-                    <span class="d-none d-md-block d-md-inline">Nueva Máquina</span>
-                    <span class="d-md-none">Nueva</span>
+                    <span class="d-none d-md-block d-md-inline">Nueva</span>
                 </a>
                 <button class="theme-toggle" id="themeToggle">
                     <i class="bi bi-moon-fill" id="themeIcon"></i>
@@ -32,7 +31,7 @@
             </div>
         </div>
     </div>
-
+    {% if maquinas %}
     <!-- Estadísticas rápidas -->
     <div class="stats-grid hidden-item">
         <div class="stat-card compact hidden-item">
@@ -106,7 +105,7 @@
             </div>
         </div>
     </div>
-
+    {% endif %}
     <!-- Lista de máquinas -->
     <section class="page-section hidden-item">
         <h3 class="section-title">
@@ -212,8 +211,11 @@
         {% endif %}
     </section>
 </div>
+
 <style></style>
+
 <script>
+
 // Función toggleView para cambiar entre cards y tabla
 function toggleView(view) {
   const tableView = document.getElementById('tableView');
@@ -227,5 +229,7 @@ function toggleView(view) {
     tableView.classList.add('hidden-item');
   }
 }
+
 </script>
+
 {% endblock %}

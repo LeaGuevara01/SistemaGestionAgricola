@@ -57,17 +57,20 @@ def agregar_maquina():
 
         # Componentes seleccionados
         componentes_seleccionados = request.form.getlist('componentes_seleccionados')
+
         for id_componente in componentes_seleccionados:
+            # Insertar relación máquina-componente solo si no existe para evitar errores
             cursor.execute('''
-                INSERT INTO maquinas_componentes (ID_Maquina, ID_Componente)
+                INSERT OR IGNORE INTO maquinas_componentes (ID_Maquina, ID_Componente)
                 VALUES (?, ?)
             ''', (id_maquina, id_componente))
 
+            # Obtener datos de frecuencia
             frecuencia = request.form.get(f'frecuencia_{id_componente}')
             unidad = request.form.get(f'unidad_{id_componente}')
             criterio = request.form.get(f'criterio_{id_componente}')
 
-            if frecuencia and unidad and frecuencia.isdigit() and int(frecuencia) > 0:
+            if frecuencia and frecuencia.isdigit() and int(frecuencia) > 0 and unidad:
                 cursor.execute('''
                     INSERT INTO frecuencias (ID_Maquina, ID_Componente, Frecuencia, "Unidad tiempo", "Criterio adicional")
                     VALUES (?, ?, ?, ?, ?)

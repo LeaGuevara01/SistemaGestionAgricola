@@ -12,16 +12,15 @@
                 <p class="section-subtitle d-none d-md-block opacity-75">Agrega una nueva máquina al sistema</p>
             </div>
             <div class="header-controls">
+                <a href="{{ url_for('maquinas.listar_maquinas') }}" 
+                    class="btn btn-outline-primary btn-sm  ms-auto">
+                    <i class="bi bi-arrow-left"></i> 
+                    <span class="d-none d-md-block d-md-inline">Volver</span>
+                </a>
                 <a href="{{ url_for('index') }}" 
-                    class="btn btn-outline-primary btn-sm ms-2">
+                    class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-house"></i> 
                     <span class="d-none d-md-block d-md-inline">Inicio</span>
-                </a>
-                <a href="{{ url_for('maquinas.listar_maquinas') }}" 
-                    class="btn btn-outline-primary btn-sm ms-2">
-                    <i class="bi bi-arrow-left-fill"></i> 
-                    <span class="d-none d-md-block d-md-inline">Volver a Máquinas</span>
-                    <span class="d-md-none">Volver</span>
                 </a>
                 <button class="theme-toggle" id="themeToggle">
                     <i class="bi bi-moon-fill" id="themeIcon"></i>
@@ -34,8 +33,8 @@
     </div>
 
     <!-- Formulario -->
-    <div class="card-section hidden-item mb-4">
-        <div class="mt-0 card-section hidden-item" style="box-shadow: none;">
+    <div class="card-section hidden-item mb-4 mx-auto" style="max-width: 700px;">
+        <div class="mt-0 card-section hidden-item" style="box-shadow: none; max-width: 650px;">
         <form method="POST" enctype="multipart/form-data" novalidate 
             class="mt-0 hidden-item row g-3 needs-validation">
             <!-- Código -->
@@ -81,16 +80,28 @@
             </div>
             <!-- Imagen -->
             <div class="custom-file-upload mb-3">
-                <label for="foto" class="upload-label">
+                <label for="foto" class="btn btn-outline-secondary">
                     <i class="bi bi-image"></i> Subir imagen
                 </label>
-                <input type="file" id="foto" name="foto" accept="image/*" style="display: none;">
+                
+                <input type="file" id="foto" name="foto" accept="image/*" class="d-none">
+
                 <!-- Vista previa del nombre del archivo -->
-                <div id="file-name" class="file-name-preview">
+                <div id="file-name" class="file-name-preview mt-2 text-muted small">
                     {% if maquina and maquina.Foto %}
                         Imagen actual: {{ maquina.Foto }}
                     {% else %}
                         No se ha seleccionado ningún archivo.
+                    {% endif %}
+                </div>
+
+                <!-- Vista previa de imagen seleccionada -->
+                <div id="image-preview" class="mt-3">
+                    {% if maquina and maquina.Foto %}
+                        <img src="{{ url_for('static', filename='fotos/maquinas/' ~ maquina.Foto) }}" 
+                            alt="Imagen actual" 
+                            class="img-thumbnail" 
+                            style="max-width: 200px;">
                     {% endif %}
                 </div>
             </div>
@@ -99,18 +110,24 @@
                 <button type="submit" class="btn btn-agri-primary w-100" style="border: transparent;">
                     <i class="bi bi-check-lg"></i> Guardar Máquina
                 </button>
+                <button type="button" id="clearImage" class="btn btn-sm btn-outline-tertiary w-100 mt-2" style="border: transparent;">
+                    <i class="bi bi-x-circle"></i> Quitar imagen
+                </button>
             </div>
             <!-- Componentes -->
-            <h4>Componentes a asociar</h4>
+            <h4 class="mt-4">Componentes a asociar</h4>
             <p>Seleccione los componentes y defina la frecuencia de mantenimiento para cada uno</p>
             <!-- Filtros para componentes -->
-            <div class="card-section hidden-item mb-4" style="padding: 2rem 2.5rem;">
+            <div class="card-section hidden-item mb-4" style="padding: 2rem 2.5rem; box-shadow: none;">
                 <div class="row g-3 align-items-end">
                     <div class="col-md-6">
                     <label for="searchInput" class="form-label">
                         <i class="bi bi-search"></i> Buscar componente
                     </label>
-                    <input type="text" class="form-control" id="searchInput" placeholder="Buscar por nombre o descripción...">
+                    <input type="text" 
+                        class="form-control" 
+                        id="searchInput" 
+                        placeholder="Buscar por nombre...">
                     </div>
                     <div class="col-md-6">
                     <label for="filterType" class="form-label">
@@ -128,20 +145,23 @@
                 </div>
             </div>
 
+            <!-- Tarjetas de componentes -->
             {% for c in componentes %}
-            <div class="component-card card shadow-sm mb-3 hidden-item"
+            <div class="card-section shadow-sm mb-3 hidden-item clickable-card"
                 data-name="{{ c.Nombre|lower }}"
                 data-description="{{ c.Descripcion|lower }}"
                 data-type="{{ c.Tipo|lower if c.Tipo else '' }}">
+
                 <div class="card-body d-flex flex-column">
-                    <div class="d-flex align-items-center mb-2">
+                    <div class="custom-checkbox-wrapper d-flex align-items-center gap-2 mb-2">
                     <input type="checkbox" 
-                            id="comp_{{ c.ID_Componente }}" 
-                            name="componentes_seleccionados" 
-                            value="{{ c.ID_Componente }}"
-                            class="form-check-input me-2 mt-0">
+                        id="comp_{{ c.ID }}" 
+                        name="componentes_seleccionados" 
+                        value="{{ c.ID }}"
+                        class="custom-checkbox-input">
                             
-                    <label for="comp_{{ c.ID_Componente }}" class="form-check-label fw-semibold fs-5">
+                    <label for="comp_{{ c.ID }}" 
+                        class="custom-checkbox-label fw-semibold fs-5">
                         <i class="bi bi-puzzle-fill me-1"></i>
                         {{ c.Nombre }}
                     </label>
@@ -153,22 +173,22 @@
 
                     <div class="row g-3 ms-1">
                     <div class="col-md-3">
-                        <label for="frecuencia_{{ c.ID_Componente }}" class="form-label">
+                        <label for="frecuencia_{{ c.ID }}" class="form-label">
                         <i class="bi bi-clock-history me-1"></i> Frecuencia
                         </label>
                         <input type="number" 
-                            name="frecuencia_{{ c.ID_Componente }}" 
-                            id="frecuencia_{{ c.ID_Componente }}" 
+                            name="frecuencia_{{ c.ID }}" 
+                            id="frecuencia_{{ c.ID }}" 
                             class="form-control" 
                             min="1">
                     </div>
 
                     <div class="col-md-3">
-                        <label for="unidad_{{ c.ID_Componente }}" class="form-label">
+                        <label for="unidad_{{ c.ID }}" class="form-label">
                         <i class="bi bi-calendar-range me-1"></i> Unidad de tiempo
                         </label>
-                        <select name="unidad_{{ c.ID_Componente }}" 
-                                id="unidad_{{ c.ID_Componente }}" 
+                        <select name="unidad_{{ c.ID }}" 
+                                id="unidad_{{ c.ID }}" 
                                 class="form-select">
                         <option value="horas">Horas</option>
                         <option value="días">Días</option>
@@ -178,12 +198,12 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label for="criterio_{{ c.ID_Componente }}" class="form-label">
+                        <label for="criterio_{{ c.ID }}" class="form-label">
                         <i class="bi bi-info-circle me-1"></i> Criterio adicional
                         </label>
                         <input type="text" 
-                            name="criterio_{{ c.ID_Componente }}" 
-                            id="criterio_{{ c.ID_Componente }}" 
+                            name="criterio_{{ c.ID }}" 
+                            id="criterio_{{ c.ID }}" 
                             class="form-control"
                             placeholder="Opcional...">
                     </div>
@@ -217,6 +237,36 @@
         }, false)
     })
 })()
+document.getElementById('foto').addEventListener('change', function (e) {
+    const fileInput = e.target;
+    const fileName = fileInput.files[0] ? fileInput.files[0].name : "No se ha seleccionado ningún archivo.";
+    document.getElementById('file-name').textContent = "Imagen seleccionada: " + fileName;
+
+    // Vista previa de la imagen
+    const preview = document.getElementById('image-preview');
+    preview.innerHTML = ''; // Limpiar cualquier imagen previa
+
+    if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'img-thumbnail';
+            img.style.maxWidth = '200px';
+            preview.appendChild(img);
+        }
+        reader.readAsDataURL(fileInput.files[0]);
+    }
+});
+document.getElementById('clearImage')?.addEventListener('click', () => {
+    const fileInput = document.getElementById('foto');
+    const fileName = document.getElementById('file-name');
+    const preview = document.getElementById('image-preview');
+
+    fileInput.value = '';
+    fileName.textContent = "No se ha seleccionado ningún archivo.";
+    preview.innerHTML = '';
+});
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
   const filterType = document.getElementById("filterType");
@@ -247,5 +297,71 @@ document.addEventListener("DOMContentLoaded", () => {
   searchInput.addEventListener("input", applyFilters);
   filterType.addEventListener("change", applyFilters);
 });
+document.addEventListener("DOMContentLoaded", () => {
+  // Hacer clic en la card activa/desactiva el checkbox
+  const cards = document.querySelectorAll('.clickable-card');
+
+  cards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Evitar toggle si se hizo clic en un input, select o label interna
+      if (['INPUT', 'SELECT', 'LABEL', 'TEXTAREA', 'BUTTON'].includes(e.target.tagName)) return;
+
+      const checkbox = card.querySelector('.custom-checkbox-input');
+      if (checkbox) {
+        checkbox.checked = !checkbox.checked;
+        checkbox.dispatchEvent(new Event('change'));
+      }
+    });
+  });
+});
+
 </script>
+<style>
+/* Contenedor checkbox personalizado */
+.custom-checkbox-wrapper {
+    position: relative;
+    gap: 0.5rem;
+}
+/* Escondemos el input nativo */
+.custom-checkbox-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+/* Cuadro checkbox personalizado */
+.custom-checkbox-label {
+  position: relative;
+  padding-left: 2rem;
+  cursor: pointer;
+  color: var(--text-color);
+  display: inline-flex;
+  align-items: center;
+}
+/* Checkbox visual */
+.custom-checkbox-label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.2rem;
+  height: 1.2rem;
+  background-color: var(--card-bg);
+  border: 2px solid var(--text-color);
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: 70%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+/* Check activo */
+.custom-checkbox-input:checked + .custom-checkbox-label::before {
+  background-color: var(--text-color);
+  border-color: var(--text-color);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.003 10.803 3.201 8 2 9.202l4.003 4L14 5.207 12.798 4l-6.795 6.803z'/%3E%3C/svg%3E");
+}
+</style>
 {% endblock %}

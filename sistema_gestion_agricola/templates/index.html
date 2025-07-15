@@ -135,17 +135,15 @@
 <script></script>
 <style>
 #dashboard-grid {
-  display: block; /* o flex */
+  display: block;
   width: 100%;
 }
-
 .dashboard-grid {
   display: block;
   grid-template-columns: repeat(auto-fill, minmax(244px, 1fr));
   gap: 1.5rem;
   align-items: start;
 }
-
 @media (min-width: 768px) {
   .dashboard-grid {
     column-count: 2;
@@ -161,9 +159,6 @@
     column-count: 4;
   }
 }
-
-
-
 @media (min-width: 768px) {
     .dashboard-grid {
         column-count: 2;
@@ -179,13 +174,10 @@
         column-count: 4;
     }
 }
-
 /* Opcional: animación staggered */
 .dashboard-card:nth-child(1) { animation-delay: 0.05s; }
 .dashboard-card:nth-child(2) { animation-delay: 0.1s; }
 .dashboard-card:nth-child(3) { animation-delay: 0.15s; }
-/* podés automatizarlo con JS si hay muchas */
-
-
+/* Automatizar con JS */
 </style>
 {% endblock %}
