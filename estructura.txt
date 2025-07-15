@@ -1,60 +1,178 @@
-.
-|-- deprecated.txt
-|-- estructura.txt
-|-- frontend
-|   |                               `-- index.html
-|   |                               `-- package-lock.json
-|   |                               `-- package.json
-|   |                               `-- public
-|   |                               `-- fotos
-|   |-- src
-|   |   |                           `-- main.js
-|   |   |                           `-- style.css
-|   |                               `-- styles
-|   `-- vite.config.js
-|-- init_db.py
-|-- mantenimiento_agricola.sqbpro
-|-- requirements.txt
-|-- run.py
-|-- sistema_gestion_agricola
-|   |-- Procfile
-|   |-- __init__.py
-|   |-- dbbrowser.sqbpro
-|   |-- routes
-|   |   |                           `-- clima.py
-|   |   |                           `-- componentes.py
-|   |   |                           `-- compras.py
-|   |   |                           `-- estadisticas.py
-|   |   |                           `-- maquinas.py
-|   |   |                           `-- pagos.py
-|   |   |                           `-- proveedores.py
-|   |                               `-- stock.py
-|   |-- sistema_gestion_agricola.db
-|   |-- static
-|   |   |                           `-- assets
-|   |   |                           `-- css
-|   |   |                           `-- dist
-|   |   |                           `-- fotos
-|   |                               `-- js
-|   |-- templates
-|   |   |                           `-- 404.html
-|   |   |                           `-- 505.html
-|   |   |                           `-- base.html
-|   |   |                           `-- componentes
-|   |   |                           `-- compras
-|   |   |                           `-- estadisticas
-|   |   |                           `-- index.html
-|   |   |                           `-- layout.html
-|   |   |                           `-- maquinas
-|   |   |                           `-- pagos
-|   |   |                           `-- partials
-|   |   |                           `-- proveedores
-|   |                               `-- stock
-|   `-- utils
-|       |                           `-- clima_utils.py
-|       |                           `-- db.py
-|       |                           `-- files.py
-|                                   `-- stock_utils.py
-`-- sistema_gestion_agricola.db
-
-23 directories, 34 files
+Estructura de: D:/Code/elorza/
+├── .blackboxrules
+├── .env
+├── .gitattributes
+├── .gitignore
+├── Procfile
+├── backend
+│   ├── index.js
+│   ├── package-lock.json
+│   ├── package.json
+├── estructura.txt
+├── frontend
+│   ├── index.html.bak
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public
+│   │   ├── fotos
+│   │   ├── index.html
+│   ├── readme.txt
+│   ├── src
+│   │   ├── App.jsx
+│   │   ├── assets
+│   │   │   ├── images
+│   │   ├── components
+│   │   │   ├── Header.jsx
+│   │   ├── main.jsx
+│   │   ├── style.css
+│   │   ├── styles
+│   │   │   ├── custom.css
+│   │   │   ├── theme.css
+│   │   │   ├── variables.css
+│   ├── vite.config.js
+├── package-lock.json
+├── package.json
+├── render.yaml
+├── requirements.txt
+├── run.py
+├── runtime.txt
+├── sistema_gestion_agricola
+│   ├── .env
+│   ├── .env.example
+│   ├── .gitignore
+│   ├── Procfile
+│   ├── __init__.py
+│   ├── backup_sqlite.json
+│   ├── cache_config.py
+│   ├── consult_postgres.py
+│   ├── data.db
+│   ├── dbbrowser.sqbpro
+│   ├── export_sqlite_data.py
+│   ├── import_to_postgres.py
+│   ├── imprimir_esctructura.py
+│   ├── init_db.py
+│   ├── migrations
+│   │   ├── README
+│   │   ├── alembic.ini
+│   │   ├── env.py
+│   │   ├── script.py.mako
+│   │   ├── versions
+│   │   │   ├── 5469883b6eb7_migración_inicial.py
+│   ├── models
+│   │   ├── __init__.py
+│   │   ├── componente.py
+│   │   ├── compra.py
+│   │   ├── maquina.py
+│   │   ├── proveedor.py
+│   │   ├── stock.py
+│   ├── render.yaml
+│   ├── requirements.txt
+│   ├── routes
+│   │   ├── clima.py
+│   │   ├── componentes.py
+│   │   ├── compras.py
+│   │   ├── estadisticas.py
+│   │   ├── maquinas.py
+│   │   ├── pagos.py
+│   │   ├── proveedores.py
+│   │   ├── stock.py
+│   ├── run.py
+│   ├── runtime.txt
+│   ├── static
+│   │   ├── assets
+│   │   │   ├── fotos
+│   │   │   ├── index-CAxV5Y2l.css
+│   │   │   ├── index-CI1CxXLb.js
+│   │   │   ├── index.html
+│   │   ├── css
+│   │   │   ├── base-card.css
+│   │   │   ├── base.css
+│   │   │   ├── buttons.css
+│   │   │   ├── card-animations.css
+│   │   │   ├── card-content.css
+│   │   │   ├── card-hover.css
+│   │   │   ├── card-responsive.css
+│   │   │   ├── custom.css
+│   │   │   ├── forms.css
+│   │   │   ├── header.css
+│   │   │   ├── master.css
+│   │   │   ├── responsive.css
+│   │   │   ├── sections.css
+│   │   │   ├── styles.css
+│   │   │   ├── tables.css
+│   │   │   ├── theme.css
+│   │   │   ├── widgets.css
+│   │   ├── fotos
+│   │   │   ├── componentes
+│   │   │   │   ├── default.png
+│   │   │   ├── default.png
+│   │   │   ├── maquinas
+│   │   │   │   ├── maquina_1.png
+│   │   │   │   ├── maquina_2.jpg
+│   │   │   │   ├── maquina_Test.jpg
+│   │   ├── js
+│   │   │   ├── animations.js
+│   │   │   ├── clima.js
+│   │   │   ├── date.js
+│   │   │   ├── filters.js
+│   │   │   ├── forms.js
+│   │   │   ├── main.js
+│   │   │   ├── navigation.js
+│   │   │   ├── scripts.js
+│   │   │   ├── theme.js
+│   │   │   ├── tooltips.js
+│   │   │   ├── view.js
+│   ├── templates
+│   │   ├── 404.html
+│   │   ├── 505.html
+│   │   ├── base.html
+│   │   ├── componentes
+│   │   │   ├── agregar.html
+│   │   │   ├── editar.html
+│   │   │   ├── listar.html
+│   │   │   ├── ver.html
+│   │   ├── compras
+│   │   │   ├── editar.html
+│   │   │   ├── historial.html
+│   │   │   ├── historial_complejo.html
+│   │   │   ├── registrar.html
+│   │   │   ├── ver.html
+│   │   ├── estadisticas
+│   │   │   ├── compras_proveedor.html
+│   │   ├── index.html
+│   │   ├── layout.html
+│   │   ├── maquinas
+│   │   │   ├── agregar.html
+│   │   │   ├── asignar_componente.html
+│   │   │   ├── editar.html
+│   │   │   ├── editar_frecuencia.html
+│   │   │   ├── listar.html
+│   │   │   ├── ver.html
+│   │   ├── pagos
+│   │   │   ├── listar.html
+│   │   │   ├── registrar.html
+│   │   │   ├── resumen.html
+│   │   │   ├── resumen_pdf.html
+│   │   │   ├── resumen_weasy.html
+│   │   ├── partials
+│   │   │   ├── card.html
+│   │   ├── proveedores
+│   │   │   ├── agregar.html
+│   │   │   ├── asignar_componente.html
+│   │   │   ├── editar.html
+│   │   │   ├── editar_componente_proveedor.html
+│   │   │   ├── listar.html
+│   │   │   ├── ver.html
+│   │   ├── readme.txt
+│   │   ├── stock
+│   │   │   ├── listar.html
+│   │   │   ├── registrar.html
+│   │   ├── vite.html
+│   ├── utils
+│   │   ├── clima_utils.py
+│   │   ├── db.py
+│   │   ├── files.py
+│   │   ├── stock_utils.py
+│   │   ├── vite_helper.py
+├── sistema_gestion_agricola.db
+├── start.sh

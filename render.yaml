@@ -1,3 +1,7 @@
-build:
-  pythonVersion: 3.11.9
-  installCommand: pip install --no-cache-dir -r requirements.txt
+services:
+  - type: web
+    name: sistema-gestion-agricola
+    env: python
+    buildCommand: "pip install --no-cache-dir -r requirements.txt"
+    startCommand: "gunicorn run:app"
+    pythonVersion: 3.11.9
