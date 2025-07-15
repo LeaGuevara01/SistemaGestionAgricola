@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block title %}Compra {{ compra.ID_Compra }}{% endblock %}
+
 {% block content %}
 <div class="page-wrapper">
 
@@ -12,10 +14,9 @@
             </div>
             <div class="header-controls">
                 <a href="{{ url_for('compras.historial_compras') }}" 
-                    class="btn btn-outline-primary btn-sm">
+                    class="btn btn-outline-primary btn-sm ms-auto">
                     <i class="bi bi-arrow-left"></i> 
-                    <span class="d-none d-md-inline">Volver al historial</span>
-                    <span class="d-md-none">Volver</span>
+                    <span class="d-none d-md-block d-md-inline">Volver</span>
                 </a>
                 <a href="{{ url_for('index') }}" 
                     class="btn btn-outline-primary btn-sm" 
