@@ -83,8 +83,8 @@
 .btn-outline-secondary:active,
 .btn-outline-secondary.focus,
 .btn-outline-secondary.show {
-    background: var(--btn-bg-secondary);
-    color: var(--agri-green-tertiary);
+    background: transparent;
+    color: var(--btn-text-secondary);
     border: none !important;
     outline: none !important;
     box-shadow: none !important;

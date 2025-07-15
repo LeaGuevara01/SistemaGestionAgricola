@@ -1,31 +1,44 @@
 # __init__.py
 import os
 from flask import Flask, render_template, make_response
-from flask_caching import Cache
-from dotenv import load_dotenv
-from .utils.vite_helper import vite_asset #onrender
-from .cache_config import cache
+
+# Helper para Render
 import pdfkit
+from .utils.vite_helper import vite_asset #onrender
+
+# Cargar instancia única de cache
+from flask_caching import Cache
+from .cache_config import cache
+
+from flask_migrate import Migrate
+from .models import db
+migrate = Migrate()
 
 # Cargar variables de entorno
+from dotenv import load_dotenv
 load_dotenv()
 
 def create_app():
+
     api_key = os.getenv('WEATHER_API_KEY')
     if not api_key:
         raise RuntimeError("La variable de entorno WEATHER_API_KEY no está definida")
     
+    db_uri = os.getenv("DATABASE_URL")
+    if not db_uri:
+        raise RuntimeError("DATABASE_URL no está configurado")
+    
     app = Flask(__name__)
-    app.secret_key = os.getenv("SECRET_KEY", "elorza")
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['WEATHER_API_KEY'] = api_key
 
-    # Weather Config
-    app.config['WEATHER_API_KEY'] = os.getenv('WEATHER_API_KEY')
-    app.config['WEATHER_API_URL'] = "https://api.openweathermap.org/data/2.5/weather"
-    app.config['COORDENADAS_UCACHA'] = {
-        'lat': "-33.0320",
-        'lon': "-63.5066"
-    }
+    app.secret_key = os.getenv("SECRET_KEY", "elorza") 
+
+    # Migrate Config
+    db.init_app(app)
+    migrate.init_app(app, db)
 
     # Cache Config
     app.config['CACHE_TYPE'] = 'SimpleCache'
@@ -36,6 +49,13 @@ def create_app():
     app.config['UPLOAD_FOLDER_MAQUINAS'] = os.path.join(app.root_path, 'static/fotos/maquinas')
     app.config['UPLOAD_FOLDER_COMPONENTES'] = os.path.join(app.root_path, 'static/fotos/componentes')
 
+    # Weather Config
+    app.config['WEATHER_API_URL'] = "https://api.openweathermap.org/data/2.5/weather"
+    app.config['COORDENADAS_UCACHA'] = {
+        'lat': "-33.0320",
+        'lon': "-63.5066"
+    }
+    
     # Blueprints Registration
     from .routes.clima import clima_bp
     from .routes.maquinas import maquinas_bp

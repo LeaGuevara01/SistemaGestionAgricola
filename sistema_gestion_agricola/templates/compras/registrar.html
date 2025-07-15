@@ -17,32 +17,6 @@
                     <i class="bi bi-house"></i> 
                     <span class="d-none d-md-block d-md-inline">Inicio</span>
             </a>
-            <a href="{% if request.args.get('next') %}
-                        {{ request.args.get('next') }}
-                    {% elif id_maquina %}
-                        {{ url_for('mauquinas.vista_maquina', id=id_maquina) }}
-                    {% elif id_componente %}
-                        {{ url_for('componentes.lista_componentes') }}
-                    {% else %}
-                        {{ url_for('stock.vista_stock') }}
-                    {% endif %}"
-                class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-arrow-left"></i>
-                <span class="d-none d-md-inline">
-                    {% if request.args.get('next') %}
-                        Volver
-                    {% elif id_maquina %}
-                        Volver a máquina
-                    {% elif id_componente %}
-                        Volver a componentes
-                    {% elif id_stock %}
-                        Volver a stock
-                    {% else %}
-                        Volver
-                    {% endif %}
-                </span>
-                <span class="d-md-none">Volver</span>
-            </a>
             <button class="theme-toggle" id="themeToggle">
                 <i class="bi bi-moon-fill" id="themeIcon"></i>
             </button>
@@ -94,7 +68,7 @@
                 </div>
                 <!-- Botón -->
                 <button type="submit" class="btn btn-outline-secondary mt-3">
-                    <i class="bi bi-save"></i> Registrar compra
+                    <i class="bi bi-save"></i> Registrar pago
                 </button>
             </form>
         </div>

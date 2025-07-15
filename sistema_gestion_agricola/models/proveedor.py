@@ -1,0 +1,35 @@
+from . import db
+
+class Proveedor(db.Model):
+    __tablename__ = 'proveedores'
+
+    ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    Nombre = db.Column(db.String, nullable=False)
+    Localidad = db.Column(db.String)
+    Contacto = db.Column(db.String)
+    Telefono = db.Column(db.String)
+    Email = db.Column(db.String)
+    Rubro = db.Column(db.String)
+    Direccion = db.Column(db.String)
+    Observaciones = db.Column(db.String)
+
+class Compra(db.Model):
+    __tablename__ = 'compras'
+
+    ID_Compra = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    ID_Proveedor = db.Column(db.Integer, db.ForeignKey('proveedores.ID', ondelete='SET NULL'))
+    ID_Componente = db.Column(db.Integer, db.ForeignKey('componentes.ID', ondelete='SET NULL'))
+    Cantidad = db.Column(db.Integer)
+    Precio_Unitario = db.Column(db.Float)
+    Observacion = db.Column(db.String)
+    Fecha = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+
+class PagoProveedor(db.Model):
+    __tablename__ = 'pagos_proveedores'
+
+    ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    ID_Proveedor = db.Column(db.Integer, db.ForeignKey('proveedores.ID', ondelete='SET NULL'))
+    Monto = db.Column(db.Float)
+    Metodo = db.Column(db.String)
+    Observacion = db.Column(db.String)
+    Fecha = db.Column(db.DateTime, server_default=db.func.current_timestamp())

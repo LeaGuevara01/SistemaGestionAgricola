@@ -1,0 +1,815 @@
+{
+  "proveedores": [
+    {
+      "ID": 1,
+      "Nombre": "Agro Repuestos S.A.",
+      "Localidad": "Villa María",
+      "Contacto": "Carlos López",
+      "Telefono": "0353-4201234",
+      "Email": "ventas@agrepuestos.com",
+      "Rubro": "Repuestos",
+      "Direccion": "Ruta 158 km 50",
+      "Observaciones": ""
+    },
+    {
+      "ID": 2,
+      "Nombre": "Lubricantes SRL",
+      "Localidad": "Córdoba Capital",
+      "Contacto": "María Pérez",
+      "Telefono": "0351-4856790",
+      "Email": "info@lubrisrl.com",
+      "Rubro": "Lubricantes",
+      "Direccion": "Av. Colón 3450",
+      "Observaciones": "Entrega semanal"
+    },
+    {
+      "ID": 3,
+      "Nombre": "Repuestos AgroSur",
+      "Localidad": "Río Cuarto",
+      "Contacto": "Pedro Giménez",
+      "Telefono": "0358-4623456",
+      "Email": "pedro@agrosur.com",
+      "Rubro": "Repuestos",
+      "Direccion": "Bv. Roca 1234",
+      "Observaciones": "Cuenta corriente abierta"
+    },
+    {
+      "ID": 4,
+      "Nombre": "LubriCampo",
+      "Localidad": "Villa Dolores",
+      "Contacto": "Ana Marconi",
+      "Telefono": "03544-431234",
+      "Email": "ana@lubricampo.com",
+      "Rubro": "Lubricantes",
+      "Direccion": "Av. Belgrano 234",
+      "Observaciones": ""
+    },
+    {
+      "ID": 5,
+      "Nombre": "ElectroAgro SRL",
+      "Localidad": "San Francisco",
+      "Contacto": "Julián Torres",
+      "Telefono": "03564-489301",
+      "Email": "ventas@electroagro.com",
+      "Rubro": "Baterías",
+      "Direccion": "San Martín 1050",
+      "Observaciones": "Entrega mensual"
+    },
+    {
+      "ID": 6,
+      "Nombre": "Repuestos Centro",
+      "Localidad": "Laboulaye",
+      "Contacto": "Luciano Aimar",
+      "Telefono": "03385-452312",
+      "Email": "luciano@repcentro.com",
+      "Rubro": "Repuestos",
+      "Direccion": "Av. Independencia 305",
+      "Observaciones": ""
+    },
+    {
+      "ID": 7,
+      "Nombre": "AgroFertilizantes S.R.L.",
+      "Localidad": "General Levalle",
+      "Contacto": "Sandra Gómez",
+      "Telefono": "03385-490129",
+      "Email": "ventas@agrofertilizantes.com",
+      "Rubro": "Químicos",
+      "Direccion": "Ruta 7 km 93",
+      "Observaciones": "Visitan cada 15 días"
+    },
+    {
+      "ID": 8,
+      "Nombre": "MotorParts Express",
+      "Localidad": "Río Cuarto",
+      "Contacto": "Joaquín Ortiz",
+      "Telefono": "0358-4630021",
+      "Email": "joaquin@mparts.com",
+      "Rubro": "Motores",
+      "Direccion": "San Lorenzo 1111",
+      "Observaciones": "Nuevo proveedor"
+    },
+    {
+      "ID": 9,
+      "Nombre": "TecnoLub S.A.",
+      "Localidad": "Córdoba Capital",
+      "Contacto": "Romina Herrera",
+      "Telefono": "0351-4217770",
+      "Email": "romina@tecnolub.com",
+      "Rubro": "Lubricantes",
+      "Direccion": "Camino a Montecristo",
+      "Observaciones": "Tienen descuentos por volumen"
+    }
+  ],
+  "componentes": [
+    {
+      "ID": 1,
+      "ID_Componente": "C-001",
+      "Nombre": "Filtro de aire",
+      "Descripcion": "Filtro para tractores",
+      "Tipo": "Filtro",
+      "Foto": "",
+      "Marca": "Bosch",
+      "Modelo": "FA123",
+      "Precio": 4500.0
+    },
+    {
+      "ID": 2,
+      "ID_Componente": "C-002",
+      "Nombre": "Aceite hidráulico",
+      "Descripcion": "Aceite para sistemas hidráulicos",
+      "Tipo": "Lubricante",
+      "Foto": "",
+      "Marca": "Shell",
+      "Modelo": "Hydraulic-46",
+      "Precio": 7000.0
+    },
+    {
+      "ID": 3,
+      "ID_Componente": "C-003",
+      "Nombre": "Correa alternador",
+      "Descripcion": "Correa para alternador de motor diésel",
+      "Tipo": "Correa",
+      "Foto": "",
+      "Marca": "Gates",
+      "Modelo": "Micro-V",
+      "Precio": 1800.0
+    },
+    {
+      "ID": 4,
+      "ID_Componente": "C-004",
+      "Nombre": "Filtro de aceite",
+      "Descripcion": "Filtro para motor Perkins",
+      "Tipo": "Filtro",
+      "Foto": "",
+      "Marca": "Mann",
+      "Modelo": "W920/21",
+      "Precio": 2600.0
+    },
+    {
+      "ID": 5,
+      "ID_Componente": "C-005",
+      "Nombre": "Batería 12V 150Ah",
+      "Descripcion": "Batería para arranque de maquinaria pesada",
+      "Tipo": "Batería",
+      "Foto": "",
+      "Marca": "Willard",
+      "Modelo": "HD150",
+      "Precio": 38000.0
+    },
+    {
+      "ID": 6,
+      "ID_Componente": "C-006",
+      "Nombre": "Aceite de motor 15W40",
+      "Descripcion": "Aceite multigrado para motores diésel",
+      "Tipo": "Lubricante",
+      "Foto": "",
+      "Marca": "Total",
+      "Modelo": "Rubia TIR",
+      "Precio": 9500.0
+    },
+    {
+      "ID": 7,
+      "ID_Componente": "C-007",
+      "Nombre": "Filtro hidráulico",
+      "Descripcion": "Filtro para circuitos hidráulicos",
+      "Tipo": "Filtro",
+      "Foto": "",
+      "Marca": "Fleetguard",
+      "Modelo": "HF28896",
+      "Precio": 3800.0
+    },
+    {
+      "ID": 8,
+      "ID_Componente": "C-008",
+      "Nombre": "Aceite de transmisión",
+      "Descripcion": "Aceite especial para cajas CVT",
+      "Tipo": "Lubricante",
+      "Foto": "",
+      "Marca": "Mobil",
+      "Modelo": "Trans HD",
+      "Precio": 8900.0
+    },
+    {
+      "ID": 9,
+      "ID_Componente": "C-009",
+      "Nombre": "Sensor de temperatura",
+      "Descripcion": "Sensor electrónico para motor",
+      "Tipo": "Sensor",
+      "Foto": "",
+      "Marca": "Delphi",
+      "Modelo": "TS10291",
+      "Precio": 2600.0
+    },
+    {
+      "ID": 10,
+      "ID_Componente": "C-010",
+      "Nombre": "Bujía",
+      "Descripcion": "Bujía para encendido de motor a explosión",
+      "Tipo": "Encendido",
+      "Foto": "",
+      "Marca": "NGK",
+      "Modelo": "BPR6ES",
+      "Precio": 450.0
+    },
+    {
+      "ID": 11,
+      "ID_Componente": "C-011",
+      "Nombre": "Correa trapezoidal",
+      "Descripcion": "Correa para poleas",
+      "Tipo": "Correa",
+      "Foto": "",
+      "Marca": "Continental",
+      "Modelo": "A58",
+      "Precio": 1200.0
+    },
+    {
+      "ID": 12,
+      "ID_Componente": "C-012",
+      "Nombre": "Filtro de combustible",
+      "Descripcion": "Filtro para línea de inyección",
+      "Tipo": "Filtro",
+      "Foto": "",
+      "Marca": "Donaldson",
+      "Modelo": "P550588",
+      "Precio": 3200.0
+    }
+  ],
+  "componentes_proveedores": [
+    {
+      "ID_Proveedor": 1,
+      "ID_Componente": 1,
+      "Cantidad": 10
+    },
+    {
+      "ID_Proveedor": 2,
+      "ID_Componente": 2,
+      "Cantidad": 5
+    },
+    {
+      "ID_Proveedor": 1,
+      "ID_Componente": 3,
+      "Cantidad": 4
+    },
+    {
+      "ID_Proveedor": 2,
+      "ID_Componente": 6,
+      "Cantidad": 10
+    },
+    {
+      "ID_Proveedor": 3,
+      "ID_Componente": 5,
+      "Cantidad": 2
+    },
+    {
+      "ID_Proveedor": 2,
+      "ID_Componente": 4,
+      "Cantidad": 5
+    },
+    {
+      "ID_Proveedor": 5,
+      "ID_Componente": 7,
+      "Cantidad": 5
+    },
+    {
+      "ID_Proveedor": 6,
+      "ID_Componente": 9,
+      "Cantidad": 3
+    },
+    {
+      "ID_Proveedor": 7,
+      "ID_Componente": 10,
+      "Cantidad": 8
+    },
+    {
+      "ID_Proveedor": 8,
+      "ID_Componente": 8,
+      "Cantidad": 6
+    },
+    {
+      "ID_Proveedor": 5,
+      "ID_Componente": 12,
+      "Cantidad": 4
+    }
+  ],
+  "compras": [
+    {
+      "ID_Compra": 1,
+      "ID_Proveedor": 1,
+      "ID_Componente": 1,
+      "Cantidad": 10,
+      "Precio_Unitario": 4500.0,
+      "Observacion": "Compra para reposición de stock",
+      "Fecha": "2025-07-11 08:05:37"
+    },
+    {
+      "ID_Compra": 2,
+      "ID_Proveedor": 2,
+      "ID_Componente": 2,
+      "Cantidad": 5,
+      "Precio_Unitario": 7000.0,
+      "Observacion": "Lubricante para mantenimiento semestral",
+      "Fecha": "2025-07-11 08:05:37"
+    },
+    {
+      "ID_Compra": 4,
+      "ID_Proveedor": 1,
+      "ID_Componente": 1,
+      "Cantidad": 10,
+      "Precio_Unitario": 4500.0,
+      "Observacion": "Compra para reposición de stock",
+      "Fecha": "2025-07-13 04:02:10"
+    },
+    {
+      "ID_Compra": 5,
+      "ID_Proveedor": 2,
+      "ID_Componente": 2,
+      "Cantidad": 5,
+      "Precio_Unitario": 7000.0,
+      "Observacion": "Lubricante para mantenimiento semestral",
+      "Fecha": "2025-07-13 04:02:10"
+    },
+    {
+      "ID_Compra": 6,
+      "ID_Proveedor": 3,
+      "ID_Componente": 5,
+      "Cantidad": 2,
+      "Precio_Unitario": 38000.0,
+      "Observacion": "Baterías para flota",
+      "Fecha": "2025-07-13 04:06:49"
+    },
+    {
+      "ID_Compra": 7,
+      "ID_Proveedor": 1,
+      "ID_Componente": 3,
+      "Cantidad": 4,
+      "Precio_Unitario": 1800.0,
+      "Observacion": "Reemplazo programado",
+      "Fecha": "2025-07-13 04:06:49"
+    },
+    {
+      "ID_Compra": 8,
+      "ID_Proveedor": 2,
+      "ID_Componente": 6,
+      "Cantidad": 10,
+      "Precio_Unitario": 9500.0,
+      "Observacion": "Aceite para campaña de cosecha",
+      "Fecha": "2025-07-13 04:06:49"
+    },
+    {
+      "ID_Compra": 9,
+      "ID_Proveedor": 5,
+      "ID_Componente": 7,
+      "Cantidad": 5,
+      "Precio_Unitario": 4000.0,
+      "Observacion": "Repuestos para tractor MF",
+      "Fecha": "2025-07-13 04:12:34"
+    },
+    {
+      "ID_Compra": 10,
+      "ID_Proveedor": 6,
+      "ID_Componente": 9,
+      "Cantidad": 3,
+      "Precio_Unitario": 2600.0,
+      "Observacion": "Sensores en stock",
+      "Fecha": "2025-07-13 04:12:34"
+    },
+    {
+      "ID_Compra": 11,
+      "ID_Proveedor": 7,
+      "ID_Componente": 10,
+      "Cantidad": 8,
+      "Precio_Unitario": 450.0,
+      "Observacion": "Mantenimiento flota liviana",
+      "Fecha": "2025-07-13 04:12:34"
+    },
+    {
+      "ID_Compra": 12,
+      "ID_Proveedor": 8,
+      "ID_Componente": 8,
+      "Cantidad": 6,
+      "Precio_Unitario": 8900.0,
+      "Observacion": "Aceite CVT para transmisión",
+      "Fecha": "2025-07-13 04:12:34"
+    }
+  ],
+  "frecuencias": [
+    {
+      "ID": 1,
+      "ID_Maquina": 1,
+      "ID_Componente": 1,
+      "Frecuencia": 100,
+      "Unidad tiempo": "Horas de uso",
+      "Criterio adicional": "Verificar cada mantenimiento menor"
+    },
+    {
+      "ID": 2,
+      "ID_Maquina": 2,
+      "ID_Componente": 2,
+      "Frecuencia": 6,
+      "Unidad tiempo": "Meses",
+      "Criterio adicional": "Reemplazar sin falta"
+    },
+    {
+      "ID": 3,
+      "ID_Maquina": 3,
+      "ID_Componente": 3,
+      "Frecuencia": 12,
+      "Unidad tiempo": "Meses",
+      "Criterio adicional": "Revisión preventiva"
+    },
+    {
+      "ID": 4,
+      "ID_Maquina": 4,
+      "ID_Componente": 4,
+      "Frecuencia": 250,
+      "Unidad tiempo": "Horas de uso",
+      "Criterio adicional": "Cambio obligatorio"
+    },
+    {
+      "ID": 5,
+      "ID_Maquina": 5,
+      "ID_Componente": 5,
+      "Frecuencia": 18,
+      "Unidad tiempo": "Meses",
+      "Criterio adicional": "Chequeo de carga"
+    },
+    {
+      "ID": 6,
+      "ID_Maquina": 5,
+      "ID_Componente": 6,
+      "Frecuencia": 800,
+      "Unidad tiempo": "Km recorridos",
+      "Criterio adicional": "Cambio recomendado"
+    },
+    {
+      "ID": 7,
+      "ID_Maquina": 6,
+      "ID_Componente": 7,
+      "Frecuencia": 6,
+      "Unidad tiempo": "Meses",
+      "Criterio adicional": "Cambiar en revisión anual"
+    },
+    {
+      "ID": 8,
+      "ID_Maquina": 6,
+      "ID_Componente": 8,
+      "Frecuencia": 150,
+      "Unidad tiempo": "Horas de uso",
+      "Criterio adicional": "Antes de campañas"
+    },
+    {
+      "ID": 9,
+      "ID_Maquina": 7,
+      "ID_Componente": 11,
+      "Frecuencia": 12,
+      "Unidad tiempo": "Meses",
+      "Criterio adicional": "Correa preventiva"
+    },
+    {
+      "ID": 10,
+      "ID_Maquina": 9,
+      "ID_Componente": 9,
+      "Frecuencia": 3,
+      "Unidad tiempo": "Meses",
+      "Criterio adicional": "Chequeo estacional"
+    },
+    {
+      "ID": 11,
+      "ID_Maquina": 10,
+      "ID_Componente": 10,
+      "Frecuencia": 20000,
+      "Unidad tiempo": "Km recorridos",
+      "Criterio adicional": "Revisión cada cambio de aceite"
+    }
+  ],
+  "maquinas": [
+    {
+      "ID": 1,
+      "Codigo": "M-001",
+      "Nombre": "Tractor John Deere",
+      "Marca": "John Deere",
+      "Modelo": "JD-5075E",
+      "Año": 2020,
+      "Estado": "Operativa",
+      "Observaciones": "En buenas condiciones",
+      "Foto": ""
+    },
+    {
+      "ID": 2,
+      "Codigo": "M-002",
+      "Nombre": "Cosechadora New Holland",
+      "Marca": "New Holland",
+      "Modelo": "CR5.85",
+      "Año": 2019,
+      "Estado": "En revisión",
+      "Observaciones": "Pendiente de revisión de motor",
+      "Foto": ""
+    },
+    {
+      "ID": 3,
+      "Codigo": "M-003",
+      "Nombre": "Pulverizadora PLA MAP II",
+      "Marca": "PLA",
+      "Modelo": "MAP II 2500",
+      "Año": 2021,
+      "Estado": "Operativa",
+      "Observaciones": "En buenas condiciones",
+      "Foto": ""
+    },
+    {
+      "ID": 4,
+      "Codigo": "M-004",
+      "Nombre": "Sembradora Crucianelli",
+      "Marca": "Crucianelli",
+      "Modelo": "Gringa 3",
+      "Año": 2018,
+      "Estado": "En revisión",
+      "Observaciones": "Revisión de dosificadores",
+      "Foto": ""
+    },
+    {
+      "ID": 5,
+      "Codigo": "M-005",
+      "Nombre": "Camión Mercedes",
+      "Marca": "Mercedes-Benz",
+      "Modelo": "Atego 1726",
+      "Año": 2017,
+      "Estado": "Operativa",
+      "Observaciones": "Utilizado para transporte de granos",
+      "Foto": ""
+    },
+    {
+      "ID": 6,
+      "Codigo": "M-006",
+      "Nombre": "Tractor Massey Ferguson",
+      "Marca": "Massey Ferguson",
+      "Modelo": "MF 4283",
+      "Año": 2022,
+      "Estado": "Operativa",
+      "Observaciones": "Tractor nuevo incorporado",
+      "Foto": ""
+    },
+    {
+      "ID": 7,
+      "Codigo": "M-007",
+      "Nombre": "Rastra de discos",
+      "Marca": "Yomel",
+      "Modelo": "RD-28",
+      "Año": 2015,
+      "Estado": "Operativa",
+      "Observaciones": "Mantenimiento anual realizado",
+      "Foto": ""
+    },
+    {
+      "ID": 8,
+      "Codigo": "M-008",
+      "Nombre": "Tolva Autodescargable",
+      "Marca": "Acron",
+      "Modelo": "GranMax 30000",
+      "Año": 2020,
+      "Estado": "Operativa",
+      "Observaciones": "Gran capacidad",
+      "Foto": ""
+    },
+    {
+      "ID": 9,
+      "Codigo": "M-009",
+      "Nombre": "Pala cargadora",
+      "Marca": "Caterpillar",
+      "Modelo": "930M",
+      "Año": 2019,
+      "Estado": "En reparación",
+      "Observaciones": "Falla en sistema hidráulico",
+      "Foto": ""
+    },
+    {
+      "ID": 10,
+      "Codigo": "M-010",
+      "Nombre": "Camioneta de servicio",
+      "Marca": "Toyota",
+      "Modelo": "Hilux 4x4",
+      "Año": 2021,
+      "Estado": "Operativa",
+      "Observaciones": "Usada por el encargado de campo",
+      "Foto": ""
+    }
+  ],
+  "maquinas_componentes": [
+    {
+      "ID_Maquina": 1,
+      "ID_Componente": 1
+    },
+    {
+      "ID_Maquina": 2,
+      "ID_Componente": 2
+    },
+    {
+      "ID_Maquina": 3,
+      "ID_Componente": 3
+    },
+    {
+      "ID_Maquina": 4,
+      "ID_Componente": 4
+    },
+    {
+      "ID_Maquina": 5,
+      "ID_Componente": 5
+    },
+    {
+      "ID_Maquina": 5,
+      "ID_Componente": 6
+    },
+    {
+      "ID_Maquina": 6,
+      "ID_Componente": 7
+    },
+    {
+      "ID_Maquina": 6,
+      "ID_Componente": 8
+    },
+    {
+      "ID_Maquina": 7,
+      "ID_Componente": 11
+    },
+    {
+      "ID_Maquina": 9,
+      "ID_Componente": 9
+    },
+    {
+      "ID_Maquina": 10,
+      "ID_Componente": 10
+    }
+  ],
+  "pagos_proveedores": [
+    {
+      "ID": 1,
+      "ID_Proveedor": 1,
+      "Monto": 45000.0,
+      "Metodo": "Transferencia",
+      "Observacion": "Pago por filtros",
+      "Fecha": "2025-07-11 08:05:47"
+    },
+    {
+      "ID": 2,
+      "ID_Proveedor": 2,
+      "Monto": 35000.0,
+      "Metodo": "Efectivo",
+      "Observacion": "Pago contado por lubricantes",
+      "Fecha": "2025-07-11 08:05:47"
+    },
+    {
+      "ID": 3,
+      "ID_Proveedor": 3,
+      "Monto": 76000.0,
+      "Metodo": "Transferencia",
+      "Observacion": "Pago por baterías",
+      "Fecha": "2025-07-13 04:07:00"
+    },
+    {
+      "ID": 4,
+      "ID_Proveedor": 1,
+      "Monto": 7200.0,
+      "Metodo": "Cheque",
+      "Observacion": "Pago correa alternador",
+      "Fecha": "2025-07-13 04:07:00"
+    },
+    {
+      "ID": 5,
+      "ID_Proveedor": 2,
+      "Monto": 95000.0,
+      "Metodo": "Transferencia",
+      "Observacion": "Aceite de motor",
+      "Fecha": "2025-07-13 04:07:00"
+    },
+    {
+      "ID": 6,
+      "ID_Proveedor": 5,
+      "Monto": 19000.0,
+      "Metodo": "Transferencia",
+      "Observacion": "Pago filtro hidráulico",
+      "Fecha": "2025-07-13 04:12:41"
+    },
+    {
+      "ID": 7,
+      "ID_Proveedor": 6,
+      "Monto": 7800.0,
+      "Metodo": "Efectivo",
+      "Observacion": "Sensores",
+      "Fecha": "2025-07-13 04:12:41"
+    },
+    {
+      "ID": 8,
+      "ID_Proveedor": 7,
+      "Monto": 3600.0,
+      "Metodo": "Transferencia",
+      "Observacion": "Bujías varias",
+      "Fecha": "2025-07-13 04:12:41"
+    },
+    {
+      "ID": 9,
+      "ID_Proveedor": 8,
+      "Monto": 53400.0,
+      "Metodo": "Transferencia",
+      "Observacion": "Aceites varios",
+      "Fecha": "2025-07-13 04:12:41"
+    }
+  ],
+  "stock": [
+    {
+      "ID": 1,
+      "ID_Componente": 1,
+      "Cantidad": 10,
+      "Tipo": "Ingreso",
+      "Observacion": "Stock inicial",
+      "Fecha": "2025-07-13 04:02:22"
+    },
+    {
+      "ID": 2,
+      "ID_Componente": 2,
+      "Cantidad": 5,
+      "Tipo": "Ingreso",
+      "Observacion": "Compra programada",
+      "Fecha": "2025-07-13 04:02:22"
+    },
+    {
+      "ID": 3,
+      "ID_Componente": 3,
+      "Cantidad": 4,
+      "Tipo": "Ingreso",
+      "Observacion": "Compra stock inicial",
+      "Fecha": "2025-07-13 04:06:55"
+    },
+    {
+      "ID": 4,
+      "ID_Componente": 4,
+      "Cantidad": 5,
+      "Tipo": "Ingreso",
+      "Observacion": "Stock de mantenimiento",
+      "Fecha": "2025-07-13 04:06:55"
+    },
+    {
+      "ID": 5,
+      "ID_Componente": 5,
+      "Cantidad": 2,
+      "Tipo": "Ingreso",
+      "Observacion": "Entrega parcial",
+      "Fecha": "2025-07-13 04:06:55"
+    },
+    {
+      "ID": 6,
+      "ID_Componente": 6,
+      "Cantidad": 10,
+      "Tipo": "Ingreso",
+      "Observacion": "Programado para mantenimiento de flota",
+      "Fecha": "2025-07-13 04:06:55"
+    },
+    {
+      "ID": 7,
+      "ID_Componente": 7,
+      "Cantidad": 5,
+      "Tipo": "Ingreso",
+      "Observacion": "Compra preventiva",
+      "Fecha": "2025-07-13 04:12:38"
+    },
+    {
+      "ID": 8,
+      "ID_Componente": 8,
+      "Cantidad": 6,
+      "Tipo": "Ingreso",
+      "Observacion": "Previo a campaña",
+      "Fecha": "2025-07-13 04:12:38"
+    },
+    {
+      "ID": 9,
+      "ID_Componente": 9,
+      "Cantidad": 3,
+      "Tipo": "Ingreso",
+      "Observacion": "Repuestos eléctricos",
+      "Fecha": "2025-07-13 04:12:38"
+    },
+    {
+      "ID": 10,
+      "ID_Componente": 10,
+      "Cantidad": 8,
+      "Tipo": "Ingreso",
+      "Observacion": "Plan de mantenimiento",
+      "Fecha": "2025-07-13 04:12:38"
+    },
+    {
+      "ID": 11,
+      "ID_Componente": 11,
+      "Cantidad": 2,
+      "Tipo": "Ingreso",
+      "Observacion": "Reposición mínima",
+      "Fecha": "2025-07-13 04:12:38"
+    },
+    {
+      "ID": 12,
+      "ID_Componente": 12,
+      "Cantidad": 4,
+      "Tipo": "Ingreso",
+      "Observacion": "Stock inicial combustible",
+      "Fecha": "2025-07-13 04:12:38"
+    }
+  ]
+}

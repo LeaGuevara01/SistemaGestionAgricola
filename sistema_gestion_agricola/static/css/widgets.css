@@ -46,7 +46,7 @@
 .weather-icon {
     font-size: 3.5rem;
     margin: 0.5rem 0;
-    color: var(--agri-green);
+    color: var(--text-color);
 }
 
 #clima-container h3 {

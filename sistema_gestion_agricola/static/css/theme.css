@@ -46,8 +46,8 @@
     --btn-border-primary: var(--agri-green-dark);
 
     --btn-bg-secondary: var(--agri-green-dark);
-    --btn-text-secondary: var(--agri-green-tertiary);
-    --btn-border-secondary: var(--agri-green-tertiary);
+    --btn-text-secondary: var(--bg-color);
+    --btn-border-secondary: var(--bg-color);
 
     --btn-bg-tertiary: var(--agri-green-muted);
     --btn-text-tertiary: var(--agri-green-darker);
