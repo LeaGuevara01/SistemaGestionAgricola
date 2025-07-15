@@ -1,3 +1,3 @@
 build:
-  python:
-    installCommand: pip install --no-cache-dir -r requirements.txt
+  pythonVersion: 3.11.9
+  installCommand: pip install --no-cache-dir -r requirements.txt
