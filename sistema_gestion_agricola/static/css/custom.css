@@ -395,7 +395,6 @@
   justify-content: center;
   font-size: 2rem;
   color: var(--agri-green-primary, #2e7d32);
-  margin-bottom: 0.5rem;
 }
 .stat-content h3,
 .stat-content p {

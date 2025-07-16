@@ -121,11 +121,6 @@
   .stat-card.panel {
     flex-direction: column !important;
     align-items: center !important;
-    text-align: center !important;
-  }
-
-  .stat-card.panel .stat-icon {
-    margin: 0 0 0.5rem 0 !important;
   }
 
   .stat-card.panel .stat-content {

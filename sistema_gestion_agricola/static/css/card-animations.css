@@ -52,13 +52,12 @@
   opacity: 0;
   transform: translateY(20px);
 }
-
-
 .stat-card.panel {
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
   vertical-align: middle;
+  text-align: left;
   gap: 1rem;
   padding: 1rem;
   border-radius: 10px;
@@ -117,7 +116,6 @@
 .auto-grid {
   align-items: stretch;
 }
-
 .stat-card {
   opacity: 0;
   transform: translateY(20px);

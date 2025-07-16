@@ -32,58 +32,6 @@
         </div>
     </div>
     {% if componentes %}
-    <!-- Estadísticas rápidas -->
-    <div class="auto-grid mb-2">
-        <div class="stat-card compact hidden-item" data-delay="100">
-            <div class="stat-icon"><i class="bi bi-puzzle"></i></div>
-            <div class="stat-content">
-                <h3>{{ componentes|length }}</h3>
-                <p>Componentes</p>
-            </div>
-        </div>
-        <div class="stat-card compact hidden-item" data-delay="200">
-            <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
-            <div class="stat-content">
-                <h3>{{ componentes|selectattr('Foto')|list|length }}</h3>
-                <p>Con Imagen</p>
-            </div>
-        </div>
-        <div class="stat-card compact hidden-item" data-delay="300">
-            <div class="stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
-            <div class="stat-content">
-                <h3>{{ componentes|rejectattr('Foto')|list|length }}</h3>
-                <p>Sin Imagen</p>
-            </div>
-        </div>
-    </div>
-    <div class="stats-grid panel mb-3">
-        <div class="stat-card panel hidden-item" data-delay="400">
-            <div class="stat-icon"><i class="bi bi-cash"></i></div>
-            <div class="stat-content">
-                <h3>
-                    ${{ "%.2f"|format(
-                    (componentes|map(attribute='Precio')|select|sum) / 
-                    (componentes|length if componentes|length > 0 else 1)) }}
-                </h3>
-                <p>Precio Promedio</p>
-            </div>
-        </div>
-        <div class="stat-card panel hidden-item" data-delay="500">
-            <div class="stat-icon"><i class="bi bi-graph-up-arrow"></i></div>
-            <div class="stat-content">
-                {% set max_comp = componentes|max(attribute='Precio') %}
-                <h3>${{ "%.2f"|format(max_comp.Precio) }}</h3>
-                <p>{{ max_comp.Nombre }}</p>
-            </div>
-        </div>
-        <div class="stat-card panel hidden-item" data-delay="600">
-            <div class="stat-icon"><i class="bi bi-bank"></i></div>
-            <div class="stat-content">
-                <h3>${{ "%.2f"|format(componentes | map(attribute='Precio') | select | sum) }}</h3>
-                <p>Valor Total</p>
-            </div>
-        </div>
-    </div>
     <!-- Filtros y búsqueda -->
     <div class="card-section hidden-item mb-4">
         <div class="row g-3 align-items-end">
@@ -106,11 +54,6 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="d-flex flex-column flex-md-row gap-2">
-                <button type="button" class="btn btn-outline-secondary w-100 w-md-auto" onclick="clearFilters()">
-                    <i class="bi bi-x-circle"></i> Limpiar filtros
-                </button>
-            </div>
         </div>
     </div>
     {% endif %}
@@ -129,7 +72,7 @@
         {% if componentes %}
         <!-- Vista de tabla -->
         <div id="tableView" class="table-view hidden-item">
-            <div class="table-responsive hidden-item" style="margin-left: 1rem !important;">
+            <div class="table-responsive hidden-item" style="margin: 1rem 0 !important;">
                 <table class="table table-hover hidden-item align-middle">
                     <thead>
                         <tr>
@@ -224,10 +167,96 @@
         </div>
         {% endif %}
     </section>
+    {% if componentes %}
+    <!-- Estadísticas rápidas -->
+    <div class="auto-grid mb-2">
+        <div class="stat-card compact hidden-item" data-delay="100">
+            <div class="stat-icon"><i class="bi bi-puzzle"></i></div>
+            <div class="stat-content">
+                <h3>{{ componentes|length }}</h3>
+                <p>Componentes</p>
+            </div>
+        </div>
+        <div class="stat-card compact hidden-item" data-delay="200">
+            <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+            <div class="stat-content">
+                <h3>{{ componentes|selectattr('Foto')|list|length }}</h3>
+                <p>Con Imagen</p>
+            </div>
+        </div>
+        <div class="stat-card compact hidden-item" data-delay="300">
+            <div class="stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
+            <div class="stat-content">
+                <h3>{{ componentes|rejectattr('Foto')|list|length }}</h3>
+                <p>Sin Imagen</p>
+            </div>
+        </div>
+    </div>
+    <div class="stats-grid panel mb-0">
+        <div class="stat-card panel hidden-item" data-delay="400">
+            <div class="stat-icon"><i class="bi bi-cash"></i></div>
+            <div class="stat-content">
+                <h3>
+                    ${{ "%.2f"|format(
+                    (componentes|map(attribute='Precio')|select|sum) / 
+                    (componentes|length if componentes|length > 0 else 1)) }}
+                </h3>
+                <p>Precio Promedio</p>
+            </div>
+        </div>
+        <div class="stat-card panel hidden-item" data-delay="500">
+            <div class="stat-icon"><i class="bi bi-graph-up-arrow"></i></div>
+            <div class="stat-content">
+                {% set max_comp = componentes|max(attribute='Precio') %}
+                <h3>${{ "%.2f"|format(max_comp.Precio) }}</h3>
+                <p>{{ max_comp.Nombre }}</p>
+            </div>
+        </div>
+        <div class="stat-card panel hidden-item" data-delay="600">
+            <div class="stat-icon"><i class="bi bi-bank"></i></div>
+            <div class="stat-content">
+                <h3>${{ "%.2f"|format(componentes | map(attribute='Precio') | select | sum) }}</h3>
+                <p>Valor Total</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 
 <style>
     
+@media (max-width: 420px) {
+  .auto-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas */
+    gap: 0.5rem;
+    padding: 0 0.4rem;
+  }
+
+  .stat-card.compact {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    min-height: auto;
+  }
+
+  .stat-card.compact .stat-content h3 {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .stat-card.compact .stat-content p {
+    font-size: 0.65rem;
+    margin: 0;
+  }
+
+  .stat-icon {
+    font-size: 1.2rem;
+  }
+}
+
+.component-card {
+    padding: 0 0.6rem !important;
+}
 
 </style>
 

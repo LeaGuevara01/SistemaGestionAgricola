@@ -32,37 +32,6 @@
         </div>
     </div>
     {% if maquinas %}
-    <!-- Estadísticas rápidas -->
-    <div class="stats-grid hidden-item">
-        <div class="stat-card compact hidden-item">
-            <div class="stat-icon hidden-item" data-delay="100"><i class="bi bi-gear"></i></div>
-            <div class="stat-content">
-                <h3>{{ maquinas|length }}</h3>
-                <p>Máquinas</p>
-            </div>
-        </div>
-        <div class="stat-card compact hidden-item">
-            <div class="stat-icon hidden-item" data-delay="100"><i class="bi bi-check-circle"></i></div>
-            <div class="stat-content">
-                <h3>{{ maquinas|selectattr('Estado', 'equalto', 'Operativa')|list|length }}</h3>
-                <p>Operativas</p>
-            </div>
-        </div>
-        <div class="stat-card compact hidden-item">
-            <div class="stat-icon hidden-item" data-delay="100"><i class="bi bi-tools"></i></div>
-            <div class="stat-content">
-                <h3>{{ maquinas|selectattr('Estado', 'equalto', 'En taller')|list|length }}</h3>
-                <p>Taller</p>
-            </div>
-        </div>
-        <div class="stat-card compact hidden-item">
-        <div class="stat-icon hidden-item" data-delay="100"><i class="bi bi-life-preserver"></i></div>
-            <div class="stat-content">
-                <h3>{{ maquinas|selectattr('Estado', 'equalto', 'Reserva')|list|length }}</h3>
-                <p>Reserva</p>
-            </div>
-        </div>
-    </div>
     <!-- Filtros y búsqueda -->
     <div class="card-section mb-4 hidden-item">
         <div class="row g-3 align-items-end">
@@ -98,11 +67,6 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="d-flex flex-column flex-md-row gap-2">
-                <button type="button" class="btn btn-outline-secondary w-100 w-md-auto" onclick="clearFilters()">
-                    <i class="bi bi-x-circle"></i> Limpiar filtros
-                </button>
-            </div>
         </div>
     </div>
     {% endif %}
@@ -126,7 +90,7 @@
                     <thead>
                         <tr>
                             <th>Nombre</th>
-                            <th class="d-none d-md-table-cell text-center">Marca</th>
+                            <th class="d-none d-md-table-cell">Marca</th>
                             <th class="d-none d-md-table-cell">Modelo</th>
                             <th class="d-none d-lg-table-cell text-center">Año</th>
                             <th class="text-center">Estado</th>
@@ -143,7 +107,7 @@
                             <td>
                                 <strong class="machine-name">{{ m.Nombre }}</strong>
                             </td>
-                            <td class="d-none d-md-table-cell text-center">{{ m.Marca }}</td>
+                            <td class="d-none d-md-table-cell">{{ m.Marca }}</td>
                             <td class="d-none d-md-table-cell">{{ m.Modelo }}</td>
                             <td class="d-none d-lg-table-cell text-center">{{ m.Año }}</td>
                             <td class="text-center">
@@ -167,7 +131,6 @@
                 </table>
             </div>
         </div>
-
         <!-- Vista de cards -->
         <div id="cardsView" class="cards-view hidden-item">
             <div class="custom-cards-grid" id="maquinasCardsContainer">
@@ -197,7 +160,6 @@
                 {% endfor %}
             </div>
         </div>
-
         <!-- Estado vacío -->
         {% if not maquinas %}
         <div class="empty-state text-center py-5">
@@ -210,9 +172,73 @@
         </div>
         {% endif %}
     </section>
+    {% if maquinas %}
+    <!-- Estadísticas rápidas -->
+    <div class="stats-grid hidden-item">
+        <div class="stat-card compact hidden-item">
+            <div class="stat-icon hidden-item" data-delay="100"><i class="bi bi-gear"></i></div>
+            <div class="stat-content">
+                <h3>{{ maquinas|length }}</h3>
+                <p>Máquinas</p>
+            </div>
+        </div>
+        <div class="stat-card compact hidden-item">
+            <div class="stat-icon hidden-item" data-delay="100"><i class="bi bi-check-circle"></i></div>
+            <div class="stat-content">
+                <h3>{{ maquinas|selectattr('Estado', 'equalto', 'Operativa')|list|length }}</h3>
+                <p>Operativas</p>
+            </div>
+        </div>
+        <div class="stat-card compact hidden-item">
+            <div class="stat-icon hidden-item" data-delay="100"><i class="bi bi-tools"></i></div>
+            <div class="stat-content">
+                <h3>{{ maquinas|selectattr('Estado', 'equalto', 'En taller')|list|length }}</h3>
+                <p>Taller</p>
+            </div>
+        </div>
+        <div class="stat-card compact hidden-item">
+        <div class="stat-icon hidden-item" data-delay="100"><i class="bi bi-life-preserver"></i></div>
+            <div class="stat-content">
+                <h3>{{ maquinas|selectattr('Estado', 'equalto', 'Reserva')|list|length }}</h3>
+                <p>Reserva</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 
-<style></style>
+<style>
+
+@media (max-width: 420px) {
+  .stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr); /* 4 columnas */
+    gap: 0.5rem;
+    padding: 0 0.4rem;
+  }
+
+  .stat-card.compact {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    min-height: auto;
+  }
+
+  .stat-card.compact .stat-content h3 {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .stat-card.compact .stat-content p {
+    font-size: 0.65rem;
+    margin: 0;
+  }
+
+  .stat-icon {
+    font-size: 1.2rem;
+  }
+}
+
+</style>
 
 <script>
 
