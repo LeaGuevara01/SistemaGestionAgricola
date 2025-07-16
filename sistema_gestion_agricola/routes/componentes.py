@@ -1,38 +1,30 @@
-# routes/componentes.py
+# routes/componente.py
 from flask import Blueprint, request, redirect, url_for, render_template, flash, current_app
 from werkzeug.utils import secure_filename
 import os
-import sqlite3
-from ..utils.db import get_db_connection
+from ..models import db, Componente, Proveedor, ComponentesProveedores, MaquinaComponente, Frecuencia, Stock
 from ..utils.files import allowed_file
 from ..utils.stock_utils import obtener_stock_actual
 
 componentes_bp = Blueprint('componentes', __name__, url_prefix='/componente')
 
-# Component Management
 
-# List Components
 @componentes_bp.route('/')
 def lista_componentes():
-    conn = get_db_connection()
-    componentes = conn.execute('SELECT * FROM componentes').fetchall()
-    conn.close()
+    componentes = Componente.query.all()
     return render_template('componentes/listar.html', componentes=componentes)
 
 # Create Component
-# This route allows users to register a new component with its details and photo.
 @componentes_bp.route('/agregar', methods=['GET', 'POST'])
 def registrar_componente():
-    conn = get_db_connection()
-    
     if request.method == 'POST':
         codigo = request.form.get('codigo')
-        nombre = request.form['nombre']
+        nombre = request.form.get('nombre')
         descripcion = request.form.get('descripcion', '')
         tipo = request.form.get('tipo', '')
         marca = request.form.get('marca', '')
         modelo = request.form.get('modelo', '')
-        precio = request.form.get('precio', 0)
+        precio_str = request.form.get('precio', '0')
         foto = request.files.get('foto')
         proveedores_ids = request.form.getlist('proveedores_seleccionados')
 
@@ -42,228 +34,168 @@ def registrar_componente():
             ruta = os.path.join(current_app.config['UPLOAD_FOLDER_COMPONENTES'], foto_filename)
             foto.save(ruta)
 
-        # Guardar el componente en la base de datos
-        cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO componentes (ID_Componente, Nombre, Descripcion, Tipo, Foto, Marca, Modelo, Precio)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (codigo, nombre, descripcion, tipo, foto_filename, marca, modelo, precio))
-        
-        nuevo_id = cursor.lastrowid
+        try:
+            precio = float(precio_str)
+        except ValueError:
+            precio = 0
 
-        # Insertar relaciones con proveedores
+        nuevo_componente = Componente(
+            ID_Componente=codigo,
+            Nombre=nombre,
+            Descripcion=descripcion,
+            Tipo=tipo,
+            Foto=foto_filename,
+            Marca=marca,
+            Modelo=modelo,
+            Precio=precio
+        )
+        db.session.add(nuevo_componente)
+        db.session.flush()  # Para obtener el ID
+
         for id_proveedor in proveedores_ids:
-            cursor.execute('''
-                INSERT INTO componentes_proveedores (ID_Proveedor, ID_Componente)
-                VALUES (?, ?)
-            ''', (id_proveedor, nuevo_id))
+            relacion = ComponentesProveedores(ID_Proveedor=int(id_proveedor), ID_Componente=nuevo_componente.ID)
+            db.session.add(relacion)
 
-        conn.commit()
-        conn.close()
+        try:
+            db.session.commit()
+            flash(f'Componente "{nombre}" agregado con éxito.')
+            return redirect(url_for('componentes.vista_componente', id=nuevo_componente.ID))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error al guardar componente: {e}', 'error')
 
-        flash(f'Componente "{nombre}" agregado con éxito.')
-        return redirect(url_for('componentes.vista_componente', id=nuevo_id))
-
-    # Si es GET: cargar proveedores para mostrarlos en el formulario
-    proveedores = conn.execute('SELECT * FROM proveedores').fetchall()
-    proveedores = conn.execute('SELECT * FROM proveedores').fetchall()
-    conn.close()
+    proveedores = Proveedor.query.all()
     return render_template('componentes/agregar.html', proveedores=proveedores)
 
 # Read Component
-# This route allows users to view the details of a specific component, including its suppliers and frequencies
 @componentes_bp.route('/<int:id>')
 def vista_componente(id):
-    conn = get_db_connection()
-    componente = conn.execute('SELECT * FROM componentes WHERE ID = ?', (id,)).fetchone()
-    id_maquina = request.args.get('id_maquina')
-
-    if componente is None:
-        conn.close()
+    componente = Componente.query.get(id)
+    if not componente:
         return render_template('404.html', message="Componente no encontrado"), 404
 
-    # Obtener stock total de todos los componentes
     stock_data = obtener_stock_actual()
-
-    # Buscar el stock del componente actual
     stock_actual = next((c['Stock_Actual'] for c in stock_data if c['ID'] == id), 0)
 
-    # Obtener proveedores asociados
-    proveedores = conn.execute('''
-        SELECT p.*
-        FROM proveedores p
-        JOIN componentes_proveedores cp ON p.ID = cp.ID_Proveedor
-        WHERE cp.ID_Componente = ?
-    ''', (componente['ID'],)).fetchall()
+    proveedores = (
+        Proveedor.query
+        .join(ComponentesProveedores, Proveedor.ID == ComponentesProveedores.ID_Proveedor)
+        .filter(ComponentesProveedores.ID_Componente == componente.ID)
+        .all()
+    )
 
-    conn.close()
+    id_maquina = request.args.get('id_maquina')
+
     return render_template('componentes/ver.html', componente=componente, stock_actual=stock_actual, proveedores=proveedores, id_maquina=id_maquina)
 
 # Update Component
 @componentes_bp.route('/<int:id>/editar', methods=['GET', 'POST'])
 def editar_componente(id):
-
-    conn = get_db_connection()
-    
-    # Obtener el componente
-    componente = conn.execute('SELECT * FROM componentes WHERE ID = ?', (id,)).fetchone()
-    
+    componente = Componente.query.get(id)
     if not componente:
-        conn.close()
         flash('Componente no encontrado.', 'error')
         return redirect(url_for('componentes.lista_componentes'))
-
 
     if request.method == 'POST':
-        try:
-            # Obtener datos del formulario
-            codigo = request.form.get('codigo', '').strip()
-            nombre = request.form.get('nombre', '').strip()
-            tipo = request.form.get('tipo', '').strip()
-            marca = request.form.get('marca', '').strip()
-            modelo = request.form.get('modelo', '').strip()
-            precio_str = request.form.get('precio', '').strip()
-            descripcion = request.form.get('descripcion', '').strip()
-            foto = request.files.get('foto')
+        codigo = request.form.get('codigo', '').strip()
+        nombre = request.form.get('nombre', '').strip()
+        tipo = request.form.get('tipo', '').strip()
+        marca = request.form.get('marca', '').strip()
+        modelo = request.form.get('modelo', '').strip()
+        precio_str = request.form.get('precio', '').strip()
+        descripcion = request.form.get('descripcion', '').strip()
+        foto = request.files.get('foto')
 
-            # Validación
-            if not nombre:
-                flash('El nombre del componente es obligatorio.', 'error')
-                conn.close()
+        if not nombre:
+            flash('El nombre del componente es obligatorio.', 'error')
+            return render_template('componentes/editar.html', componente=componente)
+
+        try:
+            precio_valor = float(precio_str) if precio_str else None
+        except ValueError:
+            flash('El precio debe ser un número válido.', 'error')
+            return render_template('componentes/editar.html', componente=componente)
+
+        foto_filename = componente.Foto
+        if foto and foto.filename != '':
+            if allowed_file(foto.filename):
+                if componente.Foto:
+                    foto_anterior = os.path.join(current_app.config['UPLOAD_FOLDER_COMPONENTES'], componente.Foto)
+                    if os.path.exists(foto_anterior):
+                        try:
+                            os.remove(foto_anterior)
+                        except OSError:
+                            pass
+
+                extension = foto.filename.rsplit('.', 1)[1].lower()
+                foto_filename = secure_filename(f"componente_{id}.{extension}")
+                filepath = os.path.join(current_app.config['UPLOAD_FOLDER_COMPONENTES'], foto_filename)
+                foto.save(filepath)
+            else:
+                flash('Formato de imagen no válido. Use JPG, PNG o GIF.', 'error')
                 return render_template('componentes/editar.html', componente=componente)
 
+        componente.ID_Componente = codigo or None
+        componente.Nombre = nombre
+        componente.Tipo = tipo or None
+        componente.Descripcion = descripcion or None
+        componente.Foto = foto_filename
+        componente.Marca = marca or None
+        componente.Modelo = modelo or None
+        componente.Precio = precio_valor
 
-            # Procesar precio
-            precio_valor = None
-            if precio_str:
-                try:
-                    precio_valor = float(precio_str)
-                except ValueError:
-                    flash('El precio debe ser un número válido.', 'error')
-                    conn.close()
-                    return render_template('componentes/editar.html', componente=componente)
-
-
-            # Procesar foto
-            foto_filename = componente['Foto']
-            if foto and foto.filename != '':
-                if allowed_file(foto.filename):
-                    # Eliminar foto anterior
-                    if componente['Foto']:
-                        foto_anterior = os.path.join(current_app.config['UPLOAD_FOLDER_COMPONENTES'], componente['Foto'])
-                        if os.path.exists(foto_anterior):
-                            try:
-                                os.remove(foto_anterior)
-                            except OSError:
-                                pass
-                    
-                    # Guardar nueva foto
-                    extension = foto.filename.rsplit('.', 1)[1].lower()
-                    foto_filename = secure_filename(f"componente_{id}.{extension}")
-                    filepath = os.path.join(current_app.config['UPLOAD_FOLDER_COMPONENTES'], foto_filename)
-                    foto.save(filepath)
-                else:
-                    flash('Formato de imagen no válido. Use JPG, PNG o GIF.', 'error')
-                    conn.close()
-                    return render_template('componentes/editar.html', componente=componente)
-
-
-            # Actualizar en la base de datos
-            conn.execute('''
-                UPDATE componentes SET 
-                ID_Componente = ?, 
-                Nombre = ?, 
-                Tipo = ?, 
-                Descripcion = ?, 
-                Foto = ?, 
-                Marca = ?, 
-                Modelo = ?, 
-                Precio = ?
-                WHERE ID = ?
-            ''', (codigo or None, nombre, tipo or None, descripcion or None, 
-                  foto_filename, marca or None, modelo or None, precio_valor, id))
-            
-            conn.commit()
+        try:
+            db.session.commit()
             flash('Componente actualizado correctamente.', 'success')
-            print("=== ACTUALIZACIÓN EXITOSA ===")
-            conn.close()
             return redirect(url_for('componentes.vista_componente', id=id))
-            
-        except sqlite3.Error as e:
-            conn.rollback()
-            flash(f'Error de base de datos: {str(e)}', 'error')
-            print(f"Error SQL: {e}")
-            conn.close()
-            return render_template('componentes/editar.html', componente=componente)
         except Exception as e:
-            conn.rollback()
-            flash(f'Error inesperado: {str(e)}', 'error')
-            print(f"Error general: {e}")
-            conn.close()
+            db.session.rollback()
+            flash(f'Error al actualizar componente: {e}', 'error')
             return render_template('componentes/editar.html', componente=componente)
 
-    # GET: mostrar formulario
-    conn.close()
     return render_template('componentes/editar.html', componente=componente)
 
-# Component Deletion
+# Delete Component
 @componentes_bp.route('/<int:id>/eliminar', methods=['POST'])
 def eliminar_componente(id):
-    conn = get_db_connection()
-    componente = conn.execute('SELECT * FROM componentes WHERE ID = ?', (id,)).fetchone()
-    
+    componente = Componente.query.get(id)
     if not componente:
-        conn.close()
         flash('Componente no encontrado.', 'error')
         return redirect(url_for('componentes.lista_componentes'))
 
-
-    
     try:
-        # Eliminar foto si existe
-        if componente['Foto']:
-            foto_path = os.path.join(current_app.config['UPLOAD_FOLDER_COMPONENTES'], componente['Foto'])
+        if componente.Foto:
+            foto_path = os.path.join(current_app.config['UPLOAD_FOLDER_COMPONENTES'], componente.Foto)
             if os.path.exists(foto_path):
                 try:
                     os.remove(foto_path)
                 except OSError:
-                    pass  # No importa si no se puede eliminar la foto
-        
-        # Eliminar relaciones en maquinas_componentes
-        conn.execute('DELETE FROM maquinas_componentes WHERE ID_Componente = ?', (id,))
-        
-        # Eliminar frecuencias asociadas
-        conn.execute('DELETE FROM frecuencias WHERE ID_Componente = ?', (id,))
-        
-        # Eliminar relaciones con proveedores
-        conn.execute('DELETE FROM componentes_proveedores WHERE ID_Componente = ?', (id,))
-        
-        # Eliminar registros de stock
-        conn.execute('DELETE FROM stock WHERE ID_Componente = ?', (componente['ID_Componente'],))
-        
-        # Eliminar compras (opcional - podrías querer mantener el historial)
-        # conn.execute('DELETE FROM compras WHERE ID_Componente = ?', (id,))
-        
-        # Finalmente eliminar el componente
-        cursor = conn.execute('DELETE FROM componentes WHERE ID = ?', (id,))
-        
-        if cursor.rowcount == 0:
-            flash('No se pudo eliminar el componente.', 'error')
-        else:
-            flash(f'Componente "{componente["Nombre"]}" eliminado correctamente.', 'success')
-        
-        conn.commit()
-    except sqlite3.Error as e:
-        conn.rollback()
-        flash(f'Error al eliminar el componente: {str(e)}', 'error')
-    finally:
-        conn.close()
-    
+                    pass
+
+        # Relaciones
+        MaquinaComponente.query.filter_by(ID_Componente=id).delete()
+        Frecuencia.query.filter_by(ID_Componente=id).delete()
+        ComponentesProveedores.query.filter_by(ID_Componente=id).delete()
+        Stock.query.filter_by(ID_Componente=componente.ID_Componente).delete()
+
+        db.session.delete(componente)
+        db.session.commit()
+
+        flash(f'Componente "{componente.Nombre}" eliminado correctamente.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error al eliminar el componente: {e}', 'error')
+
     return redirect(url_for('componentes.lista_componentes'))
 
-# Upload Component Photo
+# Create Photo
 @componentes_bp.route('/<int:id>/upload_foto', methods=['POST'])
 def upload_foto_componente(id):
+    componente = Componente.query.get(id)
+    if not componente:
+        flash('Componente no encontrado.')
+        return redirect(url_for('componentes.lista_componentes'))
+
     if 'foto' not in request.files:
         flash('No se encontró archivo en el formulario.')
         return redirect(url_for('componentes.vista_componente', id=id))
@@ -273,21 +205,29 @@ def upload_foto_componente(id):
         flash('Archivo vacío.')
         return redirect(url_for('componentes.vista_componente', id=id))
 
-
     if foto and allowed_file(foto.filename):
-        extension = foto.filename.rsplit('.', 1)[1].lower()
-        filename = secure_filename(f"componente_{id}.{extension}")
-        filepath = os.path.join(current_app.config['UPLOAD_FOLDER_COMPONENTES'], filename)
-        foto.save(filepath)
+        try:
+            upload_folder = current_app.config['UPLOAD_FOLDER_COMPONENTES']
+            os.makedirs(upload_folder, exist_ok=True)
 
-        # Actualizar en la base de datos
-        conn = get_db_connection()
-        conn.execute('UPDATE componentes SET Foto = ? WHERE ID = ?', (filename, id))
-        conn.commit()
-        conn.close()
+            # Eliminar foto anterior si existe
+            if componente.Foto:
+                foto_anterior = os.path.join(upload_folder, componente.Foto)
+                if os.path.exists(foto_anterior):
+                    os.remove(foto_anterior)
 
-        flash("Foto del componente actualizada.")
+            extension = foto.filename.rsplit('.', 1)[1].lower()
+            filename = secure_filename(f"componente_{id}.{extension}")
+            filepath = os.path.join(upload_folder, filename)
+            foto.save(filepath)
+
+            componente.Foto = filename
+            db.session.commit()
+            flash("Foto del componente actualizada.")
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error al actualizar la foto: {e}", 'error')
     else:
-        flash("Formato de archivo no permitido.")
+        flash("Formato de archivo no permitido. Solo JPG, JPEG, PNG, GIF.")
 
     return redirect(url_for('componentes.vista_componente', id=id))

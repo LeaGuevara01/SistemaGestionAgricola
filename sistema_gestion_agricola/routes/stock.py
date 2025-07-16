@@ -1,58 +1,62 @@
 # routes/stock.py
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from ..utils.db import get_db_connection
+from ..models import db, Componente, Stock
 from datetime import datetime
 
 stock_bp = Blueprint('stock', __name__, url_prefix='/stock')
 
-# List Stock
+# Listar stock actual usando función utilitaria (que deberá usar SQLAlchemy)
 @stock_bp.route('/')
 def vista_stock():
-    conn = get_db_connection()
-    # This query needs to be updated to use the stock_utils function
-    from ..utils.stock_utils import obtener_stock_actual
+    from ..utils.stock_utils import obtener_stock_actual  # asumo que devuelve lista con ORM o dicts
     stock = obtener_stock_actual()
-    conn.close()
     return render_template('stock/listar.html', stock=stock)
 
-# Register Stock Movement
+# Registrar movimiento de stock
 @stock_bp.route('/registrar', methods=['GET', 'POST'])
 def registrar_stock():
-    conn = get_db_connection()
-    componentes = conn.execute('SELECT ID_Componente, Nombre FROM componentes').fetchall()
+    componentes = Componente.query.with_entities(Componente.ID, Componente.Nombre).all()
 
     if request.method == 'POST':
-        id_componente = request.form['id_componente']
-        cantidad = int(request.form['cantidad'])
-        tipo = request.form['tipo']
-        observacion = request.form['observacion']
+        id_componente = request.form.get('id_componente')
+        cantidad = request.form.get('cantidad')
+        tipo = request.form.get('tipo')
+        observacion = request.form.get('observacion', '').strip()
 
-        conn.execute('''
-            INSERT INTO stock (ID_Componente, Cantidad, Tipo, Observacion)
-            VALUES (?, ?, ?, ?)
-        ''', (id_componente, cantidad, tipo, observacion))
-        conn.commit()
-        conn.close()
+        if not id_componente or not cantidad or not tipo:
+            flash('Completar todos los campos obligatorios.')
+            return redirect(url_for('stock.registrar_stock'))
+
+        try:
+            cantidad_val = int(cantidad)
+        except ValueError:
+            flash('Cantidad debe ser un número entero válido.')
+            return redirect(url_for('stock.registrar_stock'))
+
+        nuevo_movimiento = Stock(
+            ID_Componente=id_componente,
+            Cantidad=cantidad_val,
+            Tipo=tipo,
+            Observacion=observacion,
+            Fecha=datetime.utcnow()
+        )
+
+        db.session.add(nuevo_movimiento)
+        db.session.commit()
+
+        flash('Movimiento de stock registrado correctamente.')
         return redirect(url_for('stock.vista_stock'))
 
-    conn.close()
     return render_template('stock/registrar.html', componentes=componentes)
 
-
-# Read Stock Detail
+# Detalle del stock y movimientos asociados a un componente
 @stock_bp.route('/<int:id>')
 def detalle_stock(id):
-    conn = get_db_connection()
-    componente = conn.execute('SELECT * FROM componentes WHERE ID = ?', (id,)).fetchone()
-    movimientos = conn.execute('''
-        SELECT * FROM stock
-        WHERE ID_Componente = ?
-        ORDER BY Fecha DESC
-    ''', (id,)).fetchall()
-    conn.close()
-
+    componente = Componente.query.get(id)
     if not componente:
-        flash("Componente no encontrado.")
+        flash('Componente no encontrado.')
         return redirect(url_for('stock.vista_stock'))
+
+    movimientos = Stock.query.filter_by(ID_Componente=id).order_by(Stock.Fecha.desc()).all()
 
     return render_template('stock/detalle.html', componente=componente, movimientos=movimientos)

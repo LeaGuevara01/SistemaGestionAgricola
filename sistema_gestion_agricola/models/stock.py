@@ -1,3 +1,4 @@
+# models/stock.py
 from . import db
 
 class Stock(db.Model):

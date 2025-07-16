@@ -1,3 +1,4 @@
+# models/proveedor.py
 from . import db
 
 class Proveedor(db.Model):
@@ -12,6 +13,10 @@ class Proveedor(db.Model):
     Rubro = db.Column(db.String)
     Direccion = db.Column(db.String)
     Observaciones = db.Column(db.String)
+
+    componentes = db.relationship('ComponentesProveedores', back_populates='proveedor', cascade='all, delete-orphan')
+    compras = db.relationship('Compra', backref='proveedor', lazy=True)
+    pagos = db.relationship('PagoProveedor', backref='proveedor', lazy=True)
 
 class Compra(db.Model):
     __tablename__ = 'compras'

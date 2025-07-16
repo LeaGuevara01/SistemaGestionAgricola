@@ -16,25 +16,18 @@ migrate = Migrate()
 
 # Cargar variables de entorno
 from dotenv import load_dotenv
-load_dotenv()
+import os
+
+if os.environ.get("FLASK_ENV") == "development":
+    load_dotenv(".env.development")
+else:
+    load_dotenv()
 
 def create_app():
-
-    api_key = os.getenv('WEATHER_API_KEY')
-    if not api_key:
-        raise RuntimeError("La variable de entorno WEATHER_API_KEY no está definida")
-    
-    db_uri = os.getenv("DATABASE_URL")
-    if not db_uri:
-        raise RuntimeError("DATABASE_URL no está configurado")
     
     app = Flask(__name__)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['WEATHER_API_KEY'] = api_key
-
-    app.secret_key = os.getenv("SECRET_KEY", "elorza") 
+    app.config.from_object('config')
 
     # Migrate Config
     db.init_app(app)
@@ -77,50 +70,45 @@ def create_app():
 
     from .utils.db import get_db_connection
 
-    @app.route('/vite')
-    def vite_app():
-        return render_template('vite.html')  # plantilla que solo tiene <div id="app"></div> y carga Vite
-
     # Home Page
     @app.route('/')
     def index():
-        conn = get_db_connection()
-        maquinas = conn.execute('SELECT * FROM maquinas').fetchall()
-        conn.close()
-        return render_template('index.html', maquinas=maquinas)
+        return render_template('index.html')
 
     # PDF Export
+    from sqlalchemy.sql import text
+    from .models import db
+
     @app.route('/resumen_cuentas/pdf')
     def exportar_resumen_pdf():
-        conn = get_db_connection()
-        resumen = conn.execute('''
+        resumen = db.session.execute(text('''
             SELECT p.ID, p.Nombre,
-                IFNULL(SUM(c.Cantidad * c.Precio_Unitario), 0) AS Total_Compras,
-                IFNULL(SUM(pg.Monto), 0) AS Total_Pagos,
-                (IFNULL(SUM(c.Cantidad * c.Precio_Unitario), 0) - IFNULL(SUM(pg.Monto), 0)) AS Saldo
+                COALESCE(SUM(c.Cantidad * c.Precio_Unitario), 0) AS Total_Compras,
+                COALESCE(SUM(pg.Monto), 0) AS Total_Pagos,
+                (COALESCE(SUM(c.Cantidad * c.Precio_Unitario), 0) - COALESCE(SUM(pg.Monto), 0)) AS Saldo
             FROM proveedores p
             LEFT JOIN compras c ON p.ID = c.ID_Proveedor
             LEFT JOIN pagos_proveedores pg ON p.ID = pg.ID_Proveedor
             GROUP BY p.ID
-        ''').fetchall()
-        conn.close()
+        ''')).fetchall()
 
         rendered = render_template('pagos/resumen_pdf.html', resumen=resumen)
 
-        # Si wkhtmltopdf no está en PATH, especificá la ruta
         try:
-            config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+            config = pdfkit.configuration(wkhtmltopdf=os.getenv("WKHTMLTOPDF_BIN"))
             pdf = pdfkit.from_string(rendered, False, configuration=config)
         except OSError:
-            # Fallback for other OS
             pdf = pdfkit.from_string(rendered, False)
-
 
         response = make_response(pdf)
         response.headers['Content-Type'] = 'application/pdf'
         response.headers['Content-Disposition'] = 'inline; filename=resumen_cuentas.pdf'
         return response
-    
+
+    @app.route('/vite')
+    def vite_app():
+        return render_template('vite.html')  # plantilla que solo tiene <div id="app"></div> y carga Vite
+
     app.jinja_env.globals['vite_asset'] = vite_asset
 
     return app

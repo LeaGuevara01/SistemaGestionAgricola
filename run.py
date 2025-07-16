@@ -1,8 +1,6 @@
-# run.py
-from sistema_gestion_agricola.__init__ import create_app
-
+# /run.py
+from sistema_gestion_agricola import create_app
+from sistema_gestion_agricola.models import db
 app = create_app()
-app.config['ENV'] = 'development'  # 'production' o 'development'
 
-if __name__ == '__main__':
-    app.run(debug=True)
+app.config['ENV'] = 'production'

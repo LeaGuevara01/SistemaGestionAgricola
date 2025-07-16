@@ -1,13 +1,14 @@
 Estructura de: D:/Code/elorza/
-├── .blackboxrules
+├── .blackboxrules       
 ├── .env
-├── .gitattributes
+├── .gitattributes       
 ├── .gitignore
+├── .python-version      
 ├── Procfile
 ├── backend
 │   ├── index.js
 │   ├── package-lock.json
-│   ├── package.json
+│   ├── package.json     
 ├── estructura.txt
 ├── frontend
 │   ├── index.html.bak
@@ -38,12 +39,16 @@ Estructura de: D:/Code/elorza/
 ├── runtime.txt
 ├── sistema_gestion_agricola
 │   ├── .env
+│   ├── .env.development
 │   ├── .env.example
+│   ├── .env.production
 │   ├── .gitignore
+│   ├── .python-version
 │   ├── Procfile
 │   ├── __init__.py
 │   ├── backup_sqlite.json
 │   ├── cache_config.py
+│   ├── config.py
 │   ├── consult_postgres.py
 │   ├── data.db
 │   ├── dbbrowser.sqbpro
@@ -107,9 +112,16 @@ Estructura de: D:/Code/elorza/
 │   │   │   │   ├── default.png
 │   │   │   ├── default.png
 │   │   │   ├── maquinas
-│   │   │   │   ├── maquina_1.png
-│   │   │   │   ├── maquina_2.jpg
-│   │   │   │   ├── maquina_Test.jpg
+│   │   │   │   ├── 930M.jpg
+│   │   │   │   ├── Atego_1726.jpg
+│   │   │   │   ├── CR5.85.jpg
+│   │   │   │   ├── GranMax.jpg
+│   │   │   │   ├── Gringa_3.jpg
+│   │   │   │   ├── Hilux_RS_4x4.jpg
+│   │   │   │   ├── JD-5075E.jpg
+│   │   │   │   ├── MAP_II_2500.jpg
+│   │   │   │   ├── MF_4283.jpg
+│   │   │   │   ├── RD-28.jpg
 │   │   ├── js
 │   │   │   ├── animations.js
 │   │   │   ├── clima.js

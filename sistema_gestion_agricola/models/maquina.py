@@ -1,3 +1,4 @@
+# models/maquina.py
 from . import db
 
 class Maquina(db.Model):
