@@ -8,4 +8,4 @@ app = create_app()
 app.config['ENV'] = 'development'
 
 if __name__ == '__main__':
-    app.run(debug=(os.getenv("FLASK_DEBUG") == "1"))
+    app.run(debug=True)

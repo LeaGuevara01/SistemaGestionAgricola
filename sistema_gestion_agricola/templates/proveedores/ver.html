@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} Proveedor {{ proveedor['Nombre'] }}{% endblock %}
+{% block title %}{{ proveedor.Nombre }}{% endblock %}
 
 {% block content %}
 <div class="page-wrapper">
@@ -8,7 +8,7 @@
     <div class="dashboard-header hidden-item p-4 mb-3 rounded">
         <div class="header-topbar">
             <div class="header-title">
-                <h2 class="section-title"><i class="bi bi-people-fill"></i> Proveedor:<br>{{ proveedor['Nombre'] }}</h2>
+                <h2 class="section-title"><i class="bi bi-people-fill"></i> Proveedor:<br>{{ proveedor.Nombre }}</h2>
                 <p class="section-subtitle d-none d-md-block opacity-75">Detalles y gestión del proveedor</p>
             </div>
             <div class="header-controls">
@@ -43,45 +43,45 @@
             <p class="copyable d-flex gap-2 align-items-center">
                 <strong style="flex-shrink: 0;">Localidad:</strong> 
                 <span class="copy-text" 
-                    title="{{ proveedor['Localidad'] }}">
-                    {{ proveedor['Localidad'] }}</span>
+                    title="{{ proveedor.Localidad }}">
+                    {{ proveedor.Localidad }}</span>
             </p>
             <p class="copyable d-flex gap-2 align-items-center">
                 <strong style="flex-shrink: 0;">Contacto:</strong> 
                 <span class="copy-text" 
-                    title="{{ proveedor['Contacto'] }}">
-                    {{ proveedor['Contacto'] }}</span>
+                    title="{{ proveedor.Contacto }}">
+                    {{ proveedor.Contacto }}</span>
             </p>
             <p class="copyable d-flex gap-2 align-items-center">
                 <strong style="flex-shrink: 0;">Teléfono:</strong> 
                 <span class="copy-text" 
-                    title="{{ proveedor['Telefono'] }}">
-                    {{ proveedor['Telefono'] }}</span>
+                    title="{{ proveedor.Telefono }}">
+                    {{ proveedor.Telefono }}</span>
             </p>
             <p class="copyable d-flex gap-2 align-items-center">
                 <strong style="flex-shrink: 0;">Email:</strong>
                 <span class="copy-text" 
-                    title="{{ proveedor['Email'] }}">
-                    {{ proveedor['Email'] }}
+                    title="{{ proveedor.Email }}">
+                    {{ proveedor.Email }}
                 </span>
             </p>
             <p class="copyable d-flex gap-2 align-items-center">
                 <strong style="flex-shrink: 0;">Rubro:</strong> 
                 <span class="copy-text" 
-                    title="{{ proveedor['Rubro'] }}">
-                    {{ proveedor['Rubro'] }}</span>
+                    title="{{ proveedor.Rubro }}">
+                    {{ proveedor.Rubro }}</span>
             </p>
             <p class="copyable d-flex gap-2 align-items-center">
                 <strong style="flex-shrink: 0;">Dirección:</strong>
-                <span class="copy-text" title="{{ proveedor['Direccion'] }}">
-                    {{ proveedor['Direccion'] }}
+                <span class="copy-text" title="{{ proveedor.Direccion }}">
+                    {{ proveedor.Direccion }}
                 </span>
             </p>
             <p class="copyable d-flex gap-2 align-items-center">
                 <strong style="flex-shrink: 0;">Detalles:</strong> 
                 <span class="copy-text" 
-                title="{{ proveedor['Observaciones'] }}">
-                    {{ proveedor['Observaciones'] }}</span>
+                title="{{ proveedor.Observaciones }}">
+                    {{ proveedor.Observaciones }}</span>
             </p>
         </div>
     </div>
@@ -92,7 +92,7 @@
             <h3 class="section-title mb-0">
                 <i class="bi bi-puzzle"></i> Componentes asociados
             </h3>
-            <a href="{{ url_for('proveedores.asignar_componente_proveedor', id_proveedor=proveedor['ID']) }}" 
+            <a href="{{ url_for('proveedores.asignar_componente_proveedor', id_proveedor=proveedor.ID) }}" 
             class="btn btn-outline-tertiary btn-sm">
                 <i class="bi bi-plus-lg"></i> Asignar componente
             </a>
@@ -111,13 +111,13 @@
                 </thead>
                 <tbody>
                     {% for c in componentes_asociados %}
-                    <tr class="clickable-row component-row" data-component-id="{{ c['ID'] }}" data-provider-id="{{ proveedor['ID'] }}" data-action="ver">
-                        <td><strong>{{ c['Nombre'] }}</strong></td>
-                        <td class="text-end"><strong>{{ c['Cantidad'] }}</strong></td>
-                        <td class="d-none d-md-table-cell">{{ c['Descripcion'] }}</td>
+                    <tr>
+                        <td><strong>{{ c.componente.Nombre }}</strong></td>
+                        <td class="text-end"><strong>{{ c.Cantidad }}</strong></td>
+                        <td class="d-none d-md-table-cell">{{ c.componente.Descripcion }}</td>
                         <td class="action-cell text-center">
-                            <a href="{{ url_for('proveedores.editar_componente_proveedor', id_proveedor=proveedor['ID'], id_componente=c['ID']) }}"
-                            class="btn btn-outline-secondary btn-sm" title="Editar componente">
+                            <a href="{{ url_for('proveedores.editar_componente_proveedor', id_proveedor=proveedor.ID, id_componente=c.ID_Componente) }}"
+                            class="btn btn-outline-secondary btn-sm" title="Editar componente" style="border-radius: 0;">
                                 <i class="bi bi-pencil"></i>
                             </a>
                         </td>

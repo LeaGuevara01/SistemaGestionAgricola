@@ -1,9 +1,8 @@
 # __init__.py
 import os
-from flask import Flask, render_template, make_response
+from flask import Flask, render_template, make_response, jsonify
 
 # Helper para Render
-import pdfkit
 from .utils.vite_helper import vite_asset #onrender
 
 # Cargar instancia única de cache
@@ -25,11 +24,21 @@ else:
 
 def create_app():
     
+    # .env según entorno
+    if os.getenv("FLASK_ENV") == "development":
+        load_dotenv(".env.development")
+        from config import DevelopmentConfig as ConfigClass
+    else:
+        load_dotenv(".env.production")
+        from config import ProductionConfig as ConfigClass
+
+    # Validate
+    ConfigClass.check_env_vars()
+
     app = Flask(__name__)
+    app.config.from_object(ConfigClass)
 
-    app.config.from_object('config')
-
-    # Migrate Config
+    # Initialize Extensions
     db.init_app(app)
     migrate.init_app(app, db)
 
@@ -39,15 +48,14 @@ def create_app():
     cache.init_app(app)
 
     # Folders Config
-    app.config['UPLOAD_FOLDER_MAQUINAS'] = os.path.join(app.root_path, 'static/fotos/maquinas')
-    app.config['UPLOAD_FOLDER_COMPONENTES'] = os.path.join(app.root_path, 'static/fotos/componentes')
+    os.makedirs(app.config['UPLOAD_FOLDER_MAQUINAS'], exist_ok=True)
+    os.makedirs(app.config['UPLOAD_FOLDER_COMPONENTES'], exist_ok=True)
+    app.config['UPLOAD_FOLDER_MAQUINAS'] = ConfigClass.UPLOAD_FOLDER_MAQUINAS
+    app.config['UPLOAD_FOLDER_COMPONENTES'] = ConfigClass.UPLOAD_FOLDER_COMPONENTES
 
     # Weather Config
-    app.config['WEATHER_API_URL'] = "https://api.openweathermap.org/data/2.5/weather"
-    app.config['COORDENADAS_UCACHA'] = {
-        'lat': "-33.0320",
-        'lon': "-63.5066"
-    }
+    app.config['WEATHER_API_URL'] = ConfigClass.WEATHER_API_URL
+    app.config['COORDENADAS_UCACHA'] = ConfigClass.COORDENADAS_UCACHA
     
     # Blueprints Registration
     from .routes.clima import clima_bp
@@ -58,6 +66,7 @@ def create_app():
     from .routes.pagos import pagos_bp
     from .routes.proveedores import proveedores_bp
     from .routes.estadisticas import estadisticas_bp
+    from .routes.pdf_printing import pdf_bp
 
     app.register_blueprint(clima_bp)
     app.register_blueprint(maquinas_bp)
@@ -67,43 +76,25 @@ def create_app():
     app.register_blueprint(pagos_bp)
     app.register_blueprint(proveedores_bp)
     app.register_blueprint(estadisticas_bp)
+    app.register_blueprint(pdf_bp)
 
-    from .utils.db import get_db_connection
+    def registrar_manejadores_errores(app):
+        # Funciones de ruta generales
+        @app.route('/')
+        def index():
+            return render_template('index.html')
+        
+        @app.errorhandler(404)
+        def not_found(error):
+            return jsonify({'status': 'error', 'message': 'Recurso no encontrado', 'data': None}), 404
 
-    # Home Page
-    @app.route('/')
-    def index():
-        return render_template('index.html')
+        @app.errorhandler(500)
+        def internal_error(error):
+            return jsonify({'status': 'error', 'message': 'Error interno del servidor', 'data': None}), 500
 
-    # PDF Export
-    from sqlalchemy.sql import text
-    from .models import db
-
-    @app.route('/resumen_cuentas/pdf')
-    def exportar_resumen_pdf():
-        resumen = db.session.execute(text('''
-            SELECT p.ID, p.Nombre,
-                COALESCE(SUM(c.Cantidad * c.Precio_Unitario), 0) AS Total_Compras,
-                COALESCE(SUM(pg.Monto), 0) AS Total_Pagos,
-                (COALESCE(SUM(c.Cantidad * c.Precio_Unitario), 0) - COALESCE(SUM(pg.Monto), 0)) AS Saldo
-            FROM proveedores p
-            LEFT JOIN compras c ON p.ID = c.ID_Proveedor
-            LEFT JOIN pagos_proveedores pg ON p.ID = pg.ID_Proveedor
-            GROUP BY p.ID
-        ''')).fetchall()
-
-        rendered = render_template('pagos/resumen_pdf.html', resumen=resumen)
-
-        try:
-            config = pdfkit.configuration(wkhtmltopdf=os.getenv("WKHTMLTOPDF_BIN"))
-            pdf = pdfkit.from_string(rendered, False, configuration=config)
-        except OSError:
-            pdf = pdfkit.from_string(rendered, False)
-
-        response = make_response(pdf)
-        response.headers['Content-Type'] = 'application/pdf'
-        response.headers['Content-Disposition'] = 'inline; filename=resumen_cuentas.pdf'
-        return response
+        @app.errorhandler(Exception)
+        def all_exception_handler(error):
+            return jsonify({'status': 'error', 'message': str(error), 'data': None}), 500
 
     @app.route('/vite')
     def vite_app():
@@ -111,4 +102,5 @@ def create_app():
 
     app.jinja_env.globals['vite_asset'] = vite_asset
 
+    registrar_manejadores_errores(app)
     return app

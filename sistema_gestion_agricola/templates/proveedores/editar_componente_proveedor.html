@@ -37,7 +37,7 @@
             <div class="mb-3">
                 <label for="componente" class="form-label">Componente</label>
                 <select name="componente" id="componente" class="form-select" required>
-                    {% for c in todos_los_componentes %}
+                    {% for c in componentes %}
                         <option value="{{ c.ID }}" {% if c.ID == componente.ID %}selected{% endif %}>{{ c.Nombre }}</option>
                     {% endfor %}
                 </select>

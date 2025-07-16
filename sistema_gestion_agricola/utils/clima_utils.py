@@ -2,23 +2,42 @@
 import requests
 from flask import current_app
 
-def obtener_datos_clima():
+def obtener_datos_clima(coords=None):
     try:
-        api_key = current_app.config['WEATHER_API_KEY']
-        current_app.logger.info(f"API Key usada: {api_key}")  # Para verificar que se lee
+        api_key = current_app.config.get('WEATHER_API_KEY')
+        weather_url = current_app.config.get('WEATHER_API_URL')
+
+        if not api_key:
+            raise RuntimeError("WEATHER_API_KEY no configurada")
+        if not weather_url:
+            raise RuntimeError("WEATHER_API_URL no configurada")
+
+        if coords is None:
+            coords = (
+                current_app.config['COORDENADAS_UCACHA']['lat'],
+                current_app.config['COORDENADAS_UCACHA']['lon']
+            )
+
+        lat, lon = coords
+
+        current_app.logger.info(f"[CLIMA] Consultando clima para lat={lat}, lon={lon}")
+
         response = requests.get(
-            "https://api.openweathermap.org/data/2.5/weather",
+            weather_url,
             params={
-                'lat': current_app.config['COORDENADAS_UCACHA']['lat'],
-                'lon': current_app.config['COORDENADAS_UCACHA']['lon'],
+                'lat': lat,
+                'lon': lon,
                 'appid': api_key,
                 'units': 'metric',
                 'lang': 'es'
             },
             timeout=5
         )
-        response.raise_for_status()
+
+        response.raise_for_status()  # Lanza HTTPError si status != 200
         data = response.json()
+
+        current_app.logger.info(f"[CLIMA] Respuesta API: {data}")
 
         return {
             'temperatura': round(data['main']['temp']),
@@ -32,9 +51,13 @@ def obtener_datos_clima():
         }
 
     except requests.exceptions.RequestException as e:
-        current_app.logger.error(f"Error al obtener datos del clima: {str(e)}")
+        current_app.logger.error(f"[CLIMA] Error al obtener datos: {str(e)}")
         return None
 
+    except Exception as e:
+        current_app.logger.error(f"[CLIMA] Error inesperado: {str(e)}")
+        return None
+    
 def mapear_icono_clima(weather_id):
     iconos = {
         range(200, 300): "bi-lightning",

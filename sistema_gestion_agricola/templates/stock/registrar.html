@@ -8,27 +8,14 @@
     <div class="dashboard-header hidden-item p-4 shadow rounded">
         <div class="header-topbar">
             <div class="header-title">
-                <h2 class="section-title"><i class="bi bi-arrow-left-right"></i> Registrar Movimiento de Stock</h2>
+                <h2 class="section-title"><i class="bi bi-arrow-left-right"></i> Registrar Movimiento</h2>
                 <p class="section-subtitle d-none d-md-block opacity-75">Cargar una entrada o salida para un componente</p>
             </div>
             <div class="header-controls">
-
-                {% set next_url = request.args.get('next') %}
-                {% if next_url %}
-                    {% set back_url = next_url %}
-                    {% set back_label = "Volver" %}
-                {% elif id_stock is defined and id_stock|string != '' %}
-                    {% set back_url = url_for('stock.vista_stock', id=id_stock) %}
-                    {% set back_label = "Volver a stock" %}
-                {% else %}
-                    {% set back_url = url_for('compras.historial_compras') %}
-                    {% set back_label = "Volver al historial" %}
-                {% endif %}
                 
-                <a href="{{ back_url }}" class="btn btn-outline-primary btn-sm ms-2">
+                <a href="{{ url_for('stock.vista_stock') }}" class="btn btn-outline-primary btn-sm ms-2">
                     <i class="bi bi-arrow-left"></i> 
-                    <span class="d-none d-md-inline">{{ back_label }}</span>
-                    <span class="d-md-none">Volver</span>
+                    <span class="d-none d-md-inline">Volver</span>
                 </a>
                 <a href="{{ url_for('index') }}" 
                     class="btn btn-outline-primary btn-sm ms-2">
@@ -55,7 +42,7 @@
                 <label for="id_componente" class="form-label fw-semibold">Componente</label>
                     <select name="id_componente" class="form-select" required>
                         {% for c in componentes %}
-                            <option value="{{ c['ID_Componente'] }}">{{ c['Nombre'] }}</option>
+                            <option value="{{ c.ID }}">{{ c.Nombre }}</option>
                         {% endfor %}
                     </select>
             </div>

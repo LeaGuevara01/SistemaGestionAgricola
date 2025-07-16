@@ -11,9 +11,12 @@ clima_bp = Blueprint('clima', __name__, url_prefix='/api/clima')
 def api_clima_default():
     try:
         coords = current_app.config.get('COORDENADAS_UCACHA')
-        if not coords:
-            raise ValueError("Coordenadas por defecto no configuradas")
-        datos = obtener_datos_clima(coords)
+        if not coords or 'lat' not in coords or 'lon' not in coords:
+            raise ValueError("Coordenadas por defecto mal configuradas")
+        
+        # Convertir a tupla de coordenadas
+        coordenadas = (coords['lat'], coords['lon'])
+        datos = obtener_datos_clima(coordenadas)
         if not datos:
             raise ValueError("Datos climáticos no disponibles")
 
@@ -24,7 +27,9 @@ def api_clima_default():
             'ubicacion': coords
         }
         return jsonify(respuesta)
+    
     except Exception as e:
+        current_app.logger.error(f"Error en API clima: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e), 'data': None}), 500
 
 @clima_bp.route('/buscar')
@@ -52,3 +57,13 @@ def api_clima_buscar():
 
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e), 'data': None}), 500
+
+from flask import jsonify
+
+@clima_bp.errorhandler(404)
+def handle_404(error):
+    return jsonify({'status': 'error', 'message': 'Recurso no encontrado', 'data': None}), 404
+
+@clima_bp.errorhandler(500)
+def handle_500(error):
+    return jsonify({'status': 'error', 'message': 'Error interno del servidor', 'data': None}), 500

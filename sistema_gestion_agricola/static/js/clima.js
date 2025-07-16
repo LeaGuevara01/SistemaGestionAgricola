@@ -3,8 +3,15 @@ export function cargarClima() {
   const ts = document.getElementById('clima-timestamp');
   if (!climaCont) return;
 
-  fetch('/api/clima')
-    .then(res => res.json())
+  fetch('/api/clima/')
+    .then(res => {
+      // Check if response is JSON
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error(`Respuesta no es JSON. Status: ${res.status}`);
+      }
+      return res.json();
+    })
     .then(data => {
       if (data.status === 'success') {
         const c = data.data;
@@ -29,4 +36,25 @@ export function cargarClima() {
         <i class="bi bi-exclamation-triangle"></i> ${msg || 'Error al cargar clima'}
       </div>`;
   }
+  
+  fetch('/api/clima/')
+  .then(async res => {
+    let data;
+    try {
+      data = await res.json();
+    } catch (e) {
+      throw new Error(`Respuesta inválida. Código: ${res.status}`);
+    }
+
+    if (!res.ok) {
+      throw new Error(data.message || `Error ${res.status}`);
+    }
+
+    return data;
+  })
+  .then(data => {
+    // mostrar clima
+  })
+  .catch(err => mostrarErrorClima(err.message));
+
 }

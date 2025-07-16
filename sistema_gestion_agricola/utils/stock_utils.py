@@ -1,26 +1,33 @@
-from .db import get_db_connection
+from ..models import db, Componente, Stock
+from sqlalchemy import func, case
 
 def obtener_stock_actual():
-    conn = get_db_connection()
-    stock_query = '''
-        SELECT 
-            c.ID,
-            c.ID_Componente,
-            c.Nombre,
-            c.Tipo,
-            c.Descripcion,
-            c.Foto,
-            COALESCE(SUM(
-                CASE s.Tipo
-                    WHEN 'entrada' THEN s.Cantidad
-                    WHEN 'salida' THEN -s.Cantidad
-                END
-            ), 0) AS Stock_Actual
-        FROM componentes c
-        LEFT JOIN stock s ON c.ID = s.ID_Componente
-        GROUP BY c.ID
-        ORDER BY c.Nombre
-    '''
-    res = conn.execute(stock_query).fetchall()
-    conn.close()
-    return res
+    saldo = func.coalesce(
+        func.sum(
+            case(
+                (Stock.Tipo == 'entrada', Stock.Cantidad),
+                (Stock.Tipo == 'salida', -Stock.Cantidad),
+                else_=0
+            )
+        ),
+        0
+    ).label('Stock_Actual')
+
+    resultados = (
+        db.session.query(
+            Componente.ID.label("ID"),
+            Componente.ID_Componente.label("ID_Componente"),
+            Componente.Nombre.label("Nombre"),
+            Componente.Tipo.label("Tipo"),
+            Componente.Descripcion.label("Descripcion"),
+            Componente.Foto.label("Foto"),
+            saldo
+        )
+        .outerjoin(Stock, Componente.ID == Stock.ID_Componente)
+        .group_by(Componente.ID)
+        .order_by(Componente.Nombre)
+        .all()
+    )
+
+    # Convertir a dict-like
+    return [dict(r._mapping) for r in resultados]

@@ -16,6 +16,7 @@ class Componente(db.Model):
 
     proveedores = db.relationship('ComponentesProveedores', back_populates='componente', cascade='all, delete-orphan')
     stock = db.relationship('Stock', backref='componente', lazy=True)
+    frecuencias = db.relationship('Frecuencia', backref='componente', cascade="all, delete-orphan")
 
 class ComponentesProveedores(db.Model):
     __tablename__ = 'componentes_proveedores'

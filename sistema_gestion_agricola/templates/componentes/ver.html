@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block title %}{{ componente.Nombre }}{% endblock %}
+
 {% block content %}
 <div class="page-wrapper">
     <!-- Header  -->
@@ -171,11 +173,6 @@
                 </div>
                 
                 <div class="compact-actions hidden-item">
-                    <!-- Botón de editar arriba -->
-                    <a href="{{ url_for('componentes.editar_componente', id=componente.ID) }}" class="btn btn-agri-secondary btn-sm w-100 mb-3">
-                        <i class="bi bi-pencil-square"></i>
-                        <span class="d-none d-lg-inline ms-1">Editar</span>
-                    </a>
                     <!-- Botón de compra -->
                     <a href="{{ url_for('compras.registrar_compra') }}?componente={{ componente.ID }}" class="btn btn-agri-secondary btn-sm w-100 mb-3" title="Registrar Compra">
                         <i class="bi bi-cart-plus"></i>
@@ -281,16 +278,13 @@ document.addEventListener('DOMContentLoaded', () => {
     transform: translateY(20px);
     transition: all 0.5s cubic-bezier(.4,2,.6,1);
 }
-
 .card.detail-card .card.show {
     opacity: 1;
     transform: translateY(0);
 }
-
 .provider-row {
     cursor: pointer;
 }
-
 .component-image-container {
 display: flex;
 justify-content: center;
@@ -301,7 +295,6 @@ border-radius: 10px;
 box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 padding: 1rem;
 }
-
 .component-image-placeholder {
 display: flex;
 flex-direction: column;

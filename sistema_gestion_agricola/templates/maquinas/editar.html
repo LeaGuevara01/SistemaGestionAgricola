@@ -249,9 +249,7 @@
         </div>
     </div>
 </div>
-
 <script>
-
 // Evento para subir la foto
 document.getElementById('foto').addEventListener('change', function (e) {
     const fileInput = e.target;
@@ -283,7 +281,6 @@ document.getElementById('clearImage')?.addEventListener('click', () => {
     fileName.textContent = "No se ha seleccionado ningún archivo.";
     preview.innerHTML = '';
 });
-
 function showFileName(input) {
     const fileName = input.files.length > 0 ? input.files[0].name : 'No se ha seleccionado ningún archivo.';
     document.getElementById('file-name').textContent = fileName;
@@ -296,7 +293,6 @@ function confirmDelete() {
         console.error("Formulario de eliminación no encontrado.");
     }
 }
-
 document.addEventListener('DOMContentLoaded', function () {
 const detailCard = document.querySelector('.card.detail-card');
 if (detailCard) {
@@ -307,11 +303,8 @@ if (detailCard) {
     });
 }
 });
-
 </script>
-
 <style>
-
 .list-group-item {
     padding: 0.6rem 1rem;
     background: var(--card-bg);
@@ -341,6 +334,5 @@ if (detailCard) {
 .border-top {
   border-top: 2px solid var(--bg-color) !important;
 }
-
 </style>
 {% endblock %}

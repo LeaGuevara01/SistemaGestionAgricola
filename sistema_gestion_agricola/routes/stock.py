@@ -8,14 +8,14 @@ stock_bp = Blueprint('stock', __name__, url_prefix='/stock')
 # Listar stock actual usando función utilitaria (que deberá usar SQLAlchemy)
 @stock_bp.route('/')
 def vista_stock():
-    from ..utils.stock_utils import obtener_stock_actual  # asumo que devuelve lista con ORM o dicts
+    from ..utils.stock_utils import obtener_stock_actual
     stock = obtener_stock_actual()
     return render_template('stock/listar.html', stock=stock)
 
 # Registrar movimiento de stock
 @stock_bp.route('/registrar', methods=['GET', 'POST'])
 def registrar_stock():
-    componentes = Componente.query.with_entities(Componente.ID, Componente.Nombre).all()
+    componentes = Componente.query.all()
 
     if request.method == 'POST':
         id_componente = request.form.get('id_componente')

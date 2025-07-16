@@ -1,14 +1,11 @@
 # routes/maquinas.py
-from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, request
 from werkzeug.utils import secure_filename
+from ..models import db, Maquina, Componente, MaquinaComponente, Frecuencia
+from ..utils.files import allowed_file
 import os
 
-from ..models import db, Maquina, Componente, MaquinaComponente, Frecuencia
-
-from ..utils.files import allowed_file
-
 maquinas_bp = Blueprint('maquinas', __name__, url_prefix='/maquina')
-
 
 # List Machines
 @maquinas_bp.route('/')
@@ -98,27 +95,34 @@ def agregar_maquina():
 # Read Machine
 @maquinas_bp.route('/<int:id>')
 def ver_maquina(id):
-    maquina = Maquina.query.get(id)
-    if not maquina:
-        flash("Máquina no encontrada.")
-        return redirect(url_for('maquinas.listar_maquinas'))
+    maquina = Maquina.query.get_or_404(id)
 
-    # Obtener componentes asociados y frecuencias
-    asociados = db.session.query(
-        Componente,
-        Frecuencia.Frecuencia,
-        Frecuencia.Unidad_tiempo,
-        Frecuencia.Criterio_adicional
-    ).join(MaquinaComponente, MaquinaComponente.ID_Componente == Componente.ID)\
-     .outerjoin(Frecuencia, (Frecuencia.ID_Maquina == id) & (Frecuencia.ID_Componente == Componente.ID))\
-     .filter(MaquinaComponente.ID_Maquina == id).all()
+    from sqlalchemy.orm import aliased
+    from sqlalchemy import select
 
-    # Componentes no asociados
-    subquery = db.session.query(MaquinaComponente.ID_Componente).filter(MaquinaComponente.ID_Maquina == id).subquery()
+    componentes_asociados = (
+        db.session.query(
+            Componente,
+            Frecuencia.Frecuencia.label('frecuencia'),
+            Frecuencia.Unidad_tiempo.label('unidad_tiempo'),
+            Frecuencia.Criterio_adicional.label('criterio_adicional')
+        )
+        .join(MaquinaComponente, MaquinaComponente.ID_Componente == Componente.ID)
+        .outerjoin(
+            Frecuencia, 
+            (Frecuencia.ID_Maquina == id) & (Frecuencia.ID_Componente == Componente.ID)
+        )
+        .filter(MaquinaComponente.ID_Maquina == id)
+        .all()
+    )
+
+    subquery = select(MaquinaComponente.ID_Componente).filter(MaquinaComponente.ID_Maquina == id).scalar_subquery()
     componentes_no_asociados = Componente.query.filter(~Componente.ID.in_(subquery)).all()
 
-    return render_template('maquinas/ver.html', maquina=maquina,
-                           componentes_asociados=asociados,
+
+    return render_template('maquinas/ver.html',
+                           maquina=maquina,
+                           componentes_asociados=componentes_asociados,
                            componentes_no_asociados=componentes_no_asociados)
 
 # Update Machine
@@ -276,24 +280,17 @@ def editar_frecuencia(id_maquina, id_componente):
                            frecuencia=frecuencia, id_maquina=id_maquina, id_componente=id_componente)
 
 # Create Photo
-from flask import current_app, flash, redirect, url_for, request
-from werkzeug.utils import secure_filename
-import os
-
 @maquinas_bp.route('/upload_foto/<int:id>', methods=['POST'])
 def upload_foto_maquina(id):
-    maquina = Maquina.query.get(id)
-    if not maquina:
-        flash('Máquina no encontrada.')
-        return redirect(url_for('maquinas.listar_maquinas'))
+    maquina = Maquina.query.get_or_404(id)
 
     if 'foto' not in request.files:
-        flash('No se subió ninguna imagen.')
+        flash('No se subió ninguna imagen.', 'error')
         return redirect(url_for('maquinas.ver_maquina', id=id))
 
     foto = request.files['foto']
     if foto.filename == '':
-        flash('Archivo vacío.')
+        flash('Archivo vacío.', 'error')
         return redirect(url_for('maquinas.ver_maquina', id=id))
 
     if foto and allowed_file(foto.filename):
@@ -315,11 +312,12 @@ def upload_foto_maquina(id):
             maquina.Foto = filename
             db.session.commit()
 
-            flash("Foto subida correctamente.")
+            flash("Foto subida correctamente.", 'success')
         except Exception as e:
             db.session.rollback()
+            current_app.logger.error(f"Error al subir la imagen: {e}")
             flash(f"Error al subir la imagen: {e}", 'error')
     else:
-        flash("Formato de archivo no permitido. Solo JPG, JPEG, PNG, GIF.")
+        flash("Formato de archivo no permitido. Solo JPG, JPEG, PNG, GIF.", 'error')
 
     return redirect(url_for('maquinas.ver_maquina', id=id))

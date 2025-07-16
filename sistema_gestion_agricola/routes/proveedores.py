@@ -40,7 +40,7 @@ def agregar_proveedor():
 @proveedores_bp.route('/<int:id>')
 def ver_proveedor(id):
     proveedor = Proveedor.query.get_or_404(id)
-    componentes_asociados = proveedor.componentes_assoc  # lista de ComponentesProveedores con cantidad
+    componentes_asociados = proveedor.componentes   # lista de ComponentesProveedores con cantidad
 
     return render_template('proveedores/ver.html', proveedor=proveedor, componentes_asociados=componentes_asociados)
 
@@ -107,7 +107,7 @@ def asignar_componente_proveedor(id_proveedor):
         return redirect(url_for('proveedores.ver_proveedor', id=id_proveedor))
 
     # Componentes no asignados aún a este proveedor
-    componentes_asignados_ids = [cp.ID_Componente for cp in proveedor.componentes_assoc]
+    componentes_asignados_ids = [cp.ID_Componente for cp in proveedor.componentes ]
     componentes_disponibles = Componente.query.filter(~Componente.ID.in_(componentes_asignados_ids)).all()
 
     return render_template('proveedores/asignar_componente.html',
@@ -118,13 +118,35 @@ def asignar_componente_proveedor(id_proveedor):
 @proveedores_bp.route('/<int:id_proveedor>/componentes/<int:id_componente>/editar', methods=['GET', 'POST'])
 def editar_componente_proveedor(id_proveedor, id_componente):
     assoc = ComponentesProveedores.query.filter_by(ID_Proveedor=id_proveedor, ID_Componente=id_componente).first_or_404()
+    
+    componentes = Componente.query.all() 
 
     if request.method == 'POST':
         try:
+            nuevo_componente = int(request.form.get('componente'))
             cantidad = int(request.form.get('cantidad', 1))
+
             if cantidad < 1:
                 raise ValueError
-            assoc.Cantidad = cantidad
+            
+            ya_existe = ComponentesProveedores.query.filter_by(
+                ID_Proveedor=id_proveedor,
+                ID_Componente=nuevo_componente
+            ).first()
+
+            if ya_existe:
+                # Si es la misma que estamos editando, solo actualizamos cantidad
+                if ya_existe.ID_Proveedor == assoc.ID_Proveedor and ya_existe.ID_Componente == assoc.ID_Componente:
+                    assoc.Cantidad = cantidad
+                else:
+                    # Sumar la cantidad a la existente y eliminar la actual
+                    ya_existe.Cantidad += cantidad
+                    db.session.delete(assoc)
+            else:
+                # Si no existe, simplemente actualizamos el objeto actual
+                assoc.ID_Componente = nuevo_componente
+                assoc.Cantidad = cantidad
+
             db.session.commit()
             flash("Componente asociado actualizado.")
             return redirect(url_for('proveedores.ver_proveedor', id=id_proveedor))
@@ -135,6 +157,7 @@ def editar_componente_proveedor(id_proveedor, id_componente):
     return render_template('proveedores/editar_componente_proveedor.html',
                            proveedor=assoc.proveedor,
                            componente=assoc.componente,
+                           componentes=componentes,
                            cantidad=assoc.Cantidad)
 
 # Delete Provider-Component Association

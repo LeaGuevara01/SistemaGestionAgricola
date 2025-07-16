@@ -29,6 +29,9 @@ class Compra(db.Model):
     Observacion = db.Column(db.String)
     Fecha = db.Column(db.DateTime, server_default=db.func.current_timestamp())
 
+    Componente = db.relationship('Componente', backref='compras_componente')
+    Proveedor = db.relationship('Proveedor', backref='compras_proveedor')
+
 class PagoProveedor(db.Model):
     __tablename__ = 'pagos_proveedores'
 

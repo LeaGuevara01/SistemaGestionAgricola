@@ -54,14 +54,14 @@
                         </thead>
                         <tbody>
                             {% for compra in compras %}
-                            <tr class="clickable-row" data-id="{{ compra['ID_Compra'] }}">
-                                <td class="d-none d-md-table-cell">{{ compra['Fecha'] }}</td>
-                                <td class="d-none d-lg-table-cell">{{ compra['ID_Compra'] }}</td>
-                                <td>{{ compra['Nombre_Proveedor'] }}</td>
-                                <td>{{ compra['Nombre_Componente'] }}</td>
-                                <td class="d-none d-md-table-cell text-end">{{ compra['Cantidad'] }}</td>
-                                <td class="d-none d-md-table-cell text-end">${{ '%.2f' | format(compra['Precio_Unitario']) }}</td>
-                                <td class="d-none d-lg-table-cell">{{ compra['Observacion'] or '-' }}</td>
+                            <tr class="clickable-row" data-id="{{ compra.ID_Compra }}">
+                                <td class="d-none d-md-table-cell">{{ compra.Fecha.strftime('%Y-%m-%d') }}</td>
+                                <td class="d-none d-lg-table-cell">{{ compra.ID_Compra }}</td>
+                                <td>{{ compra.Proveedor.Nombre }}</td>
+                                <td>{{ compra.Componente.Nombre }}</td>
+                                <td class="d-none d-md-table-cell text-end">{{ compra.Cantidad }}</td>
+                                <td class="d-none d-md-table-cell text-end">${{ '%.2f' | format(compra.Precio_Unitario) }}</td>
+                                <td class="d-none d-lg-table-cell">{{ compra.Observacion or '-' }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

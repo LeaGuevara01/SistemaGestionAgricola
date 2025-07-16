@@ -14,11 +14,19 @@ class Maquina(db.Model):
     Observaciones = db.Column(db.String)
     Foto = db.Column(db.String)
 
+    # Relación con componentes a través de la tabla intermedia
+    componentes = db.relationship('Componente',
+        secondary='maquinas_componentes',
+        backref='maquinas')  # Componente.maquinas
+
+    frecuencias = db.relationship('Frecuencia', backref='maquina', cascade="all, delete-orphan")
+
 class MaquinaComponente(db.Model):
     __tablename__ = 'maquinas_componentes'
 
     ID_Maquina = db.Column(db.Integer, db.ForeignKey('maquinas.ID', ondelete='CASCADE'), primary_key=True)
     ID_Componente = db.Column(db.Integer, db.ForeignKey('componentes.ID', ondelete='CASCADE'), primary_key=True)
+
 
 class Frecuencia(db.Model):
     __tablename__ = 'frecuencias'
