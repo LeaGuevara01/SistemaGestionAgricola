@@ -1,9 +1,8 @@
-# config.py
+# sistema_gestion_agricola/config.py
 import os
 
 class Config:
-    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-
+    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'sistema_gestion_agricola'))
     UPLOAD_FOLDER_COMPONENTES = os.path.join(BASE_DIR, 'static', 'fotos', 'componentes')
     UPLOAD_FOLDER_MAQUINAS = os.path.join(BASE_DIR, 'static', 'fotos', 'maquinas')
 

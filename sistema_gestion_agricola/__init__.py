@@ -36,6 +36,7 @@ def create_app():
     ConfigClass.check_env_vars()
 
     app = Flask(__name__)
+    # Cargar configuración desde la clase
     app.config.from_object(ConfigClass)
 
     # Initialize Extensions
@@ -47,11 +48,13 @@ def create_app():
     app.config['CACHE_DEFAULT_TIMEOUT'] = 1800
     cache.init_app(app)
 
-    # Folders Config
-    os.makedirs(app.config['UPLOAD_FOLDER_MAQUINAS'], exist_ok=True)
-    os.makedirs(app.config['UPLOAD_FOLDER_COMPONENTES'], exist_ok=True)
+    # Asignar rutas personalizadas desde la clase de configuración
     app.config['UPLOAD_FOLDER_MAQUINAS'] = ConfigClass.UPLOAD_FOLDER_MAQUINAS
     app.config['UPLOAD_FOLDER_COMPONENTES'] = ConfigClass.UPLOAD_FOLDER_COMPONENTES
+
+    # Crear carpetas necesarias
+    os.makedirs(app.config['UPLOAD_FOLDER_MAQUINAS'], exist_ok=True)
+    os.makedirs(app.config['UPLOAD_FOLDER_COMPONENTES'], exist_ok=True)
 
     # Weather Config
     app.config['WEATHER_API_URL'] = ConfigClass.WEATHER_API_URL

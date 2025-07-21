@@ -1,33 +1,54 @@
-# General
+# Entornos virtuales
+venv/
+**/venv/
+.venv/
+**/.venv/
+
+# Caché de Python
 __pycache__/
 *.py[cod]
 *.pyo
+
+# Archivos temporales y de respaldo
 *.log
 *.sqlite3
 *.db
-*.sqbpro
-.env
-.env.*
+*.sdb
+*.swo
+*.swp
+*.bak
+*.tmp
+
+# Archivos de lock o estado
+*.pid
+*.seed
+
+# Configuraciones de editor/IDE
 .vscode/
 .idea/
-*.bak
-*.swp
-*.swo
+*.code-workspace
 
-# Flask (sistema_gestion_agricola)
-sistema_gestion_agricola/venv/
-sistema_gestion_agricola/__pycache__/
-sistema_gestion_agricola/*.pyc
-
-# Node frontend
-frontend/node_modules/
-frontend/dist/
-frontend/.env
-frontend/.cache/
+# Node / Vite / Frontend
+node_modules/
+dist/
+*.local
 frontend/.vite/
 
-# Node backend
-backend/node_modules/
-backend/.env
-backend/dist/
-backend/build/
+# SQLite - DB Browser
+*.sqbpro
+
+# Variables de entorno
+.env*
+!.env.example  # si usás un archivo de ejemplo para subir
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Backups
+*.bak
+*.old
+*.backup
+
+# Migraciones de Alembic (si querés ignorarlas en dev)
+# migrations/versions/  ← solo si no las vas a trackear

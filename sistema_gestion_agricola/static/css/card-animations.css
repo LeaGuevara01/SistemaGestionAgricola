@@ -1,57 +1,4 @@
-.hidden-item {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
 
-.hidden-item.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Estado inicial */
-.card,
-.card-section,
-.stat-card,
-.dashboard-card,
-.card.detail-card {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.5s cubic-bezier(.4, 2, .6, 1);
-  display: block;
-  cursor: pointer;
-}
-
-/* Al hacerse visible (animación activada por JS) */
-.card.show,
-.card-section.show,
-.stat-card.show,
-.dashboard-card.show,
-.card.detail-card.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-#cardsView {
-  display: none;
-  transform: translateY(20px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-#cardsView.visible {
-  display: block;
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-/* Versión con animación controlada por clase y delay */
-.animate-in {
-  animation-name: fadeInUp;
-  animation-duration: 0.5s;
-  animation-fill-mode: forwards;
-  animation-timing-function: ease-out;
-  opacity: 0;
-  transform: translateY(20px);
-}
 .stat-card.panel {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -84,6 +31,7 @@
   gap: 1rem;
   padding: 0 0.6rem;
   margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 .stat-card.compact {
   aspect-ratio: auto !important;
@@ -115,13 +63,4 @@
 }
 .auto-grid {
   align-items: stretch;
-}
-.stat-card {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.4s ease;
-}
-.stat-card.show {
-  opacity: 1;
-  transform: translateY(0);
 }

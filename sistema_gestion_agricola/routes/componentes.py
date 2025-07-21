@@ -133,11 +133,13 @@ def editar_componente(id):
                 foto.save(filepath)
             else:
                 flash('Formato de imagen no válido. Use JPG, PNG o GIF.', 'error')
-                return render_template('componentes/editar.html', componente=componente)
+                return render_template('componentes/editar.html', componente=componente, tipos=tipos)
 
         componente.ID_Componente = codigo or None
         componente.Nombre = nombre
         componente.Tipo = tipo or None
+        print(f"Guardando tipo: {componente.Tipo}")
+
         componente.Descripcion = descripcion or None
         componente.Foto = foto_filename
         componente.Marca = marca or None
@@ -151,9 +153,12 @@ def editar_componente(id):
         except Exception as e:
             db.session.rollback()
             flash(f'Error al actualizar componente: {e}', 'error')
-            return render_template('componentes/editar.html', componente=componente)
+            return render_template('componentes/editar.html', componente=componente, tipos=tipos)
 
-    return render_template('componentes/editar.html', componente=componente)
+    tipos_existentes = db.session.query(Componente.Tipo).distinct().filter(Componente.Tipo.isnot(None)).all()
+    tipos = sorted({tipo[0] for tipo in tipos_existentes if tipo[0]})
+
+    return render_template('componentes/editar.html', componente=componente, tipos=tipos)
 
 # Delete Component
 @componentes_bp.route('/<int:id>/eliminar', methods=['POST'])

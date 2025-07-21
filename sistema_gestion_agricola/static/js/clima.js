@@ -1,3 +1,4 @@
+// static/js/clima.js
 export function cargarClima() {
   const climaCont = document.getElementById('clima-container');
   const ts = document.getElementById('clima-timestamp');

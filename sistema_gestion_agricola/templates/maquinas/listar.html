@@ -5,7 +5,7 @@
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
-    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
+    <div class="dashboard-header">
         <div class="header-topbar">
             <div class="header-title">
                 <h2 class="section-title"><i class="bi bi-gear"></i>Gestión de Maquinaria</h2>
@@ -22,9 +22,6 @@
                     <i class="bi bi-plus-lg"></i> 
                     <span class="d-none d-md-block d-md-inline">Nueva</span>
                 </a>
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="bi bi-moon-fill" id="themeIcon"></i>
-                </button>
                 <div class="calendar-badge fs-6 d-none d-lg-block">
                     <i class="bi bi-calendar3"></i> <span id="current-date"></span>
                 </div>
@@ -33,13 +30,16 @@
     </div>
     {% if maquinas %}
     <!-- Filtros y búsqueda -->
-    <div class="card-section mb-4 hidden-item">
+    <div class="card-section mb-4">
         <div class="row g-3 align-items-end">
             <div class="col-md-4">
                 <label for="searchInput" class="form-label">
                     <i class="bi bi-search"></i> Buscar máquina
                 </label>
-                <input type="text" class="form-control" id="searchInput" placeholder="Buscar por nombre, marca...">
+                <input type="text" 
+                    class="form-control" 
+                    id="searchInput" 
+                    placeholder="Buscar por nombre, marca...">
             </div>
             <div class="col-md-4">
                 <label for="filterEstado" class="form-label">
@@ -62,7 +62,7 @@
                     <option value="">Todas las marcas</option>
                     {% for marca in maquinas|map(attribute='Marca')|unique|list %}
                         {% if marca %}
-                            <option value="{{ marca }}">{{ marca }}</option>
+                            <option value="{{ marca|lower }}">{{ marca }}</option>
                         {% endif %}
                     {% endfor %}
                 </select>
@@ -76,10 +76,10 @@
             <i class="bi bi-list-ul"></i> Lista de Máquinas
         </h3>
         <div class="view-toggle hidden-item">
-            <button class="btn btn-sm btn-outline-secondary" onclick="toggleView('table')" id="tableViewBtn">
+            <button class="btn-sm btn-outline-secondary" onclick="toggleView('table')" id="tableViewBtn">
                 <i class="bi bi-table"></i>
             </button>
-            <button class="btn btn-sm btn-outline-secondary" onclick="toggleView('cards')" id="cardsViewBtn">
+            <button class="btn-sm btn-outline-secondary" onclick="toggleView('cards')" id="cardsViewBtn">
                 <i class="bi bi-grid-3x3-gap"></i>
             </button>
         </div>
@@ -102,7 +102,7 @@
                             data-name="{{ m.Nombre|lower }}" 
                             data-marca="{{ m.Marca|lower }}" 
                             data-modelo="{{ m.Modelo|lower }}" 
-                            data-estado="{{ m.Estado }}"
+                            data-estado="{{ ((m.Estado) or '')|lower }}"
                             data-machine-id="{{ m.ID }}">
                             <td>
                                 <strong class="machine-name">{{ m.Nombre }}</strong>
@@ -153,7 +153,7 @@
                         "name": m.Nombre|lower,
                         "marca": m.Marca|lower,
                         "modelo": m.Modelo|lower,
-                        "estado": m.Estado
+                        "estado": (m.Estado or '')|lower
                     } %}
                     
                     {% include 'partials/card.html' with context %}
@@ -238,23 +238,47 @@
   }
 }
 
+#tableView {
+  display: block;
+}
+
+#cardsView {
+  display: none;
+}
+
+.btn-outline-secondary.active {
+  color: var(--agri-light);
+  background-color: var(--agri-dark); /* Bootstrap primary */
+  border-color: var(--agri-green-dark);
+}
+
 </style>
 
 <script>
 
-// Función toggleView para cambiar entre cards y tabla
 function toggleView(view) {
-  const tableView = document.getElementById('tableView');
-  const cardsView = document.getElementById('cardsView');
+    const tableView = document.getElementById('tableView');
+    const cardsView = document.getElementById('cardsView');
+    const tableBtn = document.getElementById('tableViewBtn');
+    const cardsBtn = document.getElementById('cardsViewBtn');
 
-  if (view === 'table') {
-    tableView.classList.remove('hidden-item');
-    cardsView.classList.add('hidden-item');
-  } else {
-    cardsView.classList.remove('hidden-item');
-    tableView.classList.add('hidden-item');
+    if (view === 'table') {
+      tableView.style.display = 'block';
+      cardsView.style.display = 'none';
+      tableBtn.classList.add('active');
+      cardsBtn.classList.remove('active');
+    } else if (view === 'cards') {
+      tableView.style.display = 'none';
+      cardsView.style.display = 'block';
+      tableBtn.classList.remove('active');
+      cardsBtn.classList.add('active');
+    }
   }
-}
+
+// Inicializar estado con tabla visible
+document.addEventListener('DOMContentLoaded', () => {
+    toggleView('table');
+});
 
 </script>
 

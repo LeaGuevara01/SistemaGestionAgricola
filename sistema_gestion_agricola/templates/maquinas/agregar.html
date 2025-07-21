@@ -22,9 +22,6 @@
                     <i class="bi bi-house"></i> 
                     <span class="d-none d-md-block d-md-inline">Inicio</span>
                 </a>
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="bi bi-moon-fill" id="themeIcon"></i>
-                </button>
                 <div class="calendar-badge fs-6 d-none d-lg-block">
                     <i class="bi bi-calendar3"></i> <span id="current-date"></span>
                 </div>
@@ -33,10 +30,11 @@
     </div>
 
     <!-- Formulario -->
-    <div class="card-section hidden-item mb-4 mx-auto" style="max-width: 700px;">
-        <div class="mt-0 card-section hidden-item" style="box-shadow: none; max-width: 650px;">
+    <section class="page-section mx-auto mb-3" style="max-width: 700px;">
+        <div class="mt-0 card-section mb-0" style="box-shadow: none; max-width: 650px;">
         <form method="POST" enctype="multipart/form-data" novalidate 
-            class="mt-0 hidden-item row g-3 needs-validation">
+            class="mt-0 row g-3 needs-validation"
+            style="margin-left: 0.1em;">
             <!-- Código -->
             <div class="mb-3">
                 <label for="codigo" class="form-label">Código de máquina</label>
@@ -185,7 +183,7 @@
 
                     <div class="col-md-3">
                         <label for="unidad_{{ c.ID }}" class="form-label">
-                        <i class="bi bi-calendar-range me-1"></i> Unidad de tiempo
+                        <i class="bi bi-calendar-range me-1"></i> Tiempo
                         </label>
                         <select name="unidad_{{ c.ID }}" 
                                 id="unidad_{{ c.ID }}" 
@@ -270,7 +268,7 @@ document.getElementById('clearImage')?.addEventListener('click', () => {
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
   const filterType = document.getElementById("filterType");
-  const cards = document.querySelectorAll(".component-card");
+  const cards = document.querySelectorAll(".clickable-card");
 
   function applyFilters() {
     const searchTerm = searchInput.value.toLowerCase();

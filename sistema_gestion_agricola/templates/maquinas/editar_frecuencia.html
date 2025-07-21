@@ -12,19 +12,11 @@
                 <p class="section-subtitle d-none d-md-block opacity-75">Modifica los parámetros de mantenimiento del componente</p>
             </div>
             <div class="header-controls">
-                <a href="{{ url_for('index') }}" 
-                    class="btn btn-outline-primary btn-sm ms-auto">
-                    <i class="bi bi-house"></i>
-                    <span class="d-none d-md-block d-md-inline">Inicio</span>
-                </a>
                 <a href="{{ url_for('maquinas.ver_maquina', id=id_maquina) }}" 
                     class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-arrow-left"></i>
                     <span class="d-none d-md-block d-md-inline">Volver</span>
                 </a>
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="bi bi-moon-fill" id="themeIcon"></i>
-                </button>
                 <div class="calendar-badge fs-6 d-none d-lg-block">
                     <i class="bi bi-calendar3"></i> <span id="current-date"></span>
                 </div>

@@ -148,16 +148,18 @@ def editar_maquina(id):
             return render_template('maquinas/editar.html', maquina=maquina)
 
         foto_filename = maquina.Foto
+        filepath = None
+
         if foto and foto.filename != '':
             if allowed_file(foto.filename):
                 # Eliminar foto anterior si existe
-                if maquina.Foto:
+                if maquina.Foto and isinstance(maquina.Foto, str):
                     foto_anterior = os.path.join(current_app.config['UPLOAD_FOLDER_MAQUINAS'], maquina.Foto)
-                    if os.path.exists(foto_anterior):
+                    if os.path.isfile(foto_anterior):
                         try:
                             os.remove(foto_anterior)
-                        except OSError:
-                            pass
+                        except OSError as e:
+                            print(f"No se pudo eliminar la foto anterior: {e}")
                 # Guardar nueva foto
                 extension = foto.filename.rsplit('.', 1)[1].lower()
                 foto_filename = secure_filename(f"maquina_{id}.{extension}")
@@ -171,9 +173,18 @@ def editar_maquina(id):
         maquina.Nombre = nombre
         maquina.Marca = marca
         maquina.Modelo = modelo
-        maquina.Año = int(anio) if anio.isdigit() else None
-        maquina.Estado = estado
+        try:
+            maquina.Año = int(anio)
+        except ValueError:
+            flash("Año inválido. Debe ser un número.", "error")
+            return render_template('maquinas/editar.html', maquina=maquina)
+        if estado != '':
+            maquina.Estado = estado
         maquina.Observaciones = observaciones
+        print("maquina.Foto antes:", maquina.Foto)
+        print("Ruta absoluta de la imagen guardada:", filepath)
+        print("Foto cargada:", foto.filename if foto else "No enviada")
+        print("Archivo actual:", foto_filename)
         maquina.Foto = foto_filename
 
         try:

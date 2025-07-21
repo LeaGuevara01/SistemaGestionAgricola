@@ -22,9 +22,6 @@
                     <i class="bi bi-arrow-left"></i> 
                     <span class="d-none d-md-block d-md-inline">Volver</span>
                 </a>
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="bi bi-moon-fill" id="themeIcon"></i>
-                </button>
                 <div class="calendar-badge fs-6 d-none d-lg-block">
                     <i class="bi bi-calendar3"></i> <span id="current-date"></span>
                 </div>
@@ -33,10 +30,11 @@
     </div>
 
     <!-- Formulario -->
-    <div class="card-section hidden-item mb-4">
-        <div class="mt-0 card-section hidden-item" style="box-shadow: none;">
+    <section class="page-section mx-auto mb-3" style="max-width: 700px;">
+        <div class="mt-0 card-section mb-0" style="box-shadow: none; max-width: 650px;">
             <form method="POST" enctype="multipart/form-data" novalidate 
-                class="mt-0 hidden-item row g-3 needs-validation">
+                class="mt-0 row mb-0 g-3 needs-validation"
+                style="margin-left: 0.1em;">
                 <!-- Código -->
                 <div class="mb-3">
                     <label for="codigo" class="form-label">Código</label>
@@ -117,8 +115,8 @@
                     </button>
                 </div>
                 <!-- Proveedores -->
-                <h4 class="mt-4 section-title">Proveedores asociados</h4>
-                <p class="section-subtitle ms-1">Seleccioná los proveedores que abastecen este componente</p>
+                <h4 class="mt-5 section-title">Proveedores asociados</h4>
+                <p class="section-subtitle mb-0">Seleccioná los proveedores que abastecen este componente</p>
 
                 <!-- Filtros para proveedores -->
                 <div class="card-section hidden-item mb-4" style="padding: 2rem 2.5rem; box-shadow: none;">

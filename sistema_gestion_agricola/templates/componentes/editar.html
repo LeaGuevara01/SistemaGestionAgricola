@@ -1,12 +1,14 @@
 {% extends "base.html" %}
 
+{% block title %}Editar {{ componente['Nombre'] }}{% endblock %}
 {% block content %}
+
 <div class="page-wrapper">
     <!-- Header -->
     <div class="dashboard-header hidden-item p-4 shadow rounded">
         <div class="header-topbar">
             <div class="header-title">
-                <h2 class="section-title"><i class="bi bi-pencil-fill"></i> Editar Componente</h2>
+                <h2 class="section-title"><i class="bi bi-pencil-fill"></i> Editar {{ componente['Nombre'] }}</h2>
                 <p class="section-subtitle d-none d-md-block opacity-75">Modifica la información del componente seleccionado</p>
             </div>
             <div class="header-controls">
@@ -15,20 +17,12 @@
                     <i class="bi bi-arrow-left"></i> 
                     <span class="d-none d-md-block d-md-inline">Volver</span>
                 </a>
-                <a href="{{ url_for('index') }}" 
-                    class="btn btn-outline-primary btn-sm">
-                    <i class="bi bi-house"></i> 
-                    <span class="d-none d-md-block d-md-inline">Inicio</span>
-                </a>
                 {% if componente %}
                 <a href="{{ url_for('componentes.vista_componente', id=componente.ID) }}" 
                     class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-eye"></i> 
                     <span class="d-none d-md-block d-md-inline">Ver</span></a>
                 {% endif %}
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="bi bi-moon-fill" id="themeIcon"></i>
-                </button>
                 <div class="calendar-badge fs-6 d-none d-lg-block">
                     <i class="bi bi-calendar3"></i> <span id="current-date"></span>
                 </div>
@@ -37,18 +31,17 @@
     </div>
     
     <!-- Formulario -->
-    <div class="card-section hidden-item mx-auto" style="max-width: 700px;">
-        <div class="mt-0 card-section hidden-item" style="box-shadow: none; max-width: 650px;">
+    <div class="page-section mx-auto mb-3" style="max-width: 700px;">
+        <div class="mt-0 card-section mb-0" style="box-shadow: none; max-width: 650px;">
             <form method="POST" enctype="multipart/form-data" id="editComponentForm" 
-                class="mt-0 form-edit hidden-item row g-3"
-                style="margin-left: 0.1em;">
+                class="mt-0 form-edit row mb-0 g-3">
                 <!-- Código -->
                 <div class="col-12 col-md-6">
                     <label for="codigo" class="form-label">
                         <i class="bi bi-hash"></i> Código del Componente
                     </label>
                     <input type="text" class="form-control" name="codigo" id="codigo"
-                        value="{{ componente.ID_Componente or '' }}"
+                        value="{{ componente.ID_Componente if componente and componente.ID_Componente is not none else '' }}"
                         placeholder="Ej: C001, FILT-001">
                 </div>
                 <!-- Nombre -->
@@ -57,18 +50,16 @@
                         <i class="bi bi-tag"></i> Nombre del Componente
                     </label>
                     <input type="text" class="form-control" name="nombre" id="nombre"
-                        value="{{ componente.Nombre or '' }}" required placeholder="Ej: Filtro de aceite">
+                        value="{{ componente.Nombre if componente and componente.Nombre is not none else '' }}" required placeholder="Ej: Filtro de aceite">
                 </div>
                 <!-- Tipo -->
                 <div class="col-12 col-md-6">
                     <label for="tipo" class="form-label">
                         <i class="bi bi-collection"></i> Tipo
                     </label>
-                    <select class="form-select" name="tipo" id="tipo">
-                        {% set tipo_actual = componente.Tipo or '' %}
-                        <option value="">Seleccionar tipo...</option>
-                        {% for tipo in ['Filtro', 'Correa', 'Válvula', 'Sensor', 'Bomba', 'Motor', 'Hidráulico', 'Eléctrico', 'Mecánico', 'Otro'] %}
-                            <option value="{{ tipo }}" {% if tipo == tipo_actual %}selected{% endif %}>{{ tipo }}</option>
+                    <select class="form-select" id="tipo" name="tipo">
+                        {% for tipo in tipos %}
+                            <option value="{{ tipo }}" {{ 'selected' if tipo_actual == tipo else '' }}>{{ tipo }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -78,7 +69,7 @@
                         <i class="bi bi-award"></i> Marca
                     </label>
                     <input type="text" class="form-control" name="marca" id="marca"
-                        value="{{ componente.Marca or '' }}" placeholder="Ej: Bosch, Mann">
+                        value="{{ componente.Marca if componente and componente.Marca is not none else '' }}" placeholder="Ej: Bosch, Mann">
                 </div>
                 <!-- Modelo -->
                 <div class="col-12 col-md-6">
@@ -86,7 +77,7 @@
                         <i class="bi bi-gear"></i> Modelo
                     </label>
                     <input type="text" class="form-control" name="modelo" id="modelo"
-                        value="{{ componente.Modelo or '' }}" placeholder="Ej: W712/75, HF6177">
+                        value="{{ componente.Modelo if componente and componente.Modelo is not none else '' }}" placeholder="Ej: W712/75, HF6177">
                 </div>
                 <!-- Precio -->
                 <div class="col-12 col-md-6">
@@ -98,7 +89,7 @@
                         <input type="number" name="precio" id="precio"
                             class="custom-input-field"
                             placeholder="0.00" step="0.01" min="0"
-                            value="{{ componente.Precio or '' }}">
+                            value="{{ componente.Precio if componente and componente.Precio is not none else '' }}">
                     </div>
                 </div>
                 <!-- Descripción -->
@@ -107,7 +98,7 @@
                         <i class="bi bi-card-text"></i> Descripción
                     </label>
                     <textarea class="form-control" name="descripcion" id="descripcion"
-                        rows="4" placeholder="Detalles técnicos del componente...">{{ componente.Descripcion or '' }}</textarea>
+                        rows="4" placeholder="Detalles técnicos del componente...">{{ componente.Descripcion if componente and componente.Descripcion is not none else '' }}</textarea>
                 </div>
                 <!-- Imagen -->
                 <div class="col-12 custom-file-upload">
@@ -126,9 +117,9 @@
                         {% endif %}
                     </div>
                     <!-- Vista previa de imagen seleccionada -->
-                    <div id="image-preview" class="mt-3">
+                    <div id="image-preview" class="mt-3" style="display: flex; justify-content: center;">
                         {% if componente and componente.Foto %}
-                            <img src="{{ url_for('static', filename='fotos/componente/' ~ componente.Foto) }}" 
+                            <img src="{{ url_for('static', filename='fotos/componentes/' ~ componente.Foto) }}" 
                                 alt="Imagen actual" 
                                 class="img-thumbnail" 
                                 style="max-width: 200px;">
@@ -152,14 +143,13 @@
                     {% endif %}
                 </div>
             </form>
-            <form id="deleteForm" method="POST" action="{{ url_for('componentes.eliminar_componente', id=componente.ID) }}">
-                <input type="hidden" name="_method" value="DELETE">
-            </form>
+            <form id="deleteForm" method="POST" action="{{ url_for('componentes.eliminar_componente', id=componente.ID) }}"></form>
         </div>
     </section>
 
     <!-- Carta con cartas embebidas -->
-    <div class="card detail-card hidden-item p-4 mx-auto" style="max-width: 700px; border: none; box-shadow: none;">
+    <div class="card detail-card p-4 mx-auto" 
+        style="max-width: 700px; border: none; box-shadow: none;">
         <h4 class="card-title mb-0 d-flex align-items-center gap-2 justify-content-center">
             <i class="bi bi-box-seam"></i> Detalles del componente
         </h4>
@@ -251,6 +241,7 @@ function showFileName(input) {
     const fileName = input.files.length > 0 ? input.files[0].name : 'No se ha seleccionado ningún archivo.';
     document.getElementById('file-name').textContent = fileName;
 }
+
 function confirmDelete() {
     const form = document.getElementById('deleteForm');
     if (form && confirm("¿Estás seguro de que querés eliminar este componente? Esta acción no se puede deshacer.")) {

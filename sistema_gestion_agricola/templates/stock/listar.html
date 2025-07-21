@@ -5,10 +5,10 @@
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
-    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
+    <div class="dashboard-header">
         <div class="header-topbar">
             <div class="header-title">
-                <h2 class="section-title"><i class="bi bi-box-seam"></i> Stock de Componentes</h2>
+                <h2 class="section-title"><i class="bi bi-box-seam"></i> Stock</h2>
                 <p class="section-subtitle d-none d-md-block opacity-75">Consulta el stock en sistema</p>
             </div>
             <div class="header-controls">
@@ -26,16 +26,28 @@
                     <i class="bi bi-cart-plus"></i>
                     <span class="d-none d-md-block d-md-inline">Compra</span>
                 </a>
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="bi bi-moon-fill" id="themeIcon"></i>
-                </button>
                 <div class="calendar-badge fs-6 d-none d-lg-block">
                     <i class="bi bi-calendar3"></i> <span id="current-date"></span>
                 </div>
             </div>
         </div>
     </div>
-
+    <!-- Filtro de stock -->
+    <div class="card-section">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <input type="text" id="filterCodigo" placeholder="Filtrar por Código" class="form-control">
+            </div>
+            <div class="col-md-5">
+                <input type="text" id="filterNombre" placeholder="Filtrar por Nombre" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <select id="filterTipo" class="form-select">
+                    <option value="">Filtrar por Tipo</option>
+                </select>
+            </div>
+        </div>
+    </div>
     <!-- Lista de stock -->
     <section class="page-section hidden-item mb-0">
         <h3 class="section-title">
@@ -57,7 +69,11 @@
                         </thead>
                         <tbody id="stockTableBody">
                             {% for c in stock %}
-                            <tr class="clickable-row component-row" data-component-id="{{ c.ID }}">
+                            <tr class="clickable-row component-row"
+                                data-component-id="{{ c.ID }}"
+                                data-tipo="{{ c.Tipo | lower }}"
+                                data-nombre="{{ c.Nombre | lower }}"
+                                data-codigo="{{ c.ID_Componente | lower }}">
                                 <!-- Imagen -->
                                 <td class="d-none d-md-table-cell text-center">
                                     {% if c.Foto %}
@@ -116,6 +132,80 @@
         {% endif %}
     </section>
 </div>
-<script></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const inputCodigo = document.getElementById('filterCodigo');
+    const inputNombre = document.getElementById('filterNombre');
+    const selectTipo = document.getElementById('filterTipo');
+    const tableBody = document.getElementById('stockTableBody');
+
+    function filterStock() {
+        const filterCodigo = inputCodigo.value.toLowerCase();
+        const filterNombre = inputNombre.value.toLowerCase();
+        const filterTipo = selectTipo.value.toLowerCase();
+
+        // Iterar todas las filas del tbody
+        Array.from(tableBody.querySelectorAll('tr')).forEach(row => {
+            const codigo = row.querySelector('.component-code').textContent.toLowerCase();
+            const nombre = row.querySelector('.component-name').textContent.toLowerCase();
+            const tipoElem = row.querySelector('td:nth-child(4)'); // columna tipo, d-none d-md-table-cell
+            let tipo = '';
+            if (tipoElem) {
+                const badge = tipoElem.querySelector('span.badge');
+                if (badge) tipo = badge.textContent.toLowerCase();
+            }
+
+            // Condiciones de filtro (contiene)
+            const matchesCodigo = !filterCodigo || codigo.includes(filterCodigo);
+            const matchesNombre = !filterNombre || nombre.includes(filterNombre);
+            const matchesTipo = !filterTipo || tipo === filterTipo;
+
+            if (matchesCodigo && matchesNombre && matchesTipo) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // Agregar eventos para filtrar en tiempo real
+    inputCodigo.addEventListener('input', filterStock);
+    inputNombre.addEventListener('input', filterStock);
+    selectTipo.addEventListener('change', filterStock);
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const filterSelect = document.getElementById("filterTipo");
+    const rows = document.querySelectorAll(".component-row");
+
+    // 🔄 Extraer todos los tipos únicos desde las filas
+    const tiposUnicos = new Set();
+    rows.forEach(row => {
+        const tipo = row.dataset.tipo;
+        if (tipo) tiposUnicos.add(tipo.trim());
+    });
+
+    // 🧱 Limpiar y cargar opciones en el <select>
+    filterSelect.innerHTML = '<option value="">Filtrar por Tipo</option>';
+    Array.from(tiposUnicos)
+        .sort()
+        .forEach(tipo => {
+            const capitalizado = tipo.charAt(0).toUpperCase() + tipo.slice(1);
+            const option = document.createElement("option");
+            option.value = tipo;
+            option.textContent = capitalizado;
+            filterSelect.appendChild(option);
+        });
+
+    // 🎯 Filtro al cambiar el valor
+    filterSelect.addEventListener("change", function () {
+        const valor = this.value.toLowerCase();
+        rows.forEach(row => {
+            const tipo = row.dataset.tipo || "";
+            row.style.display = (!valor || tipo === valor) ? "" : "none";
+        });
+    });
+});
+</script>
 <style></style>
 {% endblock %}

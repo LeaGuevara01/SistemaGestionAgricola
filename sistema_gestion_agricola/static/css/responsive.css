@@ -126,4 +126,12 @@
   .stat-card.panel .stat-content {
     align-items: center !important;
   }
+  .dashboard-header h2,
+  .dashboard-header .section-title {
+    font-size: 1.15rem;
+    margin-left: 0.4rem;
+  }
+  .page-section .section-title {
+    font-size: 1.2rem !important;
+  }
 }

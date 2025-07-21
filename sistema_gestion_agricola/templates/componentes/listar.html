@@ -5,7 +5,7 @@
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
-    <div class="dashboard-header hidden-item p-4 mb-3 rounded">
+    <div class="dashboard-header">
         <div class="header-topbar">
             <div class="header-title">
                 <h2 class="section-title"><i class="bi bi-puzzle-fill"></i> Gestión de Componentes</h2>
@@ -22,9 +22,6 @@
                     <i class="bi bi-plus-lg"></i> 
                     <span class="d-none d-md-block d-md-inline">Nuevo</span>
                 </a>
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="bi bi-moon-fill" id="themeIcon"></i>
-                </button>
                 <div class="calendar-badge fs-6 d-none d-lg-block">
                     <i class="bi bi-calendar3"></i> <span id="current-date"></span>
                 </div>
@@ -33,23 +30,26 @@
     </div>
     {% if componentes %}
     <!-- Filtros y búsqueda -->
-    <div class="card-section hidden-item mb-4">
+    <div class="card-section" id="component-section">
         <div class="row g-3 align-items-end">
             <div class="col-md-6">
                 <label for="searchInput" class="form-label">
                     <i class="bi bi-search"></i> Buscar componente
                 </label>
-                <input type="text" class="form-control" id="searchInput" placeholder="Buscar por nombre, descripción...">
+                <input type="text" class="form-control filter-input" 
+                    id="searchInput"
+                    placeholder="Buscar por nombre, descripción..."
+                    data-field="name">
             </div>
             <div class="col-md-6">
                 <label for="filterType" class="form-label">
                     <i class="bi bi-funnel"></i> Filtrar por tipo
                 </label>
-                <select class="form-select" id="filterType">
+                <select class="form-select filter-input" id="filterType" data-field="type">
                     <option value="">Todos los tipos</option>
                     {% for tipo in componentes|map(attribute='Tipo')|unique|list %}
                         {% if tipo %}
-                            <option value="{{ tipo }}">{{ tipo }}</option>
+                        <option value="{{ tipo }}">{{ tipo }}</option>
                         {% endif %}
                     {% endfor %}
                 </select>
@@ -62,21 +62,20 @@
         <h3 class="section-title">
                 <i class="bi bi-list-ul"></i> Lista de Componentes</h3>
             <div class="view-toggle hidden-item">
-                <button class="btn btn-sm btn-outline-secondary" onclick="toggleView('table')" id="tableViewBtn">
+                <button class="btn-sm btn-outline-secondary active" onclick="toggleView('table')" id="tableViewBtn">
                     <i class="bi bi-table"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-secondary" onclick="toggleView('cards')" id="cardsViewBtn">
+                <button class="btn-sm btn-outline-secondary" onclick="toggleView('cards')" id="cardsViewBtn">
                     <i class="bi bi-grid-3x3-gap"></i>
                 </button>
             </div>
         {% if componentes %}
         <!-- Vista de tabla -->
         <div id="tableView" class="table-view hidden-item">
-            <div class="table-responsive hidden-item" style="margin: 1rem 0 !important;">
+            <div class="table-responsive hidden-item">
                 <table class="table table-hover hidden-item align-middle">
                     <thead>
                         <tr>
-                            <th class="d-none d-md-table-cell" width="120">Imagen</th>
                             <th>Código</th>
                             <th>Nombre</th>
                             <th class="d-none d-sm-table-cell">Tipo</th>
@@ -88,18 +87,8 @@
                         <tr class="component-row clickable-row" 
                             data-name="{{ c.Nombre|lower }}" 
                             data-description="{{ c.Descripcion|lower }}" 
-                            data-type="{{ c.Tipo or '' }}"
+                            data-type="{{ (c.Tipo or '')|lower }}"
                             data-component-id="{{ c.ID }}">
-                            <td class="d-none d-md-table-cell">
-                                {% if c.Foto %}
-                                    <img src="{{ url_for('static', filename='fotos/componentes/' ~ c.Foto) }}" 
-                                        class="component-thumb" alt="{{ c.Nombre }}">
-                                {% else %}
-                                    <div class="component-thumb-placeholder">
-                                        <i class="bi bi-image"></i>
-                                    </div>
-                                {% endif %}
-                            </td>
                             <td>
                                 <span class="component-code">{{ c.ID_Componente or 'N/A' }}</span>
                             </td>
@@ -169,30 +158,7 @@
     </section>
     {% if componentes %}
     <!-- Estadísticas rápidas -->
-    <div class="auto-grid mb-2">
-        <div class="stat-card compact hidden-item" data-delay="100">
-            <div class="stat-icon"><i class="bi bi-puzzle"></i></div>
-            <div class="stat-content">
-                <h3>{{ componentes|length }}</h3>
-                <p>Componentes</p>
-            </div>
-        </div>
-        <div class="stat-card compact hidden-item" data-delay="200">
-            <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
-            <div class="stat-content">
-                <h3>{{ componentes|selectattr('Foto')|list|length }}</h3>
-                <p>Con Imagen</p>
-            </div>
-        </div>
-        <div class="stat-card compact hidden-item" data-delay="300">
-            <div class="stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
-            <div class="stat-content">
-                <h3>{{ componentes|rejectattr('Foto')|list|length }}</h3>
-                <p>Sin Imagen</p>
-            </div>
-        </div>
-    </div>
-    <div class="stats-grid panel mb-0">
+    <div class="stats-grid panel">
         <div class="stat-card panel hidden-item" data-delay="400">
             <div class="stat-icon"><i class="bi bi-cash"></i></div>
             <div class="stat-content">
@@ -217,6 +183,29 @@
             <div class="stat-content">
                 <h3>${{ "%.2f"|format(componentes | map(attribute='Precio') | select | sum) }}</h3>
                 <p>Valor Total</p>
+            </div>
+        </div>
+    </div>
+    <div class="auto-grid">
+        <div class="stat-card compact hidden-item" data-delay="100">
+            <div class="stat-icon"><i class="bi bi-puzzle"></i></div>
+            <div class="stat-content">
+                <h3>{{ componentes|length }}</h3>
+                <p>Componentes</p>
+            </div>
+        </div>
+        <div class="stat-card compact hidden-item" data-delay="200">
+            <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+            <div class="stat-content">
+                <h3>{{ componentes|selectattr('Foto')|list|length }}</h3>
+                <p>Con Imagen</p>
+            </div>
+        </div>
+        <div class="stat-card compact hidden-item" data-delay="300">
+            <div class="stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
+            <div class="stat-content">
+                <h3>{{ componentes|rejectattr('Foto')|list|length }}</h3>
+                <p>Sin Imagen</p>
             </div>
         </div>
     </div>
@@ -258,22 +247,47 @@
     padding: 0 0.6rem !important;
 }
 
+#tableView {
+  display: block;
+}
+
+#cardsView {
+  display: none;
+}
+
+.btn-outline-secondary.active {
+  color: var(--agri-light);
+  background-color: var(--agri-dark); /* Bootstrap primary */
+  border-color: var(--agri-green-dark);
+}
+
 </style>
 
 <script>
 
 function toggleView(view) {
-  const tableView = document.getElementById('tableView');
-  const cardsView = document.getElementById('cardsView');
+    const tableView = document.getElementById('tableView');
+    const cardsView = document.getElementById('cardsView');
+    const tableBtn = document.getElementById('tableViewBtn');
+    const cardsBtn = document.getElementById('cardsViewBtn');
 
-  if (view === 'table') {
-    tableView.classList.remove('hidden-item');
-    cardsView.classList.add('hidden-item');
-  } else {
-    cardsView.classList.remove('hidden-item');
-    tableView.classList.add('hidden-item');
+    if (view === 'table') {
+      tableView.style.display = 'block';
+      cardsView.style.display = 'none';
+      tableBtn.classList.add('active');
+      cardsBtn.classList.remove('active');
+    } else if (view === 'cards') {
+      tableView.style.display = 'none';
+      cardsView.style.display = 'block';
+      tableBtn.classList.remove('active');
+      cardsBtn.classList.add('active');
+    }
   }
-}
+
+// Inicializar estado con tabla visible
+document.addEventListener('DOMContentLoaded', () => {
+    toggleView('table');
+});
 
 </script>
 

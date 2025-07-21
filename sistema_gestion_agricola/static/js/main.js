@@ -1,11 +1,12 @@
+// static/js/main.js
 import { initTheme } from './theme.js';
 import { showCurrentDate } from './date.js';
-import { animateWithDelay, animateElements } from './animations.js';
+import { animateElements } from './animations.js';
 import { enableTooltips } from './tooltips.js';
 import { enableNavigation } from './navigation.js';
 import { cargarClima } from './clima.js';
-import { initMachineFilters, clearFilters } from './filters.js';
-import { toggleView } from './view.js';
+import { initMachineFilters, initComponentFilters, clearFilters } from './filters.js';
+import {  } from './view.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
@@ -37,8 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
   enableNavigation();
   cargarClima();
   initMachineFilters();
+  initComponentFilters();
 
   // Exponer función global para limpiar filtros y cambiar vista
   window.clearFilters = clearFilters;
-  window.toggleView = toggleView; 
 });

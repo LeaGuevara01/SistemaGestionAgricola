@@ -86,7 +86,6 @@
 [data-bs-theme="dark"] .custom-border {
   border-top: 2px solid var(--agri-green-darker) !important;
 }
-
 /* ====== Inputs personalizados ====== */
 .custom-input-group {
   display: flex;
@@ -322,8 +321,8 @@
 /* ====== Cards grid (responsive) ====== */
 .custom-cards-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(120px, 1fr);
+  gap: 0.5rem;
   padding: 0 0.6rem;
   justify-content: center;
 }
@@ -349,7 +348,7 @@
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1rem;
   padding: 0 0.6rem;
-  margin-bottom: 1rem;
+  margin-top: 0.5rem;
 }
 @media (max-width: 767px) {
   .stats-grid {
@@ -414,6 +413,7 @@
   border-radius: 10px;
   box-shadow: var(--card-shadow);
   padding: var(--card-padding);
+  margin-bottom: 1rem;
   transition: var(--transition);
   opacity: 0;
   transform: translateY(20px);
@@ -430,7 +430,11 @@
 .dashboard-card > div {
   margin: 1rem;
 }
-
+.dashboard-card:hover,
+.weather-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
 /* ====== Utility ====== */
 .component-card-wrapper {
   margin: 0 auto;

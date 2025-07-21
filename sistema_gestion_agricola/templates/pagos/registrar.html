@@ -13,11 +13,13 @@
             <div class="header-controls">
                 <a href="{{ url_for('index') }}" 
                     class="btn btn-outline-primary btn-sm ms-auto">
-                    <i class="bi bi-house"></i> 
+                    <i class="bi bi-house"> Inicio</i> 
                 </a>
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="bi bi-moon-fill" id="themeIcon"></i>
-                </button>
+                <a href="{{ url_for('pagos.resumen_cuentas') }}" 
+                    class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-book"></i> 
+                    <span class="d-none d-md-inline"> Resúmen</span>
+                </a>
                 <div class="calendar-badge d-none d-lg-inline-flex">
                     <i class="bi bi-calendar3"></i> <span id="current-date"></span>
                 </div>

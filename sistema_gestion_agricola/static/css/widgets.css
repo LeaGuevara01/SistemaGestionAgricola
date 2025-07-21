@@ -1,11 +1,4 @@
-/* ========================================
-   WIDGET DEL CLIMA
-   ======================================== */
-.weather-card.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
+/* ===== WIDGET DEL CLIMA ====== */
 .weather-card .card-header {
     background-color: var(--card-bg);
     color: var(--text-color);
@@ -60,9 +53,4 @@
     color: var(--text-color);
     font-size: 0.9rem;
     margin: 0.25rem 0;
-}
-
-.weather-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
 }

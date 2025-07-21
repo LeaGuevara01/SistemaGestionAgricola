@@ -5,32 +5,27 @@
 {% block content %}
 <div class="page-wrapper">
     <!-- Header -->
-    <div class="dashboard-header p-4 shadow rounded">
+    <div class="dashboard-header">
         <div class="header-topbar">
             <div class="header-title">
-                <h2 class="section-title"><i class="bi bi-truck"></i>Agregar Nuevo Proveedor</h2>
-                <p class="d-none d-md-block opacity-75">Registrar un proveedor para compras</p>
+                <h2 class="section-title"><i class="bi bi-truck"></i>Nuevo Proveedor</h2>
+                <p class="section-subtitle d-none d-md-block opacity-75">Registrar un proveedor para compras</p>
+            </div>
+            <div class="header-controls">
+                <a href="{{ url_for('proveedores.listar_proveedores') }}" 
+                    class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-arrow-left"></i>
+                    <span class="d-none d-md-inline">Volver</span>
+                </a>
             </div>
         </div>
-        <div class="header-controls">
-            <a href="{{ url_for('proveedores.listar_proveedores') }}" 
-                class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-arrow-left"></i>
-                <span class="d-none d-md-inline">Volver a Proveedores</span>
-                <span class="d-md-none">Volver</span>
-            </a>
-            <a href="{{ url_for('index') }}" 
-                class="btn btn-outline-primary btn-sm" 
-                style="font-size: 1rem;">
-                <i class="bi bi-house"></i> 
-                <span class="d-none d-md-block d-md-inline">Inicio</span>
-            </a>
-        </div>
     </div>
-    
-    <section class="page-section">
-        <div class="card-section">
-            <form method="POST" class="needs-validation" novalidate>
+
+    <section class="page-section mx-auto mb-3" style="max-width: 700px;">
+        <div class="mt-0 card-section mb-0" style="box-shadow: none; max-width: 650px;">
+            <form method="POST" class="needs-validation" novalidate
+                class="mt-0 row mb-0 g-3 needs-validation"
+                style="margin-left: 0.1em;">
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre</label>
                     <input type="text" class="form-control" name="nombre" id="nombre" required>
