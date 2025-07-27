@@ -1,6 +1,7 @@
 # routes/proveedores.py
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from ..models import db, Proveedor, Componente, ComponentesProveedores
+from ..utils.validation import InputValidator, sanitize_string
 
 proveedores_bp = Blueprint('proveedores', __name__, url_prefix='/proveedor')
 
@@ -14,25 +15,42 @@ def listar_proveedores():
 @proveedores_bp.route('/agregar', methods=['GET', 'POST'])
 def agregar_proveedor():
     if request.method == 'POST':
-        nombre = request.form['nombre'].strip()
-        if not nombre:
-            flash('El nombre es obligatorio.')
+        # Validar datos de entrada
+        errors = InputValidator.validate_proveedor_form(request.form)
+        if errors:
+            for error in errors:
+                flash(error, 'error')
             return redirect(url_for('proveedores.agregar_proveedor'))
         
-        proveedor = Proveedor(
-            Nombre=nombre,
-            Localidad=request.form.get('localidad', ''),
-            Contacto=request.form.get('contacto', ''),
-            Telefono=request.form.get('telefono', ''),
-            Email=request.form.get('email', ''),
-            Rubro=request.form.get('rubro', ''),
-            Direccion=request.form.get('direccion', ''),
-            Observaciones=request.form.get('observaciones', '')
-        )
-        db.session.add(proveedor)
-        db.session.commit()
-        flash(f'Proveedor "{nombre}" agregado correctamente.')
-        return redirect(url_for('proveedores.listar_proveedores'))
+        # Sanitizar datos
+        nombre = sanitize_string(request.form.get('nombre', ''))
+        localidad = sanitize_string(request.form.get('localidad', ''))
+        contacto = sanitize_string(request.form.get('contacto', ''))
+        telefono = sanitize_string(request.form.get('telefono', ''))
+        email = sanitize_string(request.form.get('email', ''))
+        rubro = sanitize_string(request.form.get('rubro', ''))
+        direccion = sanitize_string(request.form.get('direccion', ''))
+        observaciones = sanitize_string(request.form.get('observaciones', ''))
+        
+        try:
+            proveedor = Proveedor(
+                Nombre=nombre,
+                Localidad=localidad,
+                Contacto=contacto,
+                Telefono=telefono,
+                Email=email,
+                Rubro=rubro,
+                Direccion=direccion,
+                Observaciones=observaciones
+            )
+            db.session.add(proveedor)
+            db.session.commit()
+            flash(f'Proveedor "{nombre}" agregado correctamente.', 'success')
+            return redirect(url_for('proveedores.listar_proveedores'))
+        except Exception as e:
+            db.session.rollback()
+            flash('Error al agregar proveedor. Intente nuevamente.', 'error')
+            return redirect(url_for('proveedores.agregar_proveedor'))
 
     return render_template('proveedores/agregar.html')
 

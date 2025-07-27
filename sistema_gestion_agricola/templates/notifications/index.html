@@ -1,0 +1,461 @@
+<!-- templates/notifications/index.html - Panel de Notificaciones -->
+{% extends "base.html" %}
+
+{% block title %}Notificaciones - Sistema de Gestión Agrícola{% endblock %}
+
+{% block extra_css %}
+<style>
+.notification-card {
+    border-left: 4px solid #dee2e6;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.notification-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.notification-card.unread {
+    background-color: #f8f9fa;
+    border-left-color: #007bff;
+}
+
+.notification-card.critical {
+    border-left-color: #dc3545;
+    background-color: #fff5f5;
+}
+
+.notification-card.high {
+    border-left-color: #fd7e14;
+    background-color: #fff8f0;
+}
+
+.notification-card.normal {
+    border-left-color: #28a745;
+}
+
+.notification-card.low {
+    border-left-color: #6c757d;
+}
+
+.notification-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.notification-time {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+
+.notification-icon.stock {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.notification-icon.mantenimiento {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.notification-icon.alerta {
+    background-color: #ffebee;
+    color: #d32f2f;
+}
+
+.notification-icon.sistema {
+    background-color: #e8f5e8;
+    color: #388e3c;
+}
+
+.stats-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+}
+
+.filter-tabs {
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 2rem;
+}
+
+.filter-tab {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    background: none;
+    color: #6c757d;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+}
+
+.filter-tab.active {
+    color: #007bff;
+    border-bottom-color: #007bff;
+}
+
+.filter-tab:hover {
+    color: #007bff;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><i class="fas fa-bell"></i> Centro de Notificaciones</h2>
+                    <p class="text-muted mb-0">Gestiona todas las alertas y notificaciones del sistema</p>
+                </div>
+                <div>
+                    <button class="btn btn-outline-primary me-2" onclick="runChecks()">
+                        <i class="fas fa-sync-alt"></i> Verificar Alertas
+                    </button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#testNotificationModal">
+                        <i class="fas fa-plus"></i> Prueba
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card stats-card text-center">
+                <div class="card-body">
+                    <div class="text-primary mb-2">
+                        <i class="fas fa-bell fa-2x"></i>
+                    </div>
+                    <h4 class="card-title">{{ stats.total }}</h4>
+                    <p class="card-text text-muted">Total</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card text-center">
+                <div class="card-body">
+                    <div class="text-warning mb-2">
+                        <i class="fas fa-eye-slash fa-2x"></i>
+                    </div>
+                    <h4 class="card-title">{{ stats.no_leidas }}</h4>
+                    <p class="card-text text-muted">No Leídas</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card text-center">
+                <div class="card-body">
+                    <div class="text-danger mb-2">
+                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                    </div>
+                    <h4 class="card-title">{{ stats.criticas }}</h4>
+                    <p class="card-text text-muted">Críticas</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card text-center">
+                <div class="card-body">
+                    <div class="text-success mb-2">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </div>
+                    <h4 class="card-title">{{ stats.por_tipo|length }}</h4>
+                    <p class="card-text text-muted">Tipos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="all">Todas</button>
+                <button class="filter-tab" data-filter="unread">No Leídas</button>
+                <button class="filter-tab" data-filter="stock">Stock</button>
+                <button class="filter-tab" data-filter="mantenimiento">Mantenimiento</button>
+                <button class="filter-tab" data-filter="alerta">Alertas</button>
+                <button class="filter-tab" data-filter="sistema">Sistema</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Notificaciones -->
+    <div class="row">
+        <div class="col-12">
+            <div id="notificationsList">
+                {% for notification in notifications %}
+                <div class="card notification-card {% if not notification.leida %}unread{% endif %} {{ notification.prioridad }}" 
+                     data-type="{{ notification.tipo }}" 
+                     data-read="{{ notification.leida|lower }}">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <!-- Icono -->
+                            <div class="notification-icon {{ notification.tipo }}">
+                                {% if notification.tipo == 'stock' %}
+                                    <i class="fas fa-boxes"></i>
+                                {% elif notification.tipo == 'mantenimiento' %}
+                                    <i class="fas fa-tools"></i>
+                                {% elif notification.tipo == 'alerta' %}
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                {% elif notification.tipo == 'sistema' %}
+                                    <i class="fas fa-cog"></i>
+                                {% else %}
+                                    <i class="fas fa-info-circle"></i>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Contenido -->
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="card-title mb-0">{{ notification.titulo }}</h6>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge notification-badge 
+                                            {% if notification.prioridad == 'critica' %}bg-danger
+                                            {% elif notification.prioridad == 'alta' %}bg-warning
+                                            {% elif notification.prioridad == 'normal' %}bg-success
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ notification.prioridad|title }}
+                                        </span>
+                                        {% if not notification.leida %}
+                                        <button class="btn btn-sm btn-outline-primary ms-2" 
+                                                onclick="markAsRead('{{ notification.id }}')">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <p class="card-text">{{ notification.mensaje }}</p>
+                                
+                                <small class="notification-time">
+                                    <i class="fas fa-clock"></i>
+                                    {{ moment(notification.fecha_creacion).fromNow() }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                {% if not notifications %}
+                <div class="text-center py-5">
+                    <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No hay notificaciones</h5>
+                    <p class="text-muted">Todas las notificaciones aparecerán aquí</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Notificación de Prueba -->
+<div class="modal fade" id="testNotificationModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Crear Notificación de Prueba</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="testNotificationForm">
+                    <div class="mb-3">
+                        <label class="form-label">Tipo</label>
+                        <select class="form-select" name="tipo">
+                            <option value="sistema">Sistema</option>
+                            <option value="stock">Stock</option>
+                            <option value="mantenimiento">Mantenimiento</option>
+                            <option value="alerta">Alerta</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Título</label>
+                        <input type="text" class="form-control" name="titulo" value="Notificación de Prueba">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mensaje</label>
+                        <textarea class="form-control" name="mensaje" rows="3">Esta es una notificación de prueba generada desde el panel de administración.</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Prioridad</label>
+                        <select class="form-select" name="prioridad">
+                            <option value="baja">Baja</option>
+                            <option value="normal" selected>Normal</option>
+                            <option value="alta">Alta</option>
+                            <option value="critica">Crítica</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="createTestNotification()">Crear</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script>
+// Configurar momento en español
+moment.locale('es');
+
+// Filtros de notificaciones
+document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        // Actualizar tabs activos
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        
+        const filter = this.getAttribute('data-filter');
+        filterNotifications(filter);
+    });
+});
+
+function filterNotifications(filter) {
+    const notifications = document.querySelectorAll('.notification-card');
+    
+    notifications.forEach(notification => {
+        let show = false;
+        
+        switch(filter) {
+            case 'all':
+                show = true;
+                break;
+            case 'unread':
+                show = notification.getAttribute('data-read') === 'false';
+                break;
+            default:
+                show = notification.getAttribute('data-type') === filter;
+        }
+        
+        notification.style.display = show ? 'block' : 'none';
+    });
+}
+
+// Marcar como leída
+function markAsRead(notificationId) {
+    fetch(`/notifications/api/mark_read/${notificationId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            location.reload();
+        } else {
+            alert('Error al marcar como leída');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error de conexión');
+    });
+}
+
+// Ejecutar verificaciones
+function runChecks() {
+    const button = event.target.closest('button');
+    const originalText = button.innerHTML;
+    
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+    button.disabled = true;
+    
+    fetch('/notifications/run_checks', {
+        method: 'POST'
+    })
+    .then(() => {
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        button.innerHTML = originalText;
+        button.disabled = false;
+    });
+}
+
+// Crear notificación de prueba
+function createTestNotification() {
+    const form = document.getElementById('testNotificationForm');
+    const formData = new FormData(form);
+    
+    const data = {
+        tipo: formData.get('tipo'),
+        titulo: formData.get('titulo'),
+        mensaje: formData.get('mensaje'),
+        prioridad: formData.get('prioridad')
+    };
+    
+    fetch('/notifications/api/test', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            bootstrap.Modal.getInstance(document.getElementById('testNotificationModal')).hide();
+            location.reload();
+        } else {
+            alert('Error al crear notificación');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error de conexión');
+    });
+}
+
+// Auto-actualizar cada 30 segundos
+setInterval(() => {
+    fetch('/notifications/api/stats')
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Actualizar contadores si hay cambios
+            updateStats(data.stats);
+        }
+    })
+    .catch(error => console.log('Error auto-actualizando:', error));
+}, 30000);
+
+function updateStats(stats) {
+    // Actualizar contadores en las tarjetas de estadísticas
+    const cards = document.querySelectorAll('.stats-card h4');
+    if (cards.length >= 3) {
+        cards[0].textContent = stats.total;
+        cards[1].textContent = stats.no_leidas;
+        cards[2].textContent = stats.criticas;
+    }
+}
+</script>
+{% endblock %}

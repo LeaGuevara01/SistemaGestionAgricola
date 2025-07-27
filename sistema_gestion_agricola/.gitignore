@@ -30,3 +30,12 @@ dist/
 
 # Variables de entorno
 .env
+.env.development
+.env.production
+.env.local
+.env.*.local
+
+# Archivos sensibles
+*.key
+*.pem
+*.crt

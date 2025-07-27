@@ -1,0 +1,458 @@
+<!-- templates/reports/custom.html - Constructor de Reportes Personalizados -->
+{% extends "base.html" %} {% block title %}Reportes Personalizados - Sistema de
+Gestión Agrícola{% endblock %} {% block extra_css %}
+<style>
+  .builder-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    height: 100%;
+  }
+
+  .builder-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .form-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .field-checkbox {
+    margin-bottom: 0.5rem;
+  }
+
+  .preview-area {
+    background: white;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    min-height: 200px;
+  }
+
+  .loading-spinner {
+    display: none;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="container-fluid">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2>🛠️ Constructor de Reportes</h2>
+      <p class="text-muted">
+        Crea reportes personalizados según tus necesidades
+      </p>
+    </div>
+    <div>
+      <a
+        href="{{ url_for('reports.index') }}"
+        class="btn btn-outline-secondary"
+      >
+        <i class="fas fa-arrow-left"></i> Volver a Reportes
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Panel de Configuración -->
+    <div class="col-md-4">
+      <div class="card builder-card">
+        <div class="card-header">
+          <h5>⚙️ Configuración del Reporte</h5>
+        </div>
+        <div class="card-body">
+          <form id="custom-report-form">
+            <!-- Tipo de Reporte -->
+            <div class="form-section">
+              <h6>📊 Tipo de Reporte</h6>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="tipo"
+                  id="stock_personalizado"
+                  value="stock_personalizado"
+                  checked
+                />
+                <label class="form-check-label" for="stock_personalizado">
+                  Inventario de Stock
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="tipo"
+                  id="movimientos_personalizado"
+                  value="movimientos_personalizado"
+                />
+                <label class="form-check-label" for="movimientos_personalizado">
+                  Movimientos de Stock
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="tipo"
+                  id="maquinas_personalizado"
+                  value="maquinas_personalizado"
+                />
+                <label class="form-check-label" for="maquinas_personalizado">
+                  Parque de Maquinaria
+                </label>
+              </div>
+            </div>
+
+            <!-- Campos a Incluir -->
+            <div class="form-section">
+              <h6>📋 Campos a Incluir</h6>
+              <div id="campos-container">
+                <!-- Los campos se cargarán dinámicamente según el tipo -->
+              </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="form-section">
+              <h6>🔍 Filtros</h6>
+              <div id="filtros-container">
+                <!-- Los filtros se cargarán dinámicamente según el tipo -->
+              </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="d-grid gap-2">
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="generateReport()"
+              >
+                <i class="fas fa-chart-bar"></i> Generar Reporte
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-success"
+                onclick="exportReport('csv')"
+              >
+                <i class="fas fa-download"></i> Exportar CSV
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-info"
+                onclick="exportReport('json')"
+              >
+                <i class="fas fa-code"></i> Exportar JSON
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel de Vista Previa -->
+    <div class="col-md-8">
+      <div class="card builder-card">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h5>👁️ Vista Previa del Reporte</h5>
+          <div class="loading-spinner">
+            <div
+              class="spinner-border spinner-border-sm text-primary"
+              role="status"
+            >
+              <span class="visually-hidden">Generando...</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="preview-area" class="preview-area">
+            <div>
+              <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+              <h5 class="text-muted">Configura tu reporte</h5>
+              <p class="text-muted">
+                Selecciona el tipo, campos y filtros para generar tu reporte
+                personalizado
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_scripts %}
+<script>
+  // Configuración de campos por tipo de reporte
+  const reportFields = {
+    stock_personalizado: [
+      { id: "nombre", label: "Nombre del Componente" },
+      { id: "categoria", label: "Categoría" },
+      { id: "descripcion", label: "Descripción" },
+      { id: "stock_actual", label: "Stock Actual" },
+    ],
+    movimientos_personalizado: [
+      { id: "fecha", label: "Fecha" },
+      { id: "tipo", label: "Tipo de Movimiento" },
+      { id: "cantidad", label: "Cantidad" },
+      { id: "componente", label: "Componente" },
+      { id: "descripcion", label: "Descripción" },
+    ],
+    maquinas_personalizado: [
+      { id: "nombre", label: "Nombre de la Máquina" },
+      { id: "estado", label: "Estado" },
+      { id: "ubicacion", label: "Ubicación" },
+      { id: "descripcion", label: "Descripción" },
+    ],
+  };
+
+  // Configuración de filtros por tipo de reporte
+  const reportFilters = {
+    stock_personalizado: [
+      { id: "categoria", label: "Categoría", type: "text" },
+      { id: "stock_minimo", label: "Stock Mínimo", type: "number" },
+    ],
+    movimientos_personalizado: [
+      { id: "fecha_desde", label: "Fecha Desde", type: "date" },
+      { id: "fecha_hasta", label: "Fecha Hasta", type: "date" },
+      {
+        id: "tipo",
+        label: "Tipo",
+        type: "select",
+        options: ["entrada", "salida"],
+      },
+    ],
+    maquinas_personalizado: [
+      {
+        id: "estado",
+        label: "Estado",
+        type: "select",
+        options: ["Operativa", "En taller", "Fuera de servicio"],
+      },
+      { id: "ubicacion", label: "Ubicación", type: "text" },
+    ],
+  };
+
+  $(document).ready(function () {
+    // Cargar campos y filtros iniciales
+    loadFieldsAndFilters();
+
+    // Escuchar cambios en el tipo de reporte
+    $('input[name="tipo"]').change(function () {
+      loadFieldsAndFilters();
+    });
+  });
+
+  function loadFieldsAndFilters() {
+    const tipo = $('input[name="tipo"]:checked').val();
+
+    // Cargar campos
+    const camposContainer = $("#campos-container");
+    camposContainer.empty();
+
+    reportFields[tipo].forEach((field) => {
+      camposContainer.append(`
+            <div class="form-check field-checkbox">
+                <input class="form-check-input" type="checkbox" id="campo_${field.id}" name="campos" value="${field.id}" checked>
+                <label class="form-check-label" for="campo_${field.id}">
+                    ${field.label}
+                </label>
+            </div>
+        `);
+    });
+
+    // Cargar filtros
+    const filtrosContainer = $("#filtros-container");
+    filtrosContainer.empty();
+
+    reportFilters[tipo].forEach((filter) => {
+      let inputHtml = "";
+
+      if (filter.type === "select") {
+        inputHtml = `<select class="form-select" name="filtro_${filter.id}">
+                <option value="">Todos</option>
+                ${filter.options
+                  .map((opt) => `<option value="${opt}">${opt}</option>`)
+                  .join("")}
+            </select>`;
+      } else {
+        inputHtml = `<input type="${
+          filter.type
+        }" class="form-control" name="filtro_${
+          filter.id
+        }" placeholder="Ingrese ${filter.label.toLowerCase()}">`;
+      }
+
+      filtrosContainer.append(`
+            <div class="mb-2">
+                <label class="form-label">${filter.label}</label>
+                ${inputHtml}
+            </div>
+        `);
+    });
+  }
+
+  function generateReport() {
+    const formData = collectFormData();
+
+    $(".loading-spinner").show();
+    $("#preview-area").html(
+      '<div class="text-center"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Generando reporte...</p></div>'
+    );
+
+    fetch("/reports/api/custom", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        $(".loading-spinner").hide();
+
+        if (data.status === "success") {
+          displayReportPreview(data.data, formData);
+        } else {
+          $("#preview-area").html(`
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Error: ${data.error || "Error desconocido"}
+                </div>
+            `);
+        }
+      })
+      .catch((error) => {
+        $(".loading-spinner").hide();
+        console.error("Error:", error);
+        $("#preview-area").html(`
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+                Error al generar el reporte
+            </div>
+        `);
+      });
+  }
+
+  function displayReportPreview(data, formData) {
+    if (!data || data.length === 0) {
+      $("#preview-area").html(`
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                No se encontraron datos con los filtros aplicados
+            </div>
+        `);
+      return;
+    }
+
+    let tableHtml = `
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+    `;
+
+    // Generar cabeceras de la tabla
+    formData.campos.forEach((campo) => {
+      const fieldConfig = reportFields[formData.tipo].find(
+        (f) => f.id === campo
+      );
+      tableHtml += `<th>${fieldConfig ? fieldConfig.label : campo}</th>`;
+    });
+
+    tableHtml += `
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    // Generar filas de datos
+    data.slice(0, 50).forEach((item) => {
+      // Mostrar solo primeros 50 para preview
+      tableHtml += "<tr>";
+      formData.campos.forEach((campo) => {
+        tableHtml += `<td>${item[campo] || "-"}</td>`;
+      });
+      tableHtml += "</tr>";
+    });
+
+    tableHtml += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    if (data.length > 50) {
+      tableHtml += `
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-info-circle"></i>
+                Mostrando 50 de ${data.length} registros. Exporta el reporte para ver todos los datos.
+            </div>
+        `;
+    }
+
+    $("#preview-area").html(tableHtml);
+  }
+
+  function collectFormData() {
+    const tipo = $('input[name="tipo"]:checked').val();
+    const campos = [];
+    const filtros = {};
+
+    // Recopilar campos seleccionados
+    $('input[name="campos"]:checked').each(function () {
+      campos.push($(this).val());
+    });
+
+    // Recopilar filtros
+    $('[name^="filtro_"]').each(function () {
+      const filterName = $(this).attr("name").replace("filtro_", "");
+      const value = $(this).val();
+      if (value) {
+        filtros[filterName] = value;
+      }
+    });
+
+    return {
+      tipo: tipo,
+      campos: campos,
+      filtros: filtros,
+    };
+  }
+
+  function exportReport(format) {
+    const formData = collectFormData();
+
+    // Crear un formulario temporal para la exportación
+    const form = $("<form>", {
+      method: "POST",
+      action: "/reports/api/custom",
+    });
+
+    form.append(
+      $("<input>", {
+        type: "hidden",
+        name: "data",
+        value: JSON.stringify(formData),
+      })
+    );
+
+    form.append(
+      $("<input>", {
+        type: "hidden",
+        name: "format",
+        value: format,
+      })
+    );
+
+    $("body").append(form);
+    form.submit();
+    form.remove();
+  }
+</script>
+{% endblock %}

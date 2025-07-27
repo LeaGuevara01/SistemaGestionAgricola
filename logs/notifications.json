@@ -1,0 +1,57 @@
+[
+  {
+    "id": "8eae5893",
+    "tipo": "stock",
+    "titulo": "\u26a0\ufe0f Stock Cr\u00edtico - Filtros de Aceite",
+    "mensaje": "Los filtros de aceite tienen solo 2 unidades en stock. Se recomienda realizar un pedido urgente.",
+    "prioridad": "alta",
+    "fecha_creacion": "2025-07-27T10:29:34.119796",
+    "leida": false,
+    "user_id": null,
+    "acciones": []
+  },
+  {
+    "id": "9529f690",
+    "tipo": "mantenimiento",
+    "titulo": "\ud83d\udd27 Mantenimiento Programado",
+    "mensaje": "La cosechadora John Deere requiere mantenimiento preventivo del sistema hidr\u00e1ulico programado para ma\u00f1ana.",
+    "prioridad": "normal",
+    "fecha_creacion": "2025-07-27T10:29:34.120333",
+    "leida": false,
+    "user_id": null,
+    "acciones": []
+  },
+  {
+    "id": "cd9e0ccf",
+    "tipo": "alerta",
+    "titulo": "\ud83d\udea8 Tractor Fuera de Servicio",
+    "mensaje": "El tractor Case IH est\u00e1 fuera de servicio debido a una falla en el motor. Contactar al t\u00e9cnico inmediatamente.",
+    "prioridad": "critica",
+    "fecha_creacion": "2025-07-27T10:29:34.128524",
+    "leida": false,
+    "user_id": null,
+    "acciones": []
+  },
+  {
+    "id": "ffee6d55",
+    "tipo": "sistema",
+    "titulo": "\ud83d\udd04 Actualizaci\u00f3n Completada",
+    "mensaje": "El sistema de gesti\u00f3n agr\u00edcola ha sido actualizado exitosamente con nuevas funcionalidades de reportes.",
+    "prioridad": "normal",
+    "fecha_creacion": "2025-07-27T10:29:34.253147",
+    "leida": false,
+    "user_id": null,
+    "acciones": []
+  },
+  {
+    "id": "abdfb0c6",
+    "tipo": "stock",
+    "titulo": "\ud83d\udce6 Nuevo Pedido Recibido",
+    "mensaje": "Se ha recibido un pedido de 50 unidades de correas para las m\u00e1quinas cosechadoras.",
+    "prioridad": "baja",
+    "fecha_creacion": "2025-07-27T10:29:34.262512",
+    "leida": false,
+    "user_id": null,
+    "acciones": []
+  }
+]

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data-sources>
+  <data-source>
+    <id>render_pg_sistema_gestion</id>
+    <name>Render PostgreSQL - sistema_gestion_agricola</name>
+    <driver>PostgreSQL</driver>
+    <url>jdbc:postgresql://dpg-d1qpnlodl3ps73eln790-a.render.com:5432/sistema_gestion_agricola?sslmode=require</url>
+    <user>elorza</user>
+    <password>g65hHAdGLwoOYl33zlPRnVyzdsY6FsD1</password>
+    <properties>
+      <property name="sslmode" value="require"/>
+    </properties>
+  </data-source>
+</data-sources>

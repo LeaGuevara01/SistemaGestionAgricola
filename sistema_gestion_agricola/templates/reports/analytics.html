@@ -1,0 +1,340 @@
+<!-- templates/reports/analytics.html - Reporte de Analytics -->
+{% extends "base.html" %} {% block title %}Analytics - Sistema de Gestión
+Agrícola{% endblock %} {% block extra_css %}
+<style>
+  .analytics-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    height: 100%;
+  }
+
+  .analytics-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .metric-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .trend-up {
+    color: #28a745;
+  }
+
+  .trend-down {
+    color: #dc3545;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 400px;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .prediction-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .component-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-left: 4px solid #007bff;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="container-fluid">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2>📊 Analytics Avanzado</h2>
+      <p class="text-muted">Análisis predictivo y tendencias del sistema</p>
+      <small class="text-muted"
+        >Período de análisis: {{ periodo_dias }} días ({{
+        fecha_inicio.strftime('%d/%m/%Y') }} - {{ fecha_fin.strftime('%d/%m/%Y')
+        }})</small
+      >
+    </div>
+    <div class="btn-group">
+      <div class="dropdown">
+        <button
+          class="btn btn-outline-primary dropdown-toggle"
+          type="button"
+          data-bs-toggle="dropdown"
+        >
+          <i class="fas fa-calendar"></i> Período: {{ periodo_dias }} días
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="?dias=7">7 días</a></li>
+          <li><a class="dropdown-item" href="?dias=15">15 días</a></li>
+          <li><a class="dropdown-item" href="?dias=30">30 días</a></li>
+          <li><a class="dropdown-item" href="?dias=60">60 días</a></li>
+          <li><a class="dropdown-item" href="?dias=90">90 días</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Métricas Principales -->
+  <div class="row mb-4">
+    <div class="col-md-3 mb-3">
+      <div class="card analytics-card text-center">
+        <div class="card-body">
+          <div class="metric-icon text-info">📈</div>
+          <h3 class="card-title">{{ tendencias_diarias|length }}</h3>
+          <p class="card-text text-muted">Días con Actividad</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card analytics-card text-center">
+        <div class="card-body">
+          <div class="metric-icon text-success">📥</div>
+          <h3 class="card-title">
+            {% set total_entradas =
+            tendencias_diarias.values()|map(attribute='entradas')|sum %} {{
+            total_entradas }}
+          </h3>
+          <p class="card-text text-muted">Total Entradas</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card analytics-card text-center">
+        <div class="card-body">
+          <div class="metric-icon text-danger">📤</div>
+          <h3 class="card-title">
+            {% set total_salidas =
+            tendencias_diarias.values()|map(attribute='salidas')|sum %} {{
+            total_salidas }}
+          </h3>
+          <p class="card-text text-muted">Total Salidas</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card analytics-card text-center">
+        <div class="card-body">
+          <div
+            class="metric-icon {% if (total_entradas - total_salidas) >= 0 %}text-success{% else %}text-danger{% endif %}"
+          >
+            ⚖️
+          </div>
+          <h3 class="card-title">{{ total_entradas - total_salidas }}</h3>
+          <p class="card-text text-muted">Balance Neto</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos y Tendencias -->
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5>📊 Tendencias de Movimientos</h5>
+        </div>
+        <div class="card-body">
+          <div id="chart-tendencias" class="chart-container">
+            <div class="text-center">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando gráfico...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5>🔮 Predicciones</h5>
+        </div>
+        <div class="card-body" style="max-height: 400px; overflow-y: auto">
+          {% if predicciones %}
+          <p class="text-muted mb-3">
+            Basado en los últimos 7 días de actividad:
+          </p>
+          {% for pred in predicciones %}
+          <div class="prediction-card">
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="fw-bold">{{ pred.fecha }}</small>
+              <div>
+                <span class="badge bg-light text-dark me-1"
+                  >+{{ pred.entradas_predichas }}</span
+                >
+                <span class="badge bg-light text-dark"
+                  >-{{ pred.salidas_predichas }}</span
+                >
+              </div>
+            </div>
+          </div>
+          {% endfor %} {% else %}
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            Se necesitan al menos 7 días de datos para generar predicciones.
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Componentes Más Activos -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h5>🏆 Componentes Más Activos</h5>
+        </div>
+        <div class="card-body">
+          {% if componentes_activos %}
+          <div class="row">
+            {% for comp in componentes_activos %}
+            <div class="col-md-6 mb-3">
+              <div class="component-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="mb-1">{{ comp.Nombre }}</h6>
+                    <small class="text-muted"
+                      >{{ comp.total_movimientos }} movimientos</small
+                    >
+                  </div>
+                  <div class="text-end">
+                    <span class="badge bg-primary"
+                      >{{ comp.cantidad_total }} unidades</span
+                    >
+                  </div>
+                </div>
+                <div class="progress mt-2" style="height: 4px">
+                  <div
+                    class="progress-bar"
+                    style="width: {{ (comp.total_movimientos / componentes_activos[0].total_movimientos * 100) if componentes_activos else 0 }}%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            No hay datos de componentes activos en el período seleccionado.
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Tendencias Diarias -->
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5>📅 Tendencias Diarias Detalladas</h5>
+      <small class="text-muted"
+        >Generado: {{ fecha_generacion.strftime('%d/%m/%Y %H:%M') }}</small
+      >
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover" id="trends-table">
+          <thead class="table-dark">
+            <tr>
+              <th>Fecha</th>
+              <th class="text-center">Entradas</th>
+              <th class="text-center">Salidas</th>
+              <th class="text-center">Balance</th>
+              <th class="text-center">Tendencia</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for fecha, datos in tendencias_diarias.items() %} {% set balance
+            = datos.entradas - datos.salidas %}
+            <tr>
+              <td>{{ fecha }}</td>
+              <td class="text-center">
+                <span class="badge bg-success">+{{ datos.entradas }}</span>
+              </td>
+              <td class="text-center">
+                <span class="badge bg-danger">-{{ datos.salidas }}</span>
+              </td>
+              <td class="text-center">
+                <span
+                  class="badge {% if balance >= 0 %}bg-success{% else %}bg-danger{% endif %}"
+                >
+                  {{ balance }}
+                </span>
+              </td>
+              <td class="text-center">
+                {% if balance > 0 %}
+                <i class="fas fa-arrow-up trend-up"></i>
+                {% elif balance < 0 %}
+                <i class="fas fa-arrow-down trend-down"></i>
+                {% else %}
+                <i class="fas fa-minus text-muted"></i>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_scripts %}
+<script>
+  $(document).ready(function () {
+    // Inicializar DataTable
+    $("#trends-table").DataTable({
+      pageLength: 25,
+      order: [[0, "desc"]], // Ordenar por fecha descendente
+      language: {
+        url: "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json",
+      },
+    });
+
+    // Cargar gráfico de tendencias
+    loadTrendsChart();
+
+    // Animación de entrada para las tarjetas
+    $(".analytics-card, .component-item").each(function (index) {
+      $(this).css("opacity", "0").css("transform", "translateY(20px)");
+      setTimeout(() => {
+        $(this).css("transition", "all 0.5s ease");
+        $(this).css("opacity", "1").css("transform", "translateY(0)");
+      }, index * 100);
+    });
+  });
+
+  function loadTrendsChart() {
+    fetch("/reports/chart/movimientos_tiempo")
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "success") {
+          document.getElementById(
+            "chart-tendencias"
+          ).innerHTML = `<img src="${data.image}" class="img-fluid" alt="Gráfico de tendencias">`;
+        } else {
+          document.getElementById("chart-tendencias").innerHTML =
+            '<div class="alert alert-danger">Error al cargar el gráfico</div>';
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        document.getElementById("chart-tendencias").innerHTML =
+          '<div class="alert alert-danger">Error al cargar el gráfico</div>';
+      });
+  }
+</script>
+{% endblock %}

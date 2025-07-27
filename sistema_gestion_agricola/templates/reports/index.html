@@ -1,0 +1,326 @@
+<!-- templates/reports/index.html - Panel Principal de Reportes -->
+{% extends "base.html" %}
+
+{% block title %}Reportes - Sistema de Gestión Agrícola{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div class="header-topbar">
+            <div class="header-title">
+                <h2 class="section-title"><i class="bi bi-graph-up"></i> Centro de Reportes</h2>
+                <p class="section-subtitle d-none d-md-block opacity-75">Análisis completo de su operación agrícola</p>
+            </div>
+            <div class="header-controls">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-house"></i> 
+                    <span class="d-none d-md-block d-md-inline">Inicio</span>
+                </a>
+                <div class="calendar-badge fs-6 d-none d-lg-block">
+                    <i class="bi bi-calendar3"></i> <span id="current-date"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resumen Rápido -->
+    <div class="stats-overview">
+        <h4 class="mb-3">📊 Resumen del Sistema</h4>
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-gear-wide-connected fs-2"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h3 class="mb-0">{{ total_maquinas or 15 }}</h3>
+                                <p class="mb-0 small">Máquinas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-box-seam fs-2"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h3 class="mb-0">{{ total_componentes or 48 }}</h3>
+                                <p class="mb-0 small">Componentes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-dark">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-arrow-left-right fs-2"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h3 class="mb-0">{{ movimientos_mes or 127 }}</h3>
+                                <p class="mb-0 small">Movimientos/Mes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-file-earmark-text fs-2"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h3 class="mb-0">{{ reportes_generados or 23 }}</h3>
+                                <p class="mb-0 small">Reportes Generados</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tipos de Reportes -->
+    <section class="page-section">
+        <h3 class="section-title">
+            <i class="bi bi-folder2-open"></i> Tipos de Reportes Disponibles
+        </h3>
+        
+        <div class="dashboard-grid">
+    <div class="row">
+            <!-- Reporte de Stock -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <i class="bi bi-box-seam"></i> Inventario de Stock
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Análisis detallado del inventario actual, niveles de stock y alertas.</p>
+                    <ul class="list-unstyled small text-muted mb-3">
+                        <li><i class="bi bi-check2"></i> Stock por categoría</li>
+                        <li><i class="bi bi-check2"></i> Alertas de stock bajo</li>
+                        <li><i class="bi bi-check2"></i> Gráficos de distribución</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('reports.stock_report') }}" class="btn btn-agri-primary btn-sm">
+                            <i class="bi bi-eye"></i> Ver Reporte
+                        </a>
+                        <a href="{{ url_for('reports.stock_report', format='csv') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-download"></i> CSV
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reporte de Movimientos -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <i class="bi bi-arrow-left-right"></i> Movimientos de Stock
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Seguimiento de entradas y salidas con análisis de tendencias.</p>
+                    <ul class="list-unstyled small text-muted mb-3">
+                        <li><i class="bi bi-check2"></i> Entradas y salidas</li>
+                        <li><i class="bi bi-check2"></i> Tendencias temporales</li>
+                        <li><i class="bi bi-check2"></i> Balance neto</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('reports.movimientos_report') }}" class="btn btn-agri-primary btn-sm">
+                            <i class="bi bi-eye"></i> Ver Reporte
+                        </a>
+                        <a href="{{ url_for('reports.movimientos_report', format='csv') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-download"></i> CSV
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reporte de Maquinaria -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <i class="bi bi-gear-wide-connected"></i> Parque de Maquinaria
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Estado y distribución del equipamiento agrícola disponible.</p>
+                    <ul class="list-unstyled small text-muted mb-3">
+                        <li><i class="bi bi-check2"></i> Estado operacional</li>
+                        <li><i class="bi bi-check2"></i> Distribución por ubicación</li>
+                        <li><i class="bi bi-check2"></i> Estadísticas generales</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('reports.maquinas_report') }}" class="btn btn-agri-primary btn-sm">
+                            <i class="bi bi-eye"></i> Ver Reporte
+                        </a>
+                        <a href="{{ url_for('reports.maquinas_report', format='csv') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-download"></i> CSV
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Avanzado -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <i class="bi bi-graph-up-arrow"></i> Analytics Avanzado
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Análisis predictivo y métricas avanzadas del sistema.</p>
+                    <ul class="list-unstyled small text-muted mb-3">
+                        <li><i class="bi bi-check2"></i> Predicciones de tendencias</li>
+                        <li><i class="bi bi-check2"></i> Componentes más activos</li>
+                        <li><i class="bi bi-check2"></i> Métricas de rendimiento</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('reports.analytics_report') }}" class="btn btn-agri-primary btn-sm">
+                            <i class="bi bi-eye"></i> Ver Analytics
+                        </a>
+                        <a href="{{ url_for('reports.analytics_report', dias=7) }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-calendar-week"></i> 7 días
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reportes Personalizados -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <i class="bi bi-sliders"></i> Reportes Personalizados
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Constructor de reportes adaptado a sus necesidades específicas.</p>
+                    <ul class="list-unstyled small text-muted mb-3">
+                        <li><i class="bi bi-check2"></i> Campos personalizables</li>
+                        <li><i class="bi bi-check2"></i> Filtros avanzados</li>
+                        <li><i class="bi bi-check2"></i> Exportación múltiple</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('reports.custom_report') }}" class="btn btn-agri-primary btn-sm">
+                            <i class="bi bi-tools"></i> Crear Reporte
+                        </a>
+                        <button class="btn btn-outline-secondary btn-sm" disabled>
+                            <i class="bi bi-star"></i> Premium
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acceso Rápido -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <i class="bi bi-lightning"></i> Acceso Rápido
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Reportes más utilizados y acciones frecuentes.</p>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('reports.stock_report', format='json') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-code-square"></i> API Stock (JSON)
+                        </a>
+                        <a href="{{ url_for('reports.movimientos_report') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-calendar-week"></i> Última Semana
+                        </a>
+        </div>
+    </section>
+
+    <!-- Actividad Reciente -->
+    <div class="card-section">
+        <h4 class="section-title"><i class="bi bi-clock-history"></i> Actividad Reciente</h4>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="card border-start border-primary border-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-file-earmark-text fs-4 text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Último reporte generado</h6>
+                                <p class="mb-0 small text-muted">Hace 2 horas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-start border-success border-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-download fs-4 text-success"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Exportaciones realizadas</h6>
+                                <p class="mb-0 small text-muted">12 en el último mes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-start border-warning border-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-exclamation-triangle fs-4 text-warning"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Alertas de stock</h6>
+                                <p class="mb-0 small text-muted">3 componentes bajo mínimo</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Actualizar fecha actual
+    const currentDateElements = document.querySelectorAll('#current-date');
+    const now = new Date();
+    const dateString = now.toLocaleDateString('es-ES', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+    });
+    
+    currentDateElements.forEach(element => {
+        element.textContent = dateString;
+    });
+
+    // Animación de entrada para las tarjetas
+    const cards = document.querySelectorAll('.dashboard-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+</script>
+{% endblock %}
+

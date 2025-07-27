@@ -1,0 +1,524 @@
+<!-- templates/analytics/dashboard.html -->
+{% extends "base.html" %}
+
+{% block title %}Analytics Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <!-- Header Analytics -->
+    <div class="dashboard-header p-4 shadow rounded mb-4">
+        <div class="header-topbar">
+            <div class="header-title">
+                <h2 class="section-title">
+                    <i class="bi bi-graph-up"></i> Analytics Dashboard
+                </h2>
+                <p class="section-subtitle opacity-75">
+                    Análisis avanzado del sistema agrícola
+                </p>
+            </div>
+            <div class="header-controls">
+                <button class="btn btn-outline-primary btn-sm" onclick="refreshDashboard()">
+                    <i class="bi bi-arrow-clockwise"></i> Actualizar
+                </button>
+                <div class="dropdown">
+                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" 
+                            data-bs-toggle="dropdown">
+                        <i class="bi bi-download"></i> Exportar
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="exportToPDF()">
+                            <i class="bi bi-file-pdf"></i> PDF
+                        </a></li>
+                        <li><a class="dropdown-item" href="#" onclick="exportToExcel()">
+                            <i class="bi bi-file-excel"></i> Excel
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Métricas Principales -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="bi bi-gear-wide"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="totalMaquinas">-</h3>
+                    <p>Total Máquinas</p>
+                    <small class="text-success" id="efectividad">-% Efectividad</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="maquinasOperativas">-</h3>
+                    <p>Operativas</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="bi bi-tools"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="maquinasTaller">-</h3>
+                    <p>En Taller</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="stockCritico">-</h3>
+                    <p>Stock Crítico</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Componentes Más Utilizados -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-bar-chart"></i> Componentes Más Utilizados
+                    </h5>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="refreshChart('componentesChart')">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <canvas id="componentesChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Distribución de Estados -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-pie-chart"></i> Estados de Máquinas
+                    </h5>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="refreshChart('estadosChart')">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <canvas id="estadosChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stock Timeline -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up-arrow"></i> Timeline de Movimientos de Stock
+                    </h5>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <input type="radio" class="btn-check" name="timeRange" id="7days" checked>
+                        <label class="btn btn-outline-primary" for="7days">7 días</label>
+                        
+                        <input type="radio" class="btn-check" name="timeRange" id="30days">
+                        <label class="btn btn-outline-primary" for="30days">30 días</label>
+                        
+                        <input type="radio" class="btn-check" name="timeRange" id="90days">
+                        <label class="btn btn-outline-primary" for="90days">90 días</label>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="stockTimelineChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alertas y Próximos Mantenimientos -->
+    <div class="row">
+        <!-- Stock Crítico -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-exclamation-circle text-warning"></i> Componentes con Stock Crítico
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="stockCriticoList" class="list-group list-group-flush">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Próximos Mantenimientos -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-calendar-check text-info"></i> Próximos Mantenimientos
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="proximosMantenimientos" class="list-group list-group-flush">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+let charts = {};
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDashboard();
+    
+    // Event listeners para filtros de tiempo
+    document.querySelectorAll('input[name="timeRange"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            refreshStockTimeline();
+        });
+    });
+});
+
+async function initializeDashboard() {
+    try {
+        await loadMetrics();
+        await initializeCharts();
+        await loadStockCritico();
+        await loadProximosMantenimientos();
+    } catch (error) {
+        console.error('Error inicializando dashboard:', error);
+        showAlert('Error cargando dashboard', 'error');
+    }
+}
+
+async function loadMetrics() {
+    try {
+        const response = await fetch('/analytics/api/metrics');
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            const metrics = data.data.resumen;
+            
+            document.getElementById('totalMaquinas').textContent = metrics.total_maquinas;
+            document.getElementById('maquinasOperativas').textContent = metrics.maquinas_operativas;
+            document.getElementById('maquinasTaller').textContent = metrics.maquinas_taller;
+            document.getElementById('efectividad').textContent = `${metrics.efectividad}% Efectividad`;
+            document.getElementById('stockCritico').textContent = data.data.stock_critico.length;
+        }
+    } catch (error) {
+        console.error('Error cargando métricas:', error);
+    }
+}
+
+async function initializeCharts() {
+    try {
+        const response = await fetch('/analytics/api/metrics');
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            // Chart de componentes más utilizados
+            const componentesCtx = document.getElementById('componentesChart').getContext('2d');
+            charts.componentesChart = new Chart(componentesCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.data.componentes_populares.map(c => c.nombre),
+                    datasets: [{
+                        label: 'Usos',
+                        data: data.data.componentes_populares.map(c => c.usos),
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Chart de estados (pie chart)
+            const estadosCtx = document.getElementById('estadosChart').getContext('2d');
+            const metrics = data.data.resumen;
+            charts.estadosChart = new Chart(estadosCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Operativas', 'En Taller', 'Otros'],
+                    datasets: [{
+                        data: [
+                            metrics.maquinas_operativas,
+                            metrics.maquinas_taller,
+                            metrics.total_maquinas - metrics.maquinas_operativas - metrics.maquinas_taller
+                        ],
+                        backgroundColor: [
+                            '#28a745',
+                            '#ffc107',
+                            '#dc3545'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+        
+        await refreshStockTimeline();
+        
+    } catch (error) {
+        console.error('Error inicializando charts:', error);
+    }
+}
+
+async function refreshStockTimeline() {
+    try {
+        const response = await fetch('/analytics/api/stock-timeline');
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            const ctx = document.getElementById('stockTimelineChart').getContext('2d');
+            
+            if (charts.stockTimelineChart) {
+                charts.stockTimelineChart.destroy();
+            }
+            
+            // Agrupar por fecha
+            const entradas = {};
+            const salidas = {};
+            
+            data.data.forEach(item => {
+                const fecha = item.fecha;
+                if (item.tipo === 'entrada') {
+                    entradas[fecha] = (entradas[fecha] || 0) + item.cantidad;
+                } else {
+                    salidas[fecha] = (salidas[fecha] || 0) + item.cantidad;
+                }
+            });
+            
+            const fechas = [...new Set(data.data.map(item => item.fecha))].sort();
+            
+            charts.stockTimelineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: fechas,
+                    datasets: [{
+                        label: 'Entradas',
+                        data: fechas.map(fecha => entradas[fecha] || 0),
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.1
+                    }, {
+                        label: 'Salidas',
+                        data: fechas.map(fecha => salidas[fecha] || 0),
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error cargando timeline:', error);
+    }
+}
+
+async function loadStockCritico() {
+    try {
+        const response = await fetch('/analytics/api/metrics');
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            const container = document.getElementById('stockCriticoList');
+            
+            if (data.data.stock_critico.length === 0) {
+                container.innerHTML = '<div class="text-center text-muted py-3">No hay componentes con stock crítico</div>';
+                return;
+            }
+            
+            container.innerHTML = data.data.stock_critico.map(item => `
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>${item.nombre}</strong>
+                        <small class="text-muted d-block">Stock actual: ${item.stock}</small>
+                    </div>
+                    <span class="badge bg-warning">Crítico</span>
+                </div>
+            `).join('');
+        }
+    } catch (error) {
+        console.error('Error cargando stock crítico:', error);
+    }
+}
+
+async function loadProximosMantenimientos() {
+    try {
+        const response = await fetch('/analytics/api/metrics');
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            const container = document.getElementById('proximosMantenimientos');
+            
+            if (data.data.proximos_mantenimientos.length === 0) {
+                container.innerHTML = '<div class="text-center text-muted py-3">No hay mantenimientos programados</div>';
+                return;
+            }
+            
+            container.innerHTML = data.data.proximos_mantenimientos.map(item => `
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>${item.maquina}</strong>
+                            <small class="text-muted d-block">${item.componente}</small>
+                            <small class="text-info">${item.frecuencia}</small>
+                        </div>
+                        <span class="badge bg-info">Programado</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+    } catch (error) {
+        console.error('Error cargando mantenimientos:', error);
+    }
+}
+
+async function refreshDashboard() {
+    showAlert('Actualizando dashboard...', 'info');
+    await initializeDashboard();
+    showAlert('Dashboard actualizado', 'success');
+}
+
+function refreshChart(chartId) {
+    // Refresh individual chart
+    if (charts[chartId]) {
+        charts[chartId].update();
+    }
+}
+
+function exportToPDF() {
+    showAlert('Función de exportar PDF en desarrollo', 'info');
+}
+
+function exportToExcel() {
+    showAlert('Función de exportar Excel en desarrollo', 'info');
+}
+
+function showAlert(message, type = 'info') {
+    // Simple alert system
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
+</script>
+
+<style>
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.stat-content h3 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.stat-content p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 10px;
+}
+
+.card-header {
+    background: white;
+    border-bottom: 1px solid #eee;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #eee;
+    padding: 1rem;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+</style>
+{% endblock %}

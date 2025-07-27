@@ -13,10 +13,15 @@ class Config:
     }
 
     WEATHER_API_KEY = os.getenv('WEATHER_API_KEY')
-    WEATHER_API_URL = os.getenv("WEATHER_API_URL")
+    WEATHER_API_URL = os.getenv("WEATHER_API_URL", "https://api.openweathermap.org/data/2.5/weather")
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = os.getenv("SECRET_KEY")
+    
+    # Configuraciones de seguridad
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB máximo para uploads
+    UPLOAD_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif'}
+    RATELIMIT_STORAGE_URL = os.getenv("REDIS_URL", "memory://")
 
     @classmethod
     def check_env_vars(cls):
@@ -27,6 +32,8 @@ class Config:
             missing.append("DATABASE_URL")
         if not cls.SECRET_KEY:
             missing.append("SECRET_KEY")
+        elif len(cls.SECRET_KEY) < 32:
+            raise RuntimeError("SECRET_KEY debe tener al menos 32 caracteres")
         if missing:
             raise RuntimeError(f"Faltan variables de entorno: {', '.join(missing)}")
 
@@ -40,16 +47,3 @@ class ProductionConfig(Config):
     FLASK_ENV = "production"
     ENV = "production"
     DEBUG = False
-    
-class BaseConfig:
-    WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
-    WEATHER_API_URL = os.getenv("WEATHER_API_URL") or "https://api.openweathermap.org/data/2.5/weather"
-    COORDENADAS_UCACHA = {'lat': -32.3167, 'lon': -63.6667}
-
-    @staticmethod
-    def check_env_vars():
-        missing = []
-        if not os.getenv("WEATHER_API_KEY"):
-            missing.append("WEATHER_API_KEY")
-        if missing:
-            raise EnvironmentError(f"Faltan variables de entorno requeridas: {', '.join(missing)}")
