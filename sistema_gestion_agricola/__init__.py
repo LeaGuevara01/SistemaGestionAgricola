@@ -104,6 +104,9 @@ def create_app():
     from .routes.notifications import notifications_bp
     from .routes.reports import reports_bp
 
+    from .routes.routes import main as main_bp
+    app.register_blueprint(main_bp)
+
     app.register_blueprint(clima_bp)
     app.register_blueprint(maquinas_bp)
     app.register_blueprint(componentes_bp)
@@ -142,12 +145,12 @@ def create_app():
     # Funciones de ruta generales
     @app.route('/')
     def index():
-        return render_template('index.html')
+        return render_template('index.html')  # Template tradicional
 
     @app.route('/vite')
     def vite_app():
-        return render_template('vite.html')  # plantilla que solo tiene <div id="app"></div> y carga Vite
-
+        return render_template('vite.html')  # React app
+    
     app.jinja_env.globals['vite_asset'] = vite_asset
 
     # Registrar manejadores de errores seguros

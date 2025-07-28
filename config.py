@@ -38,12 +38,11 @@ class Config:
             raise RuntimeError(f"Faltan variables de entorno: {', '.join(missing)}")
 
 class DevelopmentConfig(Config):
-    FLASK_ENV = "development"
-    ENV = "development"
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(Config.BASE_DIR, 'dev.db')}"
+    USE_REACT = False  # HTML por defecto en desarrollo
+    FRONTEND_MODE = 'html'
 
 class ProductionConfig(Config):
-    FLASK_ENV = "production"
-    ENV = "production"
     DEBUG = False
+    USE_REACT = True   # React en producción
+    FRONTEND_MODE = 'react'

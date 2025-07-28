@@ -4,6 +4,9 @@ venv/
 .venv/
 **/.venv/
 
+# Ignorar archivos .env sensibles
+**/.env
+
 # Caché de Python
 __pycache__/
 *.py[cod]
