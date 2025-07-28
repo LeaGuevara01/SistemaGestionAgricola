@@ -1,0 +1,650 @@
+{
+  "alembic_version": {
+    "columns": [
+      {
+        "name": "version_num",
+        "type": "VARCHAR(32)",
+        "nullable": false,
+        "default": null,
+        "primary_key": false
+      }
+    ],
+    "foreign_keys": [],
+    "indexes": []
+  },
+  "componentes": {
+    "columns": [
+      {
+        "name": "ID",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('\"componentes_ID_seq\"'::regclass)",
+        "primary_key": false
+      },
+      {
+        "name": "ID_Componente",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Nombre",
+        "type": "VARCHAR",
+        "nullable": false,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Descripcion",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Tipo",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Foto",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Marca",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Modelo",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Precio",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      }
+    ],
+    "foreign_keys": [],
+    "indexes": [
+      {
+        "name": "componentes_ID_Componente_key",
+        "unique": true,
+        "column_names": [
+          "ID_Componente"
+        ],
+        "duplicates_constraint": "componentes_ID_Componente_key",
+        "include_columns": [],
+        "dialect_options": {
+          "postgresql_include": []
+        }
+      }
+    ]
+  },
+  "componentes_proveedores": {
+    "columns": [
+      {
+        "name": "ID_Proveedor",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "ID_Componente",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Cantidad",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      }
+    ],
+    "foreign_keys": [
+      {
+        "name": "componentes_proveedores_ID_Componente_fkey",
+        "constrained_columns": [
+          "ID_Componente"
+        ],
+        "referred_schema": null,
+        "referred_table": "componentes",
+        "referred_columns": [
+          "ID"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      },
+      {
+        "name": "componentes_proveedores_ID_Proveedor_fkey",
+        "constrained_columns": [
+          "ID_Proveedor"
+        ],
+        "referred_schema": null,
+        "referred_table": "proveedores",
+        "referred_columns": [
+          "ID"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "proveedores": {
+    "columns": [
+      {
+        "name": "ID",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('\"proveedores_ID_seq\"'::regclass)",
+        "primary_key": false
+      },
+      {
+        "name": "Nombre",
+        "type": "VARCHAR",
+        "nullable": false,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Localidad",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Contacto",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Telefono",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Email",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Rubro",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Direccion",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Observaciones",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      }
+    ],
+    "foreign_keys": [],
+    "indexes": []
+  },
+  "compras": {
+    "columns": [
+      {
+        "name": "ID_Compra",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('\"compras_ID_Compra_seq\"'::regclass)",
+        "primary_key": false
+      },
+      {
+        "name": "ID_Proveedor",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "ID_Componente",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Cantidad",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Precio_Unitario",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Observacion",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Fecha",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "primary_key": false
+      }
+    ],
+    "foreign_keys": [
+      {
+        "name": "compras_ID_Componente_fkey",
+        "constrained_columns": [
+          "ID_Componente"
+        ],
+        "referred_schema": null,
+        "referred_table": "componentes",
+        "referred_columns": [
+          "ID"
+        ],
+        "options": {
+          "ondelete": "SET NULL"
+        },
+        "comment": null
+      },
+      {
+        "name": "compras_ID_Proveedor_fkey",
+        "constrained_columns": [
+          "ID_Proveedor"
+        ],
+        "referred_schema": null,
+        "referred_table": "proveedores",
+        "referred_columns": [
+          "ID"
+        ],
+        "options": {
+          "ondelete": "SET NULL"
+        },
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "frecuencias": {
+    "columns": [
+      {
+        "name": "ID",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('\"frecuencias_ID_seq\"'::regclass)",
+        "primary_key": false
+      },
+      {
+        "name": "ID_Maquina",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "ID_Componente",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Frecuencia",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Unidad_tiempo",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Criterio_adicional",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      }
+    ],
+    "foreign_keys": [
+      {
+        "name": "frecuencias_ID_Componente_fkey",
+        "constrained_columns": [
+          "ID_Componente"
+        ],
+        "referred_schema": null,
+        "referred_table": "componentes",
+        "referred_columns": [
+          "ID"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      },
+      {
+        "name": "frecuencias_ID_Maquina_fkey",
+        "constrained_columns": [
+          "ID_Maquina"
+        ],
+        "referred_schema": null,
+        "referred_table": "maquinas",
+        "referred_columns": [
+          "ID"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "maquinas": {
+    "columns": [
+      {
+        "name": "ID",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('\"maquinas_ID_seq\"'::regclass)",
+        "primary_key": false
+      },
+      {
+        "name": "Codigo",
+        "type": "VARCHAR",
+        "nullable": false,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Nombre",
+        "type": "VARCHAR",
+        "nullable": false,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Marca",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Modelo",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Año",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Estado",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Observaciones",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Foto",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      }
+    ],
+    "foreign_keys": [],
+    "indexes": [
+      {
+        "name": "maquinas_Codigo_key",
+        "unique": true,
+        "column_names": [
+          "Codigo"
+        ],
+        "duplicates_constraint": "maquinas_Codigo_key",
+        "include_columns": [],
+        "dialect_options": {
+          "postgresql_include": []
+        }
+      }
+    ]
+  },
+  "maquinas_componentes": {
+    "columns": [
+      {
+        "name": "ID_Maquina",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "ID_Componente",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "primary_key": false
+      }
+    ],
+    "foreign_keys": [
+      {
+        "name": "maquinas_componentes_ID_Componente_fkey",
+        "constrained_columns": [
+          "ID_Componente"
+        ],
+        "referred_schema": null,
+        "referred_table": "componentes",
+        "referred_columns": [
+          "ID"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      },
+      {
+        "name": "maquinas_componentes_ID_Maquina_fkey",
+        "constrained_columns": [
+          "ID_Maquina"
+        ],
+        "referred_schema": null,
+        "referred_table": "maquinas",
+        "referred_columns": [
+          "ID"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "pagos_proveedores": {
+    "columns": [
+      {
+        "name": "ID",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('\"pagos_proveedores_ID_seq\"'::regclass)",
+        "primary_key": false
+      },
+      {
+        "name": "ID_Proveedor",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Monto",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Metodo",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Observacion",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Fecha",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "primary_key": false
+      }
+    ],
+    "foreign_keys": [
+      {
+        "name": "pagos_proveedores_ID_Proveedor_fkey",
+        "constrained_columns": [
+          "ID_Proveedor"
+        ],
+        "referred_schema": null,
+        "referred_table": "proveedores",
+        "referred_columns": [
+          "ID"
+        ],
+        "options": {
+          "ondelete": "SET NULL"
+        },
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "stock": {
+    "columns": [
+      {
+        "name": "ID",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('\"stock_ID_seq\"'::regclass)",
+        "primary_key": false
+      },
+      {
+        "name": "ID_Componente",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Cantidad",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Tipo",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Observacion",
+        "type": "VARCHAR",
+        "nullable": true,
+        "default": null,
+        "primary_key": false
+      },
+      {
+        "name": "Fecha",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "primary_key": false
+      }
+    ],
+    "foreign_keys": [
+      {
+        "name": "stock_ID_Componente_fkey",
+        "constrained_columns": [
+          "ID_Componente"
+        ],
+        "referred_schema": null,
+        "referred_table": "componentes",
+        "referred_columns": [
+          "ID"
+        ],
+        "options": {
+          "ondelete": "CASCADE"
+        },
+        "comment": null
+      }
+    ],
+    "indexes": []
+  }
+}

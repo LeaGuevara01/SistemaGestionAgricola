@@ -1,1 +1,0 @@
-HTML Flask (usa los assets de /static)
