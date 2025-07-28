@@ -13,3 +13,4 @@ Pillow==10.0.1
 matplotlib==3.10.0
 seaborn==0.13.2
 pandas==2.3.1
+chardet>=5.0.0

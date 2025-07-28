@@ -248,3 +248,120 @@ def get_categorias():
             'success': False,
             'error': str(e)
         }), 500
+    
+@api_bp.route('/componentes/import', methods=['POST'])
+def import_componentes():
+    """Importar componentes desde CSV"""
+    try:
+        if 'csvFile' not in request.files:
+            raise BadRequest('No se proporcionó archivo CSV')
+        
+        file = request.files['csvFile']
+        if file.filename == '':
+            raise BadRequest('No se seleccionó archivo')
+        
+        # Usar el FileService existente
+        try:
+            filepath = FileService.save_import_file(file, 'imports/componentes')
+            if not filepath:
+                raise BadRequest('Tipo de archivo no permitido. Solo CSV, XLS, XLSX')
+        except ValueError as e:
+            raise BadRequest(str(e))
+        
+        # Importar datos
+        from app.services.import_service import ImportService
+        result = ImportService.import_componentes_from_csv(filepath)
+        
+        # Limpiar archivo temporal
+        FileService.cleanup_temp_file(filepath)
+        
+        return jsonify({
+            'success': True,
+            'imported': result['imported'],
+            'errors': result['errors'],
+            'total': result['total']
+        })
+        
+    except BadRequest as e:
+        return jsonify({'success': False, 'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'success': False, 'error': f'Error en la importación: {str(e)}'}), 500
+
+@api_bp.route('/componentes/import/template', methods=['GET'])
+def get_componentes_template():
+    """Descargar plantilla CSV para componentes"""
+    try:
+        from app.services.import_service import ImportService
+        return ImportService.get_componentes_template()
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@api_bp.route('/componentes/stats', methods=['GET'])
+def get_componentes_stats():
+    """Estadísticas de componentes"""
+    try:
+        total = Componente.query.filter_by(activo=True).count()
+        
+        # Stock bajo (donde stock actual <= stock mínimo)
+        stock_bajo = Componente.query.filter(
+            Componente.activo == True,
+            Componente.stock_actual <= Componente.stock_minimo
+        ).count()
+        
+        # Sin stock
+        sin_stock = Componente.query.filter(
+            Componente.activo == True,
+            Componente.stock_actual == 0
+        ).count()
+        
+        # Estadísticas por categoría
+        categorias = db.session.query(
+            Componente.categoria, 
+            db.func.count(Componente.id),
+            db.func.sum(Componente.stock_actual)
+        ).filter_by(activo=True).group_by(Componente.categoria).all()
+        
+        # Valor total del inventario
+        valor_total = db.session.query(
+            db.func.sum(Componente.precio_unitario * Componente.stock_actual)
+        ).filter_by(activo=True).scalar() or 0
+        
+        return jsonify({
+            'success': True,
+            'data': {
+                'total': total,
+                'stock_bajo': stock_bajo,
+                'sin_stock': sin_stock,
+                'valor_total_inventario': float(valor_total),
+                'por_categoria': [
+                    {
+                        'categoria': cat[0] or 'Sin categoría', 
+                        'cantidad_items': cat[1],
+                        'stock_total': int(cat[2] or 0)
+                    } for cat in categorias
+                ]
+            }
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@api_bp.route('/componentes/stock-bajo', methods=['GET'])
+def get_componentes_stock_bajo():
+    """Obtener componentes con stock bajo"""
+    try:
+        componentes = Componente.query.filter(
+            Componente.activo == True,
+            Componente.stock_actual <= Componente.stock_minimo
+        ).order_by(Componente.nombre).all()
+        
+        return jsonify({
+            'success': True,
+            'data': [comp.to_dict() for comp in componentes],
+            'total': len(componentes)
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500

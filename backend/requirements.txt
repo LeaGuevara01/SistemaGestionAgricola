@@ -1,0 +1,7 @@
+# requirements.txt principales (inferido)
+Flask
+SQLAlchemy
+Flask-SQLAlchemy
+Werkzeug
+psycopg2-binary  # Para PostgreSQL
+python-dotenv

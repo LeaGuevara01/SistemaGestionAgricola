@@ -191,3 +191,88 @@ def upload_maquina_photo(id):
             'success': False,
             'error': str(e)
         }), 500
+
+from flask import request, jsonify
+from werkzeug.exceptions import BadRequest
+from app.routes.api import api_bp
+from app.models import Maquina
+from app.utils.db import db, commit_or_rollback
+from app.services.file_service import FileService
+
+# ...existing code...
+
+# NUEVAS RUTAS PARA IMPORTACIÓN
+@api_bp.route('/maquinas/import', methods=['POST'])
+def import_maquinas():
+    """Importar máquinas desde CSV"""
+    try:
+        if 'csvFile' not in request.files:
+            raise BadRequest('No se proporcionó archivo CSV')
+        
+        file = request.files['csvFile']
+        if file.filename == '':
+            raise BadRequest('No se seleccionó archivo')
+        
+        # Usar el FileService existente
+        try:
+            filepath = FileService.save_import_file(file, 'imports/maquinas')
+            if not filepath:
+                raise BadRequest('Tipo de archivo no permitido. Solo CSV, XLS, XLSX')
+        except ValueError as e:
+            raise BadRequest(str(e))
+        
+        # Importar datos
+        from app.services.import_service import ImportService
+        result = ImportService.import_maquinas_from_csv(filepath)
+        
+        # Limpiar archivo temporal
+        FileService.cleanup_temp_file(filepath)
+        
+        return jsonify({
+            'success': True,
+            'imported': result['imported'],
+            'errors': result['errors'],
+            'total': result['total']
+        })
+        
+    except BadRequest as e:
+        return jsonify({'success': False, 'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'success': False, 'error': f'Error en la importación: {str(e)}'}), 500
+
+@api_bp.route('/maquinas/import/template', methods=['GET'])
+def get_maquinas_template():
+    """Descargar plantilla CSV para máquinas"""
+    try:
+        from app.services.import_service import ImportService
+        return ImportService.get_maquinas_template()
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@api_bp.route('/maquinas/stats', methods=['GET'])
+def get_maquinas_stats():
+    """Estadísticas de máquinas"""
+    try:
+        total = Maquina.query.filter_by(activo=True).count()
+        operativo = Maquina.query.filter_by(estado='operativo', activo=True).count()
+        mantenimiento = Maquina.query.filter_by(estado='mantenimiento', activo=True).count()
+        fuera_servicio = Maquina.query.filter_by(estado='fuera_servicio', activo=True).count()
+        
+        # Estadísticas por tipo
+        tipos = db.session.query(
+            Maquina.tipo, 
+            db.func.count(Maquina.id)
+        ).filter_by(activo=True).group_by(Maquina.tipo).all()
+        
+        return jsonify({
+            'success': True,
+            'data': {
+                'total': total,
+                'operativo': operativo,
+                'mantenimiento': mantenimiento,
+                'fuera_servicio': fuera_servicio,
+                'por_tipo': [{'tipo': tipo[0] or 'Sin tipo', 'cantidad': tipo[1]} for tipo in tipos]
+            }
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
