@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import ComponenteForm from '@/components/forms/ComponenteForm';
 
-const AgregarComponente = () => {
+const AgregarComponentes = () => {
   const navigate = useNavigate();
 
   const handleSuccess = () => {
@@ -38,4 +38,4 @@ const AgregarComponente = () => {
   );
 };
 
-export default AgregarComponente;
+export default AgregarComponentes;

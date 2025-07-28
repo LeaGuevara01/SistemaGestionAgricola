@@ -15,10 +15,26 @@ export default defineConfig({
       '@styles': path.resolve(__dirname, './src/styles')
     }
   },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/index.js',
+        chunkFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/index.[ext]'
+      }
+    }
+  },
   server: {
     port: 5173,
     proxy: {
       '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true
+      },
+      '/static': {
         target: 'http://localhost:5000',
         changeOrigin: true
       }

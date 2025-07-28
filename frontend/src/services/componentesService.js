@@ -22,8 +22,9 @@ export const componentesService = {
   },
 
   async delete(id) {
-    const response = await apiService.delete(`/componentes/${id}`);
-    return response;
+    console.log('Eliminando componente:', id); // Debug
+    const response = await apiService.deleteWithPost(`/componentes/${id}/eliminar`);
+    return response.data;
   },
 
   async uploadPhoto(id, file, onProgress) {

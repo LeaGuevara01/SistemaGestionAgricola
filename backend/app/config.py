@@ -1,30 +1,32 @@
 import os
-from dotenv import load_dotenv
-
-# Cargar variables de entorno
-load_dotenv()
+from urllib.parse import urlparse
 
 class Config:
-    # Configuración básica
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
+    # ✅ USAR DATABASE_URL de Render o SQLite como fallback
+    DATABASE_URL = os.getenv('DATABASE_URL')
     
-    # Base de datos
-    DATABASE_URL = os.environ.get('DATABASE_URL')
-    if DATABASE_URL and DATABASE_URL.startswith('postgres://'):
-        DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+    if DATABASE_URL:
+        # ✅ CONFIGURACIÓN PARA POSTGRESQL (Render)
+        if DATABASE_URL.startswith('postgres://'):
+            # Render puede usar postgres:// pero SQLAlchemy necesita postgresql://
+            DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+        
+        SQLALCHEMY_DATABASE_URI = DATABASE_URL
+    else:
+        # ✅ FALLBACK A SQLITE LOCAL
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///elorza.db'
     
-    SQLALCHEMY_DATABASE_URI = DATABASE_URL or 'sqlite:///data.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-this')
     
-    # CORS
-    CORS_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:5173').split(',')
-    
-    # Archivos
-    UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'static', 'fotos')
-    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
-    
-    # Flask
-    DEBUG = os.environ.get('FLASK_ENV') == 'development'
+    # ✅ CONFIGURACIÓN ADICIONAL PARA POSTGRESQL
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_pre_ping': True,
+        'pool_recycle': 300,
+        'connect_args': {
+            'sslmode': 'require'
+        } if DATABASE_URL and 'postgres' in DATABASE_URL else {}
+    }
 
 class DevelopmentConfig(Config):
     DEBUG = True

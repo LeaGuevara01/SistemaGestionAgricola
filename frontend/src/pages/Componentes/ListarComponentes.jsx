@@ -13,6 +13,7 @@ const ComponenteCard = ({ componente, onDelete }) => {
         toast.success('Componente eliminado correctamente');
         onDelete();
       } catch (error) {
+        console.error('Error al eliminar componente:', error);
         toast.error('Error al eliminar el componente');
       }
     }
@@ -27,12 +28,19 @@ const ComponenteCard = ({ componente, onDelete }) => {
               src={`/static/fotos/${componente.foto}`}
               alt={componente.nombre}
               className="w-12 h-12 rounded-lg object-cover mr-3"
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'flex';
+              }}
             />
           ) : (
             <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center mr-3">
               <Package className="h-6 w-6 text-gray-400" />
             </div>
           )}
+          <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center mr-3" style={{display: 'none'}}>
+            <Package className="h-6 w-6 text-gray-400" />
+          </div>
           <div>
             <h3 className="text-lg font-semibold text-gray-900">
               {componente.nombre}

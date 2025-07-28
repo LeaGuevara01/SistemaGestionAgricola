@@ -86,29 +86,55 @@ def get_bajo_stock():
 @api_bp.route('/stock/resumen', methods=['GET'])
 def get_resumen_stock():
     try:
-        # Total de componentes
-        total_componentes = Componente.query.filter_by(activo=True).count()
+        # Total de componentes (sin filtro activo que no existe)
+        total_componentes = Componente.query.count()
         
-        # Componentes con bajo stock
-        bajo_stock = StockService.obtener_componentes_bajo_stock()
+        # Obtener balance por componente
+        stock_data = {}
+        stock_items = Stock.query.all()
         
-        # Valor total del inventario
-        valor_total = db.session.query(
-            db.func.sum(Componente.stock_actual * Componente.precio_unitario)
-        ).filter(Componente.activo == True).scalar() or 0
+        for item in stock_items:
+            comp_id = item.componente_id
+            cantidad = getattr(item, 'Cantidad', 0) or 0
+            tipo = getattr(item, 'Tipo', '').lower() if getattr(item, 'Tipo') else ''
+            
+            if comp_id not in stock_data:
+                stock_data[comp_id] = {'entradas': 0, 'salidas': 0}
+            
+            if 'entrada' in tipo:
+                stock_data[comp_id]['entradas'] += cantidad
+            elif 'salida' in tipo:
+                stock_data[comp_id]['salidas'] += cantidad
+        
+        # Calcular componentes con bajo stock (balance < 10)
+        bajo_stock_count = 0
+        valor_total = 0
+        
+        for comp_id, data in stock_data.items():
+            balance = data['entradas'] - data['salidas']
+            if balance < 10:  # Umbral de bajo stock
+                bajo_stock_count += 1
+            
+            # Calcular valor (si el componente existe y tiene precio)
+            componente = Componente.query.get(comp_id)
+            if componente and componente.precio:
+                valor_total += balance * componente.precio
         
         return jsonify({
             'success': True,
             'data': {
                 'total_componentes': total_componentes,
-                'componentes_bajo_stock': len(bajo_stock),
-                'valor_total_inventario': valor_total,
-                'porcentaje_bajo_stock': round((len(bajo_stock) / total_componentes * 100) if total_componentes > 0 else 0, 2)
+                'componentes_bajo_stock': bajo_stock_count,
+                'valor_total_inventario': round(valor_total, 2),
+                'porcentaje_bajo_stock': round((bajo_stock_count / total_componentes * 100) if total_componentes > 0 else 0, 2),
+                'componentes_con_stock': len(stock_data)
             }
         })
         
     except Exception as e:
+        import traceback
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': str(e),
+            'traceback': traceback.format_exc()
         }), 500

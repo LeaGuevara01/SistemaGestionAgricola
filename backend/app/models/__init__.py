@@ -1,8 +1,20 @@
-from .base import Base
 from .componente import Componente
-from .compra import Compra  
 from .maquina import Maquina
+from .compra import Compra
 from .proveedor import Proveedor
 from .stock import Stock
 
-__all__ = ['Base', 'Componente', 'Compra', 'Maquina', 'Proveedor', 'Stock']
+# IMPORTAR DESPUÉS para evitar circulares
+from .asociaciones import Frecuencia, PagoProveedor, componentes_proveedores, maquinas_componentes
+
+__all__ = [
+    'Componente', 
+    'Maquina', 
+    'Compra', 
+    'Proveedor', 
+    'Stock',
+    'Frecuencia',
+    'PagoProveedor',
+    'componentes_proveedores',
+    'maquinas_componentes'
+]

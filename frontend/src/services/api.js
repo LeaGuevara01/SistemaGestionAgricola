@@ -51,6 +51,11 @@ class ApiService {
     return this.request(endpoint, { method: 'DELETE' });
   }
 
+  // Método especial para eliminar con POST (para tu backend)
+  async deleteWithPost(endpoint, data = {}) {
+    return this.request(endpoint, { method: 'POST', data });
+  }
+
   async uploadFile(endpoint, file, onProgress) {
     const formData = new FormData();
     formData.append('photo', file);

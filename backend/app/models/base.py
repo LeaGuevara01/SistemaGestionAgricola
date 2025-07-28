@@ -1,14 +1,19 @@
-from flask_sqlalchemy import SQLAlchemy
+from app.utils.db import db
 from datetime import datetime
-
-db = SQLAlchemy()
 
 class BaseModel(db.Model):
     __abstract__ = True
-    
+
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+
     def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        result = {}
+        for column in self.__table__.columns:
+            value = getattr(self, column.name)
+            if isinstance(value, datetime):
+                result[column.name] = value.isoformat()
+            else:
+                result[column.name] = value
+        return result

@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 def commit_or_rollback():
-    """Utility function to commit or rollback database operations"""
+    """Helper para hacer commit o rollback automático"""
     try:
         db.session.commit()
         return True

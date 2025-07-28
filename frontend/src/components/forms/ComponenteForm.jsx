@@ -7,7 +7,8 @@ import { CATEGORIAS_COMPONENTES } from '@/utils/constants';
 
 const ComponenteForm = ({ componente = null, onSuccess, onCancel }) => {
   const [uploading, setUploading] = useState(false);
-  const [imagePreview, setImagePreview] = useState(componente?.foto || null);
+  const [imagePreview, setImagePreview] = useState(null); // ✅ Solo para preview local
+  const [uploadedImage, setUploadedImage] = useState(componente?.foto || null); // ✅ Para imagen del servidor
   const isEditing = !!componente;
 
   const {
@@ -25,6 +26,14 @@ const ComponenteForm = ({ componente = null, onSuccess, onCancel }) => {
       stock_minimo: componente?.stock_minimo || 0
     }
   });
+
+  // ✅ Helper para URLs de imagen
+  const getImageUrl = (filename) => {
+    if (!filename) return null;
+    if (filename.startsWith('blob:') || filename.startsWith('data:')) return filename;
+    // ✅ Usar proxy en lugar de URL absoluta
+    return `/static/fotos/${filename}`;
+  };
 
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
@@ -51,11 +60,16 @@ const ComponenteForm = ({ componente = null, onSuccess, onCancel }) => {
     if (isEditing) {
       try {
         setUploading(true);
-        await componentesService.uploadPhoto(componente.id, file);
+        const response = await componentesService.uploadPhoto(componente.id, file);
+        
+        // ✅ Actualizar con el nombre correcto del archivo
+        setUploadedImage(response.data.foto);
+        setImagePreview(null); // Limpiar preview local
         toast.success('Imagen actualizada correctamente');
       } catch (error) {
+        console.error('Error al subir imagen:', error);
         toast.error('Error al subir la imagen');
-        setImagePreview(componente?.foto || null);
+        setImagePreview(null);
       } finally {
         setUploading(false);
       }
@@ -85,6 +99,7 @@ const ComponenteForm = ({ componente = null, onSuccess, onCancel }) => {
         toast.success('Componente creado correctamente');
         reset();
         setImagePreview(null);
+        setUploadedImage(null);
       }
 
       onSuccess?.();
@@ -92,6 +107,9 @@ const ComponenteForm = ({ componente = null, onSuccess, onCancel }) => {
       toast.error(error.response?.data?.error || 'Error al guardar el componente');
     }
   };
+
+  // ✅ Determinar qué imagen mostrar
+  const currentImage = imagePreview || uploadedImage;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -157,16 +175,23 @@ const ComponenteForm = ({ componente = null, onSuccess, onCancel }) => {
               Imagen
             </label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
-              {imagePreview ? (
+              {currentImage ? (
                 <div className="relative">
                   <img
-                    src={imagePreview}
+                    src={imagePreview || getImageUrl(uploadedImage)}
                     alt="Preview"
                     className="max-h-48 mx-auto rounded"
+                    onError={(e) => {
+                      console.error('Error cargando imagen:', e.target.src);
+                      e.target.style.display = 'none';
+                    }}
                   />
                   <button
                     type="button"
-                    onClick={() => setImagePreview(null)}
+                    onClick={() => {
+                      setImagePreview(null);
+                      if (!isEditing) setUploadedImage(null);
+                    }}
                     className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
                   >
                     <X className="h-4 w-4" />
@@ -187,6 +212,9 @@ const ComponenteForm = ({ componente = null, onSuccess, onCancel }) => {
                 className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
                 disabled={uploading}
               />
+              {uploading && (
+                <p className="mt-1 text-sm text-blue-600">Subiendo imagen...</p>
+              )}
             </div>
           </div>
 

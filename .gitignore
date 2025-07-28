@@ -1,57 +1,235 @@
+# 🚫 GitIgnore - Sistema de Gestión Agrícola
+# Archivo completo para un repositorio limpio y deploy-ready
+
+# ===== PYTHON =====
 # Entornos virtuales
 venv/
 **/venv/
 .venv/
 **/.venv/
+env/
+ENV/
+.Python
 
-# Ignorar archivos .env sensibles
-**/.env
-
-# Caché de Python
+# Caché y compilados de Python
 __pycache__/
 *.py[cod]
 *.pyo
+*.pyd
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.cache
+.python-version
 
-# Archivos temporales y de respaldo
-*.log
+# Distribución / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ===== NODE.JS / FRONTEND =====
+# Dependencias
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Cache Vite/React
+.vite/
+.turbo/
+*.local
+
+# Frontend configs locales
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ===== BASES DE DATOS =====
+# SQLite
 *.sqlite3
+*.sqlite
 *.db
+*.db3
+*.s3db
 *.sdb
-*.swo
-*.swp
-*.bak
-*.tmp
 
-# Archivos de lock o estado
+# Database tools
+*.sqbpro
+*.bak
+
+# PostgreSQL dumps
+*.sql
+backup_*.sql
+
+# ===== VARIABLES DE ENTORNO =====
+# Archivos sensibles
+.env
+.env.local
+.env.production
+.env.development
+*.env
+
+# Excepciones (mantener templates)
+!.env.example
+!.env.template
+
+# ===== ARCHIVOS ESTÁTICOS Y UPLOADS =====
+# Uploads de usuarios (fotos, documentos)
+static/fotos/**/*
+static/uploads/**/*
+!static/fotos/.gitkeep
+!static/uploads/.gitkeep
+
+# Build de frontend en static
+static/dist/**/*
+!static/dist/.gitkeep
+
+# Logs y temporales
+logs/
+*.log
+*.log.*
 *.pid
 *.seed
+*.tmp
+*.temp
 
-# Configuraciones de editor/IDE
+# ===== DOCKER =====
+# Volúmenes de Docker
+docker-compose.override.yml
+.docker/
+
+# ===== EDITORES E IDEs =====
+# VS Code
 .vscode/
-.idea/
 *.code-workspace
 
-# Node / Vite / Frontend
-node_modules/
-dist/
-*.local
-frontend/.vite/
+# JetBrains (PyCharm, WebStorm)
+.idea/
+*.iml
+*.ipr
+*.iws
 
-# SQLite - DB Browser
-*.sqbpro
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
 
-# Variables de entorno
-.env*
-!.env.example  # si usás un archivo de ejemplo para subir
+# Vim
+*.swp
+*.swo
+*~
 
-# Archivos del sistema
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+# ===== SISTEMA OPERATIVO =====
+# macOS
 .DS_Store
-Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 
-# Backups
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.directory
+
+# ===== TESTING =====
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Unit test / pytest
+.cache
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ===== DOCUMENTACIÓN TEMPORAL =====
+# Archivos de trabajo temporal
+*.draft
+*.todo
+*.notes
+notas.md
+TODO.md
+
+# ===== CERTIFICADOS Y LLAVES =====
+# SSL/TLS
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# ===== DEPLOY Y CI/CD =====
+# Render build cache
+.render/
+
+# Vercel
+.vercel
+
+# Netlify
+.netlify/
+
+# ===== RESPALDOS =====
+# Backups automáticos
+*.backup
 *.bak
 *.old
-*.backup
+backup_*
+backups/
 
-# Migraciones de Alembic (si querés ignorarlas en dev)
-# migrations/versions/  ← solo si no las vas a trackear
+# ===== ARCHIVOS DE CONFIGURACIÓN LOCAL =====
+# Configuraciones específicas del desarrollador
+config.local.py
+settings.local.py
+local_settings.py
+
+# ===== MIGRACIONES (OPCIONAL) =====
+# Descomentar si no quieres trackear migraciones de Alembic
+# migrations/versions/
+
+# ===== RENDER ESPECÍFICO =====
+# Archivos que Render genera automáticamente
+.render-buildpacks.json

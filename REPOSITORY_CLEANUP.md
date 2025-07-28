@@ -3,14 +3,16 @@
 ## ✅ **Archivos Eliminados del Tracking**
 
 ### 📂 **Carpeta `sistema_gestion_agricola/` completa**
+
 - ❌ Estructura antigua con 150+ archivos obsoletos
 - ❌ Templates HTML antiguos
-- ❌ Archivos `__pycache__` Python 
+- ❌ Archivos `__pycache__` Python
 - ❌ CSS/JS estático obsoleto
 - ❌ Fotos de muestra (componentes/máquinas)
 - ❌ Migraciones Alembic viejas
 
 ### 🗂️ **Backend - Archivos innecesarios**
+
 - ❌ `backend/tests/` - Tests vacíos/incompletos
 - ❌ `backend/app/controllers/` - Controladores no usados
 - ❌ `backend/app/middleware/` - Middleware no implementado
@@ -66,6 +68,7 @@ elorza/
 ## 🔐 **.gitignore Completo**
 
 ### **Ignorados correctamente:**
+
 - ✅ `__pycache__/` y `.pyc` files
 - ✅ `node_modules/` y builds
 - ✅ `.env` files (excepto `.env.example`)
@@ -76,6 +79,7 @@ elorza/
 - ✅ OS-specific files
 
 ### **Preservados para deploy:**
+
 - ✅ Estructura de carpetas (`.gitkeep`)
 - ✅ Configuraciones de producción
 - ✅ Documentación
@@ -84,25 +88,28 @@ elorza/
 ## 📊 **Estadísticas de Limpieza**
 
 - **🗑️ Eliminados**: ~200 archivos obsoletos
-- **📁 Carpetas removidas**: 15+ directorios innecesarios  
+- **📁 Carpetas removidas**: 15+ directorios innecesarios
 - **📝 Archivos importantes agregados**: 8 nuevos
 - **🔄 Tamaño repo**: Reducido ~80%
 
 ## 🚀 **Listo para Deploy**
 
-### **Render.com**: 
+### **Render.com**:
+
 ```bash
 git push origin main
 # → Auto-deploy activado
 ```
 
 ### **Docker Local**:
+
 ```bash
 docker-compose up -d
 # → Stack completo funcionando
 ```
 
 ### **Desarrollo**:
+
 ```bash
 npm run dev:local
 # → Frontend + Backend en paralelo

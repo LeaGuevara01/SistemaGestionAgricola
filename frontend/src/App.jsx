@@ -9,32 +9,32 @@ import Home from './pages/Home';
 
 // Componentes
 import ListarComponentes from './pages/Componentes/ListarComponentes';
-import AgregarComponente from './pages/Componentes/AgregarComponente';
+import AgregarComponentes from './pages/Componentes/AgregarComponentes'; // ✅ CORREGIDO
 import EditarComponente from './pages/Componentes/EditarComponente';
 
 // Máquinas
-import ListarMaquinas from './pages/Maquinas';
+import ListarMaquinas from './pages/Maquinas/ListarMaquinas'; // ✅ CORREGIDO
 import AgregarMaquina from './pages/Maquinas/AgregarMaquina';
 import EditarMaquina from './pages/Maquinas/EditarMaquina';
 
 // Compras
-import ListarCompras from './pages/Compras';
+import ListarCompras from './pages/Compras/ListarCompras'; // ✅ CORREGIDO
 import RegistrarCompra from './pages/Compras/RegistrarCompra';
 import EditarCompra from './pages/Compras/EditarCompra';
 
 // Proveedores
-import ListarProveedores from './pages/Proveedores';
+import ListarProveedores from './pages/Proveedores/ListarProveedores'; // ✅ CORREGIDO
 import AgregarProveedor from './pages/Proveedores/AgregarProveedor';
 import EditarProveedor from './pages/Proveedores/EditarProveedor';
 
 // Stock
-import Stock from './pages/Stock';
+import Stock from './pages/Stock/Stock'; // ✅ CORREGIDO
 
 // Estadísticas
-import Estadisticas from './pages/Estadisticas';
+import Estadisticas from './pages/Estadisticas/Estadisticas'; // ✅ CORREGIDO
 
 // Pagos
-import Pagos from './pages/Pagos';
+import Pagos from './pages/Pagos/Pagos'; // ✅ CORREGIDO
 
 // Crear cliente de React Query
 const queryClient = new QueryClient({
@@ -59,7 +59,7 @@ function App() {
 
               {/* Rutas de Componentes */}
               <Route path="/componentes" element={<ListarComponentes />} />
-              <Route path="/componentes/agregar" element={<AgregarComponente />} />
+              <Route path="/componentes/agregar" element={<AgregarComponentes />} />
               <Route path="/componentes/editar/:id" element={<EditarComponente />} />
 
               {/* Rutas de Máquinas */}

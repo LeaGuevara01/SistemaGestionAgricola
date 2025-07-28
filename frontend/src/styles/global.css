@@ -1,80 +1,39 @@
-/* Global styles for the application */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+/* Estilos base */
 body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    margin: 0;
-    font-weight: normal;
+/* Componentes personalizados */
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-colors duration-200;
+  }
+  
+  .btn-primary {
+    @apply bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500;
+  }
+  
+  .input {
+    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm;
+  }
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-button {
-    cursor: pointer;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.flex {
-    display: flex;
-}
-
-.grid {
-    display: grid;
-}
-
-.space-y-6 > * + * {
-    margin-top: 1.5rem;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.text-red-500 {
-    color: #f56565;
-}
-
-.text-green-600 {
-    color: #48bb78;
-}
-
-.bg-white {
-    background-color: #ffffff;
-}
-
-.shadow {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.rounded-lg {
-    border-radius: 0.5rem;
-}
-
-.p-6 {
-    padding: 1.5rem;
-}
-
-.mt-2 {
-    margin-top: 0.5rem;
-}
-
-.mb-2 {
-    margin-bottom: 0.5rem;
-}
-
-.hover\:bg-gray-50:hover {
-    background-color: #f7fafc;
+/* Utilidades personalizadas */
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.10);
+  }
 }

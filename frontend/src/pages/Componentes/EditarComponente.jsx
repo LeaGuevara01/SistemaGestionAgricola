@@ -36,6 +36,17 @@ const EditarComponente = () => {
       </div>
 
       <div className="bg-white shadow rounded-lg p-6">
+        {componente.foto && (
+          <img
+            src={`/static/fotos/${componente.foto}`}
+            alt={componente.nombre}
+            className="w-32 h-32 object-cover rounded mb-4"
+            onError={(e) => {
+              console.error('Error cargando imagen:', e.target.src);
+              e.target.style.display = 'none';
+            }}
+          />
+        )}
         <ComponenteForm
           componente={componente}
           onSuccess={handleSuccess}

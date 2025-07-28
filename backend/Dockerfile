@@ -1,30 +1,76 @@
-FROM python:3.11-slim
+# 🐍 Backend Dockerfile - Multi-stage para optimización
+FROM python:3.11-slim as base
 
-WORKDIR /app
+# Metadatos
+LABEL maintainer="Sistema Gestión Agrícola"
+LABEL version="1.0.0"
+LABEL description="Backend Flask para Sistema de Gestión Agrícola"
+
+# Variables de entorno Python
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONHASHSEED=random \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Crear usuario no-root para seguridad
+RUN groupadd -r appuser && useradd -r -g appuser appuser
 
 # Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
-    gcc \
+    curl \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
-# Copiar requirements
-COPY sistema_gestion_agricola/requirements.txt .
+# ===== STAGE: Development =====
+FROM base as development
 
-# Instalar dependencias Python
-RUN pip install --no-cache-dir -r requirements.txt
+WORKDIR /app
 
-# Copiar código de la aplicación
-COPY sistema_gestion_agricola/ .
+# Copiar requirements primero (cache layer)
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-# Crear directorio para assets estáticos
-RUN mkdir -p static/dist
+# Copiar código de aplicación
+COPY --chown=appuser:appuser . .
 
-# Exponer puerto
+# Crear directorios necesarios
+RUN mkdir -p static/fotos/componentes static/fotos/maquinas static/uploads static/dist && \
+    chown -R appuser:appuser static/
+
+USER appuser
+
 EXPOSE 5000
 
-# Variables de entorno
-ENV FLASK_APP=run.py
-ENV PYTHONPATH=/app
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:5000/health || exit 1
 
-# Comando de inicio
+CMD ["python", "run.py"]
+
+# ===== STAGE: Production =====
+FROM base as production
+
+WORKDIR /app
+
+# Instalar dependencias de producción
+COPY requirements.txt .
+RUN pip install --no-dev -r requirements.txt
+
+# Copiar solo archivos necesarios
+COPY --chown=appuser:appuser config.py run.py ./
+COPY --chown=appuser:appuser backend/ backend/
+COPY --chown=appuser:appuser static/ static/
+
+# Crear directorios con permisos
+RUN mkdir -p static/fotos/componentes static/fotos/maquinas static/uploads static/dist && \
+    chown -R appuser:appuser static/
+
+USER appuser
+
+EXPOSE 5000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:5000/health || exit 1
+
 CMD ["python", "run.py"]

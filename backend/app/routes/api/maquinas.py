@@ -1,51 +1,38 @@
 from flask import request, jsonify
-from werkzeug.exceptions import BadRequest
 from app.routes.api import api_bp
-from app.models import Maquina
-from app.utils.db import db, commit_or_rollback
-from app.services.file_service import FileService
+from app.models.maquina import Maquina
+from app.utils.db import db
 
 @api_bp.route('/maquinas', methods=['GET'])
 def get_maquinas():
     try:
-        # Filtros
-        tipo = request.args.get('tipo')
-        estado = request.args.get('estado')
-        activo = request.args.get('activo', 'true').lower() == 'true'
-        search = request.args.get('search', '').strip()
+        search = request.args.get('search', '')
+        tipo = request.args.get('tipo', '')
+        estado = request.args.get('estado', '')
         
         query = Maquina.query
         
-        if tipo:
-            query = query.filter(Maquina.tipo == tipo)
-        if estado:
-            query = query.filter(Maquina.estado == estado)
-        
-        query = query.filter(Maquina.activo == activo)
-        
         if search:
-            query = query.filter(
-                db.or_(
-                    Maquina.nombre.ilike(f'%{search}%'),
-                    Maquina.marca.ilike(f'%{search}%'),
-                    Maquina.modelo.ilike(f'%{search}%'),
-                    Maquina.numero_serie.ilike(f'%{search}%')
-                )
-            )
+            query = query.filter(getattr(Maquina, 'Nombre', Maquina.nombre).contains(search))
         
-        maquinas = query.order_by(Maquina.nombre).all()
+        if tipo:
+            if hasattr(Maquina, 'Tipo'):
+                query = query.filter(Maquina.Tipo.contains(tipo))
+        
+        if estado:
+            if hasattr(Maquina, 'Estado'):
+                query = query.filter(Maquina.Estado.contains(estado))
+        
+        maquinas = query.all()
         
         return jsonify({
             'success': True,
-            'data': [maq.to_dict() for maq in maquinas],
+            'data': [maquina.to_dict() for maquina in maquinas],
             'total': len(maquinas)
         })
         
     except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @api_bp.route('/maquinas', methods=['POST'])
 def create_maquina():
@@ -199,8 +186,6 @@ from app.models import Maquina
 from app.utils.db import db, commit_or_rollback
 from app.services.file_service import FileService
 
-# ...existing code...
-
 # NUEVAS RUTAS PARA IMPORTACIÓN
 @api_bp.route('/maquinas/import', methods=['POST'])
 def import_maquinas():
@@ -253,16 +238,29 @@ def get_maquinas_template():
 def get_maquinas_stats():
     """Estadísticas de máquinas"""
     try:
-        total = Maquina.query.filter_by(activo=True).count()
-        operativo = Maquina.query.filter_by(estado='operativo', activo=True).count()
-        mantenimiento = Maquina.query.filter_by(estado='mantenimiento', activo=True).count()
-        fuera_servicio = Maquina.query.filter_by(estado='fuera_servicio', activo=True).count()
+        # ✅ QUITAR FILTROS POR 'activo' que no existe
+        total = Maquina.query.count()
+        
+        # ✅ USAR CAMPOS HÍBRIDOS CORRECTOS
+        operativo = Maquina.query.filter(
+            getattr(Maquina, 'Estado', Maquina.nombre) == 'operativo'
+        ).count() if hasattr(Maquina, 'Estado') else 0
+        
+        mantenimiento = Maquina.query.filter(
+            getattr(Maquina, 'Estado', Maquina.nombre) == 'mantenimiento'
+        ).count() if hasattr(Maquina, 'Estado') else 0
+        
+        fuera_servicio = Maquina.query.filter(
+            getattr(Maquina, 'Estado', Maquina.nombre) == 'fuera_servicio'
+        ).count() if hasattr(Maquina, 'Estado') else 0
         
         # Estadísticas por tipo
-        tipos = db.session.query(
-            Maquina.tipo, 
+        tipos_query = db.session.query(
+            getattr(Maquina, 'Tipo', Maquina.nombre), 
             db.func.count(Maquina.id)
-        ).filter_by(activo=True).group_by(Maquina.tipo).all()
+        ).group_by(getattr(Maquina, 'Tipo', Maquina.nombre)) if hasattr(Maquina, 'Tipo') else []
+        
+        tipos = tipos_query.all() if tipos_query else []
         
         return jsonify({
             'success': True,
