@@ -13,13 +13,14 @@ class Componente(db.Model):
         return {
             'id': self.id,
             'nombre': self.nombre,
-            'precio': self.precio or 0,
             'descripcion': getattr(self, 'Descripcion', None),
-            'tipo': getattr(self, 'Tipo', None),
+            'numero_parte': getattr(self, 'ID_Componente', None),  # Mapear ID_Componente a numero_parte
+            'categoria': getattr(self, 'Tipo', None),              # Mapear Tipo a categoria
+            'precio_unitario': self.precio or 0,                  # Mapear Precio a precio_unitario
+            'stock_minimo': 0,                                     # Campo no existe en BD actual
             'marca': getattr(self, 'Marca', None),
             'modelo': getattr(self, 'Modelo', None),
-            'foto': getattr(self, 'Foto', None),
-            'id_componente': getattr(self, 'ID_Componente', None)
+            'foto': getattr(self, 'Foto', None)
         }
     
     @property

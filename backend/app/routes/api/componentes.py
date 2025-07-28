@@ -21,15 +21,16 @@ def get_componentes():
         # ✅ QUERY SIMPLE SIN FILTRO 'activo'
         query = Componente.query
         
-        # ✅ FILTRAR POR TIPO SI SE PROPORCIONA CATEGORIA
+        # ✅ FILTRAR POR CATEGORIA SI SE PROPORCIONA
         if categoria and categoria.strip():
-            query = query.filter(Componente.tipo == categoria)
+            # Usar el campo real de la BD que es 'Tipo'
+            query = query.filter(getattr(Componente, 'Tipo') == categoria)
         
         if search:
             query = query.filter(
                 db.or_(
                     Componente.nombre.ilike(f'%{search}%'),
-                    Componente.descripcion.ilike(f'%{search}%')
+                    getattr(Componente, 'Descripcion').ilike(f'%{search}%')
                 )
             )
         
@@ -149,13 +150,20 @@ def create_componente():
         
         componente = Componente(
             nombre=data.get('nombre'),
-            descripcion=data.get('descripcion'),
-            numero_parte=data.get('numero_parte'),
-            tipo=data.get('tipo'),
-            precio_unitario=data.get('precio_unitario', 0),
-            stock_actual=data.get('stock_actual', 0),
-            stock_minimo=data.get('stock_minimo', 0)
+            precio=data.get('precio_unitario', 0)  # Mapear precio_unitario a precio
         )
+        
+        # Mapear campos usando setattr para campos reflejados
+        if data.get('descripcion'):
+            setattr(componente, 'Descripcion', data.get('descripcion'))
+        if data.get('numero_parte'):
+            setattr(componente, 'ID_Componente', data.get('numero_parte'))
+        if data.get('categoria'):
+            setattr(componente, 'Tipo', data.get('categoria'))
+        if data.get('marca'):
+            setattr(componente, 'Marca', data.get('marca'))
+        if data.get('modelo'):
+            setattr(componente, 'Modelo', data.get('modelo'))
         
         db.session.add(componente)
         db.session.commit()
@@ -181,21 +189,23 @@ def update_componente(id):
         componente = Componente.query.get_or_404(id)
         data = request.get_json()
         
-        # Actualizar campos
+        # Actualizar campos principales
         if 'nombre' in data:
             componente.nombre = data['nombre']
-        if 'descripcion' in data:
-            componente.descripcion = data['descripcion']
-        if 'numero_parte' in data:
-            componente.numero_parte = data['numero_parte']
-        if 'tipo' in data:
-            componente.tipo = data['tipo']
         if 'precio_unitario' in data:
-            componente.precio_unitario = data['precio_unitario']
-        if 'stock_actual' in data:
-            componente.stock_actual = data['stock_actual']
-        if 'stock_minimo' in data:
-            componente.stock_minimo = data['stock_minimo']
+            componente.precio = data['precio_unitario']
+        
+        # Actualizar campos reflejados usando setattr
+        if 'descripcion' in data:
+            setattr(componente, 'Descripcion', data['descripcion'])
+        if 'numero_parte' in data:
+            setattr(componente, 'ID_Componente', data['numero_parte'])
+        if 'categoria' in data:
+            setattr(componente, 'Tipo', data['categoria'])
+        if 'marca' in data:
+            setattr(componente, 'Marca', data['marca'])
+        if 'modelo' in data:
+            setattr(componente, 'Modelo', data['modelo'])
         
         db.session.commit()
         
@@ -246,8 +256,8 @@ def eliminar_componente(id):
 def get_categorias():
     """Obtener lista de categorías de componentes"""
     try:
-        # Obtener categorías únicas de la base de datos
-        categorias = db.session.query(Componente.tipo).distinct().filter(Componente.tipo.isnot(None)).all()
+        # Obtener categorías únicas de la base de datos usando el campo real 'Tipo'
+        categorias = db.session.query(getattr(Componente, 'Tipo')).distinct().filter(getattr(Componente, 'Tipo').isnot(None)).all()
         categorias_list = [cat[0] for cat in categorias if cat[0]]
         
         return jsonify({
@@ -288,7 +298,7 @@ def upload_photo(id):
             # Generar nombre seguro
             filename = secure_filename(f"componente_{id}.{file.filename.rsplit('.', 1)[1].lower()}")
             
-            # Crear directorio si no existe
+            # Crear directorio si no existe (guardar en raíz de fotos como el listado)
             upload_folder = os.path.join(current_app.root_path, '..', 'static', 'fotos')
             os.makedirs(upload_folder, exist_ok=True)
             
@@ -296,8 +306,8 @@ def upload_photo(id):
             filepath = os.path.join(upload_folder, filename)
             file.save(filepath)
             
-            # Actualizar componente
-            componente.foto = filename
+            # Actualizar componente con el campo real 'Foto'
+            setattr(componente, 'Foto', filename)
             db.session.commit()
             
             print(f"✅ Foto guardada: {filename}")

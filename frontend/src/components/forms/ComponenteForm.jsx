@@ -27,13 +27,13 @@ const ComponenteForm = ({ componente = null, onSuccess, onCancel }) => {
     }
   });
 
-  // ✅ Helper para URLs de imagen
+  // ✅ Helper para URLs de imagen - usar la misma ruta que el listado
   const getImageUrl = (filename) => {
     if (!filename) return null;
     if (filename.startsWith('blob:') || filename.startsWith('data:')) return filename;
     
-    // ✅ Usar la ruta correcta para componentes
-    return `/static/fotos/componentes/${filename}`;
+    // ✅ Usar la ruta que funciona en el listado (sin subdirectorio)
+    return `/static/fotos/${filename}`;
   };
 
   const handleImageChange = async (event) => {
@@ -63,12 +63,16 @@ const ComponenteForm = ({ componente = null, onSuccess, onCancel }) => {
         setUploading(true);
         const response = await componentesService.uploadPhoto(componente.id, file);
         
-        // ✅ Actualizar con el nombre correcto del archivo
-        setUploadedImage(response.data.foto);
+        console.log('📸 Respuesta completa del upload:', response);
+        
+        // ✅ Manejo robusto de la respuesta
+        const fotoFilename = response?.data?.foto || response?.foto || `componente_${componente.id}.jpg`;
+        setUploadedImage(fotoFilename);
         setImagePreview(null); // Limpiar preview local
         toast.success('Imagen actualizada correctamente');
       } catch (error) {
         console.error('Error al subir imagen:', error);
+        console.error('Response details:', error.response);
         toast.error('Error al subir la imagen');
         setImagePreview(null);
       } finally {

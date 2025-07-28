@@ -43,7 +43,9 @@ const EditarComponente = () => {
             className="w-32 h-32 object-cover rounded mb-4"
             onError={(e) => {
               console.error('Error cargando imagen:', e.target.src);
-              e.target.style.display = 'none';
+              // ✅ Mostrar placeholder en lugar de ocultar
+              e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik03NSA5MEM3NSA4Ni4xMzQgNzguMTM0IDgzIDgyIDgzSDExOEM5My44NjYgODMgOTcgODYuMTM0IDk3IDkwVjExMEM5NyAxMTMuODY2IDkzLjg2NiAxMTcgOTAgMTE3SDgyQzc4LjEzNCAxMTcgNzUgMTEzLjg2NiA3NSAxMTBWOTBaIiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiIvPgo8cGF0aCBkPSJNMTM1IDkwQzEzNSA4Ni4xMzQgMTM4LjEzNCA4MyAxNDIgODNIMTU4QzE2MS44NjYgODMgMTY1IDg2LjEzNCAxNjUgOTBWMTEwQzE2NSAxMTMuODY2IDE2MS44NjYgMTE3IDE1OCAxMTdIMTQyQzEzOC4xMzQgMTE3IDEzNSAxMTMuODY2IDEzNSAxMTBWOTBaIiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4K';
+              e.target.alt = 'Imagen no disponible';
             }}
           />
         )}

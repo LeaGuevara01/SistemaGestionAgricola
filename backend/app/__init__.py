@@ -248,6 +248,24 @@ def setup_debug_routes(app):
                 'traceback': traceback.format_exc()
             }
 
+    # Rutas de archivos estáticos para imágenes
+    @app.route('/static/fotos/<path:filename>')
+    def serve_fotos(filename):
+        """Servir archivos de fotos - redirigir a componentes por defecto"""
+        static_dir = os.path.join(os.path.dirname(app.root_path), 'static', 'fotos', 'componentes')
+        try:
+            return send_from_directory(static_dir, filename)
+        except:
+            # Si no existe en componentes, intentar en la raíz de fotos
+            static_dir = os.path.join(os.path.dirname(app.root_path), 'static', 'fotos')
+            return send_from_directory(static_dir, filename)
+    
+    @app.route('/static/fotos/componentes/<path:filename>')
+    def serve_fotos_componentes(filename):
+        """Servir archivos de fotos de componentes"""
+        static_dir = os.path.join(os.path.dirname(app.root_path), 'static', 'fotos', 'componentes')
+        return send_from_directory(static_dir, filename)
+
     # Frontend routes
     INDEX_HTML = """<!DOCTYPE html>
 <html lang="es">
