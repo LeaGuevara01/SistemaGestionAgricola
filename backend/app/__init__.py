@@ -1,7 +1,7 @@
 from flask import Flask, send_from_directory, render_template_string
 from flask_cors import CORS
 from flask_migrate import Migrate
-from app.utils.db import db
+from .utils.db import db
 import os
 from dotenv import load_dotenv
 
@@ -26,13 +26,19 @@ def create_app():
     migrate = Migrate(app, db)
     CORS(app)
 
-    # Registrar comandos CLI
-    from app import commands
-    commands.init_app(app)
+    # ✅ CORREGIR IMPORTACIONES DE COMANDOS Y RUTAS
+    try:
+        from .commands import init_app as init_commands
+        init_commands(app)
+    except ImportError:
+        print("⚠️ No se encontraron comandos CLI")
     
     # Registrar blueprints
-    from app.routes.api import api_bp
-    app.register_blueprint(api_bp, url_prefix='/api/v1')
+    try:
+        from .routes.api import api_bp
+        app.register_blueprint(api_bp, url_prefix='/api/v1')
+    except ImportError:
+        print("⚠️ No se encontraron rutas API")
     
     # Configuración híbrida de base de datos
     with app.app_context():
