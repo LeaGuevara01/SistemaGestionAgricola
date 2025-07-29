@@ -1,7 +1,8 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
+// Forzar URL de producción - sin localhost
+const API_BASE_URL = '/api/v1';
 
 // Configurar axios
 const api = axios.create({
