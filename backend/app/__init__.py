@@ -5,7 +5,7 @@ from .utils.db import db
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # Cargar variables de .env
+load_dotenv()
 
 def create_app():
     app = Flask(__name__, static_folder='../../frontend/dist')
@@ -44,14 +44,20 @@ def create_app():
     with app.app_context():
         setup_hybrid_database()
         
-        # Importar modelos después de configurar DB
-        from app.models import Componente, Maquina, Compra, Proveedor, Stock
+        # ✅ CORREGIR IMPORTACIONES RELATIVAS
+        try:
+            from .models import Componente, Maquina, Compra, Proveedor, Stock
+            print("✅ Modelos importados correctamente")
+        except ImportError as e:
+            print(f"⚠️ Error importando modelos: {e}")
         
-        # Configurar modelos híbridos
-        from app.utils.hybrid_models import setup_hybrid_models
-        hybrid_results = setup_hybrid_models()
-        
-        print(f"🎯 Configuración híbrida completada: {len(hybrid_results)} modelos procesados")
+        # ✅ CORREGIR IMPORTACIÓN DE HYBRID_MODELS
+        try:
+            from .utils.hybrid_models import setup_hybrid_models
+            hybrid_results = setup_hybrid_models()
+            print(f"🎯 Configuración híbrida completada: {len(hybrid_results)} modelos procesados")
+        except ImportError as e:
+            print(f"⚠️ Error configurando modelos híbridos: {e}")
 
     # Rutas de debug y health check
     setup_debug_routes(app)
@@ -82,14 +88,12 @@ def setup_hybrid_database():
         critical_tables = ['componentes', 'proveedores', 'maquinas', 'compras', 'stock']
         for table_name in critical_tables:
             if table_name in db.metadata.tables:
-                reflected_table = db.metadata.tables[table_name]
                 print(f"✅ {table_name} reflejada correctamente")
             else:
                 print(f"⚠️  {table_name} no encontrada - se creará si es necesario")
                 
     except Exception as e:
         print(f"❌ Error en configuración híbrida: {e}")
-        # Continuar sin reflection en caso de error
 
 def setup_debug_routes(app):
     """Configurar rutas de debug y health check"""
@@ -111,7 +115,8 @@ def setup_debug_routes(app):
     @app.route('/debug/componentes')
     def debug_componentes():
         try:
-            from app.models.componente import Componente
+            # ✅ USAR IMPORTACIÓN RELATIVA
+            from .models.componente import Componente
             
             total = Componente.query.count()
             componentes = Componente.query.limit(3).all()
@@ -133,12 +138,12 @@ def setup_debug_routes(app):
                 'traceback': traceback.format_exc()
             }
 
-    # ✅ AGREGAR RUTA DE DEBUG PARA VER INFO DE MODELOS
     @app.route('/debug/models')
     def debug_models():
         try:
-            from app.utils.hybrid_models import get_model_info
-            from app.models import Componente, Proveedor, Maquina
+            # ✅ USAR IMPORTACIONES RELATIVAS
+            from .utils.hybrid_models import get_model_info
+            from .models import Componente, Proveedor, Maquina
             
             models_info = []
             for model in [Componente, Proveedor, Maquina]:
@@ -153,31 +158,26 @@ def setup_debug_routes(app):
         except Exception as e:
             return {'success': False, 'error': str(e)}
 
-    # Agregar esta ruta de debug para ver qué pasó con las columnas
     @app.route('/debug/hybrid-info')
     def debug_hybrid_info():
         try:
-            from app.models.componente import Componente
+            # ✅ USAR IMPORTACIÓN RELATIVA
+            from .models.componente import Componente
             
-            # Ver qué columnas tiene el modelo
             model_columns = []
             if hasattr(Componente, '__table__'):
                 model_columns = list(Componente.__table__.columns.keys())
             
-            # Ver qué atributos tiene la clase
             class_attrs = [attr for attr in dir(Componente) if not attr.startswith('_')]
             
-            # Query SQL directo para comparar
             result = db.session.execute(db.text('SELECT COUNT(*) as total FROM componentes'))
             sql_count = result.scalar()
             
-            # Query SQLAlchemy
             try:
                 sqlalchemy_count = Componente.query.count()
             except Exception as e:
                 sqlalchemy_count = f"Error: {str(e)}"
             
-            # ✅ MÁS INFO DE DEBUG
             table_info = None
             if hasattr(Componente, '__table__'):
                 table_info = {
@@ -204,11 +204,9 @@ def setup_debug_routes(app):
                 'traceback': traceback.format_exc()
             }
 
-    # Agregar esta ruta de debug para verificar reflection:
     @app.route('/debug/reflection')
     def debug_reflection():
         try:
-            # 1. Verificar metadata
             tables_info = {}
             
             for table_name, table in db.metadata.tables.items():
@@ -218,17 +216,14 @@ def setup_debug_routes(app):
                     'primary_keys': [col.name for col in table.primary_key.columns]
                 }
             
-            # 2. Verificar reflection directa
             from sqlalchemy import inspect
             inspector = inspect(db.engine)
             direct_columns = inspector.get_columns('componentes')
             
-            # 3. ✅ QUERY SQL COMPATIBLE CON SQLITE Y POSTGRESQL
             if 'sqlite' in str(db.engine.url):
                 result = db.session.execute(db.text("PRAGMA table_info(componentes)"))
                 sql_columns = [row[1] for row in result]
             else:
-                # ✅ POSTGRESQL
                 result = db.session.execute(db.text("""
                     SELECT column_name 
                     FROM information_schema.columns 
@@ -262,7 +257,6 @@ def setup_debug_routes(app):
         try:
             return send_from_directory(static_dir, filename)
         except:
-            # Si no existe en componentes, intentar en la raíz de fotos
             static_dir = os.path.join(os.path.dirname(app.root_path), 'static', 'fotos')
             return send_from_directory(static_dir, filename)
     
