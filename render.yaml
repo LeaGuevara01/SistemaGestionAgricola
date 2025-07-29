@@ -20,8 +20,8 @@ services:
       echo "🔨 Building frontend..."
       cd frontend && npm install && npm run build
       echo "📦 Copiando archivos estáticos..."
-      mkdir -p ../static/dist
-      cp -r dist/* ../static/dist/
+      echo "✅ Frontend build en frontend/dist/"
+      echo "✅ Flask static_folder configurado para frontend/dist"
       echo "✅ Build completado"
     startCommand: gunicorn run:app --host 0.0.0.0 --port $PORT
     envVars:
