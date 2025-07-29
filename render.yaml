@@ -15,14 +15,9 @@ services:
     region: oregon
     plan: free
     buildCommand: |
-      echo "🔨 Instalando dependencias backend..."
+      echo "🔨 Instalando dependencias Python..."
       pip install -r requirements.txt
-      echo "🔨 Building frontend..."
-      cd frontend && npm install && npm run build
-      echo "📦 Copiando archivos estáticos..."
-      echo "✅ Frontend build en frontend/dist/"
-      echo "✅ Flask static_folder configurado para frontend/dist"
-      echo "✅ Build completado"
+      echo "✅ Build completado - usando archivos de frontend precompilados"
     startCommand: gunicorn run:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: FLASK_ENV

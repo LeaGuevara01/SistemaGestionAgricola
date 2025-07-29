@@ -283,32 +283,38 @@ def setup_debug_routes(app):
     @app.route('/assets/<path:filename>')
     def serve_assets(filename):
         """Servir archivos de assets del frontend con MIME types correctos"""
-        static_dir = os.path.join(app.static_folder, 'assets')
-        
-        print(f"🔍 Sirviendo asset: {filename}")
-        print(f"📁 Static folder: {app.static_folder}")
-        print(f"📁 Assets dir: {static_dir}")
-        
         try:
-            response = send_from_directory(static_dir, filename)
+            # ✅ USAR EL STATIC_FOLDER CONFIGURADO
+            response = send_from_directory(app.static_folder, f'assets/{filename}')
             
             # ✅ CONFIGURAR MIME TYPES CORRECTOS
             if filename.endswith('.js'):
-                response.headers['Content-Type'] = 'application/javascript'
-                print(f"✅ Configurado MIME type para JS: {filename}")
+                response.headers['Content-Type'] = 'application/javascript; charset=utf-8'
+                response.headers['Cache-Control'] = 'public, max-age=31536000'
             elif filename.endswith('.css'):
-                response.headers['Content-Type'] = 'text/css'
-                print(f"✅ Configurado MIME type para CSS: {filename}")
+                response.headers['Content-Type'] = 'text/css; charset=utf-8'
+                response.headers['Cache-Control'] = 'public, max-age=31536000'
             elif filename.endswith('.map'):
                 response.headers['Content-Type'] = 'application/json'
                 
             return response
+            
         except Exception as e:
             print(f"❌ Error sirviendo asset {filename}: {e}")
-            import os
-            print(f"📋 Archivos en assets: {os.listdir(static_dir) if os.path.exists(static_dir) else 'Directory not found'}")
-            from flask import abort
-            abort(404)
+            print(f"📁 Static folder: {app.static_folder}")
+            
+            # ✅ INTENTAR SERVIR DESDE LA RAÍZ DE STATIC
+            try:
+                response = send_from_directory(app.static_folder, filename)
+                if filename.endswith('.js'):
+                    response.headers['Content-Type'] = 'application/javascript; charset=utf-8'
+                elif filename.endswith('.css'):
+                    response.headers['Content-Type'] = 'text/css; charset=utf-8'
+                return response
+            except:
+                print(f"❌ También falló desde raíz de static")
+                from flask import abort
+                abort(404)
 
     # Rutas de archivos estáticos para imágenes
     @app.route('/static/fotos/<path:filename>')
@@ -336,32 +342,35 @@ def setup_debug_routes(app):
             from flask import abort
             abort(404)
         
-        # ✅ SERVIR ARCHIVOS ESTÁTICOS DIRECTAMENTE
-        if path and path.startswith('assets/'):
+        # ✅ REDIRIGIR ASSETS A LA FUNCIÓN ESPECÍFICA (esto se maneja automáticamente por Flask)
+        # La ruta /assets/<path:filename> se maneja por serve_assets()
+        
+        # ✅ VERIFICAR SI EL ARCHIVO EXISTE EN STATIC FOLDER (excluyendo assets)
+        if path and not path.startswith('assets/') and os.path.exists(os.path.join(app.static_folder, path)):
             try:
-                return send_from_directory(app.static_folder, path)
-            except:
-                from flask import abort
-                abort(404)
-        
-        # ✅ VERIFICAR SI EL ARCHIVO EXISTE EN STATIC FOLDER
-        if path and os.path.exists(os.path.join(app.static_folder, path)):
-            response = send_from_directory(app.static_folder, path)
-            
-            # ✅ CONFIGURAR MIME TYPES CORRECTOS
-            if path.endswith('.js'):
-                response.headers['Content-Type'] = 'application/javascript'
-            elif path.endswith('.css'):
-                response.headers['Content-Type'] = 'text/css'
-            elif path.endswith('.map'):
-                response.headers['Content-Type'] = 'application/json'
+                response = send_from_directory(app.static_folder, path)
                 
-            return response
+                # ✅ CONFIGURAR MIME TYPES CORRECTOS
+                if path.endswith('.js'):
+                    response.headers['Content-Type'] = 'application/javascript; charset=utf-8'
+                elif path.endswith('.css'):
+                    response.headers['Content-Type'] = 'text/css; charset=utf-8'
+                elif path.endswith('.map'):
+                    response.headers['Content-Type'] = 'application/json'
+                    
+                return response
+            except Exception as e:
+                print(f"❌ Error sirviendo archivo estático {path}: {e}")
         
-        # ✅ SERVIR EL INDEX.HTML GENERADO POR VITE
+        # ✅ SERVIR EL INDEX.HTML GENERADO POR VITE PARA TODAS LAS DEMÁS RUTAS
         try:
-            return send_from_directory(app.static_folder, 'index.html')
-        except:
+            response = send_from_directory(app.static_folder, 'index.html')
+            response.headers['Content-Type'] = 'text/html; charset=utf-8'
+            return response
+        except Exception as e:
+            print(f"❌ Error sirviendo index.html: {e}")
+            print(f"📁 Static folder: {app.static_folder}")
+            
             # ✅ FALLBACK AL HTML HARDCODEADO SI NO EXISTE EL ARCHIVO
             INDEX_HTML = """<!DOCTYPE html>
 <html lang="es">
