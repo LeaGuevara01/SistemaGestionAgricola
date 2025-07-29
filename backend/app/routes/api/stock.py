@@ -1,9 +1,9 @@
 from flask import request, jsonify
 from werkzeug.exceptions import BadRequest
-from app.routes.api import api_bp
-from app.models import Stock, Componente
-from app.services.stock_service import StockService
-from app.utils.db import db
+from . import api_bp
+from ...models import Stock, Componente
+from ...services.stock_service import StockService
+from ...utils.db import db
 
 @api_bp.route('/stock', methods=['GET'])
 def get_stock():

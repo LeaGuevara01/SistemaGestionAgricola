@@ -15,7 +15,6 @@
    - **Name**: `elorza-db`
    - **Database**: `sistema_gestion_agricola`
    - **User**: `elorza`
-   - **Plan**: Free (para desarrollo)
 
 ### 2. Crear Web Service
 
@@ -26,7 +25,6 @@
    - **Environment**: `Python 3`
    - **Build Command**: `pip install -r requirements.txt`
    - **Start Command**: `python run.py`
-   - **Plan**: Free (para desarrollo)
 
 ### 3. Variables de Entorno en Render
 

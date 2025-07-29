@@ -1,4 +1,4 @@
-from app.utils.db import db
+from ..utils.db import db
 
 class Proveedor(db.Model):
     __tablename__ = 'proveedores'

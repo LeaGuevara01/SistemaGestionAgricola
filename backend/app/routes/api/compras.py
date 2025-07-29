@@ -1,9 +1,9 @@
 from flask import request, jsonify
 from werkzeug.exceptions import BadRequest
 from datetime import datetime, date
-from app.routes.api import api_bp
-from app.models import Compra, Componente, Maquina, Proveedor
-from app.utils.db import db, commit_or_rollback
+from . import api_bp
+from ...models import Compra, Componente, Maquina, Proveedor
+from ...utils.db import db, commit_or_rollback
 
 @api_bp.route('/compras', methods=['GET'])
 def get_compras():

@@ -1,14 +1,14 @@
-from app.utils.db import db
+from .db import db
 from sqlalchemy import Table, Column, Integer, String, Float, DateTime, Boolean
 
 def setup_hybrid_models():
     """Configurar modelos híbridos usando inspector directo"""
     from sqlalchemy import inspect
-    from app.models.componente import Componente
-    from app.models.proveedor import Proveedor
-    from app.models.maquina import Maquina
-    from app.models.compra import Compra
-    from app.models.stock import Stock
+    from ..models.componente import Componente
+    from ..models.proveedor import Proveedor
+    from ..models.maquina import Maquina
+    from ..models.compra import Compra
+    from ..models.stock import Stock
     
     inspector = inspect(db.engine)
     

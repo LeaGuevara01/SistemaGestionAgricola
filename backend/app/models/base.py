@@ -1,4 +1,4 @@
-from app.utils.db import db
+from ..utils.db import db
 from datetime import datetime
 
 class BaseModel(db.Model):

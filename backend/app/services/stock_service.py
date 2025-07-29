@@ -1,5 +1,5 @@
-from app.models import Stock, Componente
-from app.utils.db import db, commit_or_rollback
+from ..models import Stock, Componente
+from ..utils.db import db, commit_or_rollback
 
 class StockService:
     

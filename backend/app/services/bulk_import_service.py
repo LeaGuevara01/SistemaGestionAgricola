@@ -1,5 +1,5 @@
-from app.models.maquina import Maquina
-from app.utils.db import db
+from ..models.maquina import Maquina
+from ..utils.db import db
 
 def bulk_import_machines(data):
     """Importa máquinas de forma masiva"""

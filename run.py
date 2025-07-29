@@ -3,7 +3,7 @@ import os
 import sys
 from config import config
 
-# ✅ AGREGAR LOGGING PARA DEBUG
+# AGREGAR LOGGING PARA DEBUG
 print(f"🔍 Python path: {sys.path}")
 print(f"🔍 Current directory: {os.getcwd()}")
 print(f"🔍 Files in current dir: {os.listdir('.')}")
@@ -19,7 +19,7 @@ if env not in config:
 config_class = config[env]
 config_class.check_env_vars()
 
-# ✅ SIMPLIFICAR LA LÓGICA DE IMPORTACIÓN
+# SIMPLIFICAR LA LÓGICA DE IMPORTACIÓN
 try:
     from backend.app import create_app
     print("✅ Backend import successful")

@@ -26,7 +26,7 @@ def create_app():
     migrate = Migrate(app, db)
     CORS(app)
 
-    # ✅ CORREGIR IMPORTACIONES DE COMANDOS Y RUTAS
+    # CORREGIR IMPORTACIONES DE COMANDOS Y RUTAS
     try:
         from .commands import init_app as init_commands
         init_commands(app)
@@ -44,14 +44,14 @@ def create_app():
     with app.app_context():
         setup_hybrid_database()
         
-        # ✅ CORREGIR IMPORTACIONES RELATIVAS
+        # CORREGIR IMPORTACIONES RELATIVAS
         try:
             from .models import Componente, Maquina, Compra, Proveedor, Stock
             print("✅ Modelos importados correctamente")
         except ImportError as e:
             print(f"⚠️ Error importando modelos: {e}")
         
-        # ✅ CORREGIR IMPORTACIÓN DE HYBRID_MODELS
+        # CORREGIR IMPORTACIÓN DE HYBRID_MODELS
         try:
             from .utils.hybrid_models import setup_hybrid_models
             hybrid_results = setup_hybrid_models()
@@ -115,7 +115,7 @@ def setup_debug_routes(app):
     @app.route('/debug/componentes')
     def debug_componentes():
         try:
-            # ✅ USAR IMPORTACIÓN RELATIVA
+            # USAR IMPORTACIÓN RELATIVA
             from .models.componente import Componente
             
             total = Componente.query.count()
@@ -141,7 +141,7 @@ def setup_debug_routes(app):
     @app.route('/debug/models')
     def debug_models():
         try:
-            # ✅ USAR IMPORTACIONES RELATIVAS
+            # USAR IMPORTACIONES RELATIVAS
             from .utils.hybrid_models import get_model_info
             from .models import Componente, Proveedor, Maquina
             
@@ -161,7 +161,7 @@ def setup_debug_routes(app):
     @app.route('/debug/hybrid-info')
     def debug_hybrid_info():
         try:
-            # ✅ USAR IMPORTACIÓN RELATIVA
+            # USAR IMPORTACIÓN RELATIVA
             from .models.componente import Componente
             
             model_columns = []

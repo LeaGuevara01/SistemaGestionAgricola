@@ -1,7 +1,7 @@
 import click
 from flask.cli import with_appcontext
-from app.utils.db import db
-from app.models import Componente, Maquina, Compra, Proveedor, Stock
+from .utils.db import db
+from .models import Componente, Maquina, Compra, Proveedor, Stock
 import json
 
 @click.command()
@@ -275,11 +275,11 @@ def show_full_schema():
 @with_appcontext
 def insert_test_data():
     """Insertar datos de prueba"""
-    from app.models.componente import Componente
-    from app.models.maquina import Maquina
-    from app.models.proveedor import Proveedor
-    from app.models.stock import Stock
-    from app.utils.db import db
+    from .models.componente import Componente
+    from .models.maquina import Maquina
+    from .models.proveedor import Proveedor
+    from .models.stock import Stock
+    from .utils.db import db
     
     try:
         # ✅ VERIFICAR si ya hay datos

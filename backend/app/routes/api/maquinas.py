@@ -1,7 +1,9 @@
 from flask import request, jsonify
-from app.routes.api import api_bp
-from app.models.maquina import Maquina
-from app.utils.db import db
+from werkzeug.exceptions import BadRequest
+from . import api_bp
+from ...models.maquina import Maquina
+from ...utils.db import db, commit_or_rollback
+from ...services.file_service import FileService
 
 @api_bp.route('/maquinas', methods=['GET'])
 def get_maquinas():
@@ -179,12 +181,8 @@ def upload_maquina_photo(id):
             'error': str(e)
         }), 500
 
-from flask import request, jsonify
-from werkzeug.exceptions import BadRequest
-from app.routes.api import api_bp
-from app.models import Maquina
-from app.utils.db import db, commit_or_rollback
-from app.services.file_service import FileService
+# Las importaciones ya están al inicio del archivo
+# No necesitamos importaciones duplicadas
 
 # NUEVAS RUTAS PARA IMPORTACIÓN
 @api_bp.route('/maquinas/import', methods=['POST'])
@@ -207,7 +205,7 @@ def import_maquinas():
             raise BadRequest(str(e))
         
         # Importar datos
-        from app.services.import_service import ImportService
+        from ...services.import_service import ImportService
         result = ImportService.import_maquinas_from_csv(filepath)
         
         # Limpiar archivo temporal
@@ -229,7 +227,7 @@ def import_maquinas():
 def get_maquinas_template():
     """Descargar plantilla CSV para máquinas"""
     try:
-        from app.services.import_service import ImportService
+        from ...services.import_service import ImportService
         return ImportService.get_maquinas_template()
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500

@@ -1,7 +1,7 @@
 from flask import request, jsonify
-from app.routes.api import api_bp
-from app.utils.db import db
-from app.models import Componente
+from . import api_bp
+from ...utils.db import db
+from ...models import Componente
 
 @api_bp.route('/admin/db/info', methods=['GET'])
 def get_db_info():

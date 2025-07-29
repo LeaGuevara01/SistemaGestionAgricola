@@ -2,8 +2,8 @@ import pandas as pd
 import chardet
 from flask import make_response
 import io
-from app.models import Maquina, Componente
-from app.utils.db import db
+from ..models import Maquina, Componente
+from ..utils.db import db
 
 class ImportService:
     

@@ -3,9 +3,9 @@ from werkzeug.exceptions import BadRequest
 from werkzeug.utils import secure_filename
 import os
 from flask import current_app
-from app.routes.api import api_bp
-from app.models.componente import Componente
-from app.utils.db import db
+from . import api_bp
+from ...models.componente import Componente
+from ...utils.db import db
 
 @api_bp.route('/componentes', methods=['GET'])
 def get_componentes():

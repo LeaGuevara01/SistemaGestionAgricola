@@ -1,8 +1,8 @@
 from flask import request, jsonify
 from werkzeug.exceptions import BadRequest
-from app.routes.api import api_bp
-from app.models import Proveedor
-from app.utils.db import db, commit_or_rollback
+from . import api_bp
+from ...models import Proveedor
+from ...utils.db import db, commit_or_rollback
 
 @api_bp.route('/proveedores', methods=['GET'])
 def get_proveedores():
