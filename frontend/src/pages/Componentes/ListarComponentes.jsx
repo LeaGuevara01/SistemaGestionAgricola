@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Edit, Trash2, Package, AlertTriangle } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Package, AlertTriangle, Truck } from 'lucide-react';
 import { useComponentes } from '@/hooks/useApi';
 import { componentesService } from '@/services/componentesService';
 import { toast } from 'react-hot-toast';
@@ -55,14 +55,23 @@ const ComponenteCard = ({ componente, onDelete }) => {
         
         <div className="flex space-x-2">
           <Link
+            to={`/componentes/${componente.id}/maquinas`}
+            className="p-2 text-green-600 hover:bg-green-50 rounded"
+            title="Ver máquinas que usan este componente"
+          >
+            <Truck className="h-4 w-4" />
+          </Link>
+          <Link
             to={`/componentes/editar/${componente.id}`}
             className="p-2 text-blue-600 hover:bg-blue-50 rounded"
+            title="Editar componente"
           >
             <Edit className="h-4 w-4" />
           </Link>
           <button
             onClick={handleDelete}
             className="p-2 text-red-600 hover:bg-red-50 rounded"
+            title="Eliminar componente"
           >
             <Trash2 className="h-4 w-4" />
           </button>

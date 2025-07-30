@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useMaquina } from '@/hooks/useApi';
 import MaquinaForm from '@/components/forms/MaquinaForm';
+import ComponentesMaquinaWidget from '@/components/ComponentesMaquinaWidget';
 
 const EditarMaquina = () => {
   const { id } = useParams();
@@ -35,12 +36,22 @@ const EditarMaquina = () => {
         </h1>
       </div>
 
-      <div className="bg-white shadow rounded-lg p-6">
-        <MaquinaForm
-          maquina={maquina}
-          onSuccess={handleSuccess}
-          onCancel={handleCancel}
-        />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Formulario de edición */}
+        <div className="lg:col-span-2">
+          <div className="bg-white shadow rounded-lg p-6">
+            <MaquinaForm
+              maquina={maquina}
+              onSuccess={handleSuccess}
+              onCancel={handleCancel}
+            />
+          </div>
+        </div>
+
+        {/* Widget de componentes */}
+        <div className="lg:col-span-1">
+          <ComponentesMaquinaWidget maquinaId={id} />
+        </div>
       </div>
     </div>
   );

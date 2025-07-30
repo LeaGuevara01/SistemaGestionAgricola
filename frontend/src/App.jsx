@@ -11,11 +11,13 @@ import Home from './pages/Home';
 import ListarComponentes from './pages/Componentes/ListarComponentes';
 import AgregarComponentes from './pages/Componentes/AgregarComponentes'; // ✅ CORREGIDO
 import EditarComponente from './pages/Componentes/EditarComponente';
+import MaquinasComponente from './pages/Componentes/MaquinasComponente';
 
 // Máquinas
 import ListarMaquinas from './pages/Maquinas/ListarMaquinas'; // ✅ CORREGIDO
 import AgregarMaquina from './pages/Maquinas/AgregarMaquina';
 import EditarMaquina from './pages/Maquinas/EditarMaquina';
+import ComponentesMaquina from './pages/Maquinas/ComponentesMaquina';
 
 // Compras
 import ListarCompras from './pages/Compras/ListarCompras'; // ✅ CORREGIDO
@@ -61,11 +63,13 @@ function App() {
               <Route path="/componentes" element={<ListarComponentes />} />
               <Route path="/componentes/agregar" element={<AgregarComponentes />} />
               <Route path="/componentes/editar/:id" element={<EditarComponente />} />
+              <Route path="/componentes/:id/maquinas" element={<MaquinasComponente />} />
 
               {/* Rutas de Máquinas */}
               <Route path="/maquinas" element={<ListarMaquinas />} />
               <Route path="/maquinas/agregar" element={<AgregarMaquina />} />
               <Route path="/maquinas/editar/:id" element={<EditarMaquina />} />
+              <Route path="/maquinas/:id/componentes" element={<ComponentesMaquina />} />
 
               {/* Rutas de Compras */}
               <Route path="/compras" element={<ListarCompras />} />

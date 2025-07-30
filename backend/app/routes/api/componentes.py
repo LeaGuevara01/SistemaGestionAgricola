@@ -128,10 +128,11 @@ def get_componente(id):
     """Obtener un componente específico"""
     try:
         componente = Componente.query.get_or_404(id)
+        include_relations = request.args.get('include_relations', 'false').lower() == 'true'
         
         result = {
             'success': True,
-            'data': componente.to_dict()
+            'data': componente.to_dict(include_relations=include_relations)
         }
         return jsonify(result)
         
@@ -247,6 +248,25 @@ def eliminar_componente(id):
     except Exception as e:
         db.session.rollback()
         print(f"❌ Error en eliminar_componente: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@api_bp.route('/componentes/metadata', methods=['GET'])
+def get_componentes_metadata():
+    """Obtener metadatos de campos para formularios dinámicos"""
+    try:
+        from ...services.field_metadata_service import FieldMetadataService
+        metadata = FieldMetadataService.get_componentes_metadata()
+        
+        return jsonify({
+            'success': True,
+            'data': metadata,
+            'message': 'Metadatos obtenidos exitosamente'
+        })
+        
+    except Exception as e:
         return jsonify({
             'success': False,
             'error': str(e)

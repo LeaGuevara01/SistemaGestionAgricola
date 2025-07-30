@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Edit, Trash2, Truck, AlertCircle, CheckCircle, Clock } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Truck, AlertCircle, CheckCircle, Clock, Package } from 'lucide-react';
 import { useMaquinas } from '@/hooks/useApi';
 import { maquinasService } from '@/services/maquinasService';
 import { toast } from 'react-hot-toast';
@@ -77,14 +77,23 @@ const MaquinaCard = ({ maquina, onDelete }) => {
         
         <div className="flex space-x-2">
           <Link
+            to={`/maquinas/${maquina.id}/componentes`}
+            className="p-2 text-green-600 hover:bg-green-50 rounded"
+            title="Ver componentes"
+          >
+            <Package className="h-4 w-4" />
+          </Link>
+          <Link
             to={`/maquinas/editar/${maquina.id}`}
             className="p-2 text-blue-600 hover:bg-blue-50 rounded"
+            title="Editar máquina"
           >
             <Edit className="h-4 w-4" />
           </Link>
           <button
             onClick={handleDelete}
             className="p-2 text-red-600 hover:bg-red-50 rounded"
+            title="Eliminar máquina"
           >
             <Trash2 className="h-4 w-4" />
           </button>

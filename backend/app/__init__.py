@@ -319,13 +319,24 @@ def setup_debug_routes(app):
     # Rutas de archivos estáticos para imágenes
     @app.route('/static/fotos/<path:filename>')
     def serve_fotos(filename):
-        """Servir archivos de fotos - redirigir a componentes por defecto"""
-        static_dir = os.path.join(os.path.dirname(app.root_path), 'static', 'fotos', 'componentes')
-        try:
+        """Servir archivos de fotos desde el directorio static/fotos"""
+        # Primero intentar servir desde el directorio principal de fotos
+        static_dir = os.path.join(os.path.dirname(app.root_path), 'static', 'fotos')
+        file_path = os.path.join(static_dir, filename)
+        
+        if os.path.exists(file_path):
             return send_from_directory(static_dir, filename)
-        except:
-            static_dir = os.path.join(os.path.dirname(app.root_path), 'static', 'fotos')
-            return send_from_directory(static_dir, filename)
+        
+        # Si no existe, intentar desde componentes
+        componentes_dir = os.path.join(static_dir, 'componentes')
+        componentes_path = os.path.join(componentes_dir, filename)
+        
+        if os.path.exists(componentes_path):
+            return send_from_directory(componentes_dir, filename)
+        
+        # Si no se encuentra, devolver 404
+        from flask import abort
+        abort(404)
     
     @app.route('/static/fotos/componentes/<path:filename>')
     def serve_fotos_componentes(filename):

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { componentesService } from '@/services/componentesService';
 import { maquinasService } from '@/services/maquinasService';
+import { maquinasComponentesService } from '@/services/maquinasComponentesService';
 import { comprasService } from '@/services/comprasService';
 import { proveedoresService } from '@/services/proveedoresService';
 import { stockService } from '@/services/stockService';
@@ -50,6 +51,31 @@ export const useMaquina = (id) => {
     ['maquina', id],
     () => maquinasService.getById(id, true),
     { enabled: !!id }
+  );
+};
+
+// Hooks específicos para Máquinas-Componentes
+export const useMaquinaComponentes = (maquinaId, filtros = {}) => {
+  return useApi(
+    ['maquina-componentes', maquinaId, filtros],
+    () => maquinasComponentesService.getMaquinaComponentes(maquinaId, filtros),
+    { enabled: !!maquinaId }
+  );
+};
+
+export const useComponentesDisponibles = (maquinaId, filtros = {}) => {
+  return useApi(
+    ['componentes-disponibles', maquinaId, filtros],
+    () => maquinasComponentesService.getComponentesDisponibles(maquinaId, filtros),
+    { enabled: !!maquinaId }
+  );
+};
+
+export const useComponenteMaquinas = (componenteId, filtros = {}) => {
+  return useApi(
+    ['componente-maquinas', componenteId, filtros],
+    () => maquinasComponentesService.getComponenteMaquinas(componenteId, filtros),
+    { enabled: !!componenteId }
   );
 };
 

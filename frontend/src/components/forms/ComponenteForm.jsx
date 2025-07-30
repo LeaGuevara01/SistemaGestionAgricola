@@ -9,13 +9,17 @@ const ComponenteForm = ({ componente = null, onSuccess, onCancel }) => {
   const [uploading, setUploading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null); // ✅ Solo para preview local
   const [uploadedImage, setUploadedImage] = useState(componente?.foto || null); // ✅ Para imagen del servidor
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
+  const [subcategoriaSeleccionada, setSubcategoriaSeleccionada] = useState('');
   const isEditing = !!componente;
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset
+    reset,
+    setValue,
+    watch
   } = useForm({
     defaultValues: {
       nombre: componente?.nombre || '',
@@ -26,6 +30,39 @@ const ComponenteForm = ({ componente = null, onSuccess, onCancel }) => {
       stock_minimo: componente?.stock_minimo || 0
     }
   });
+
+  // ✅ Inicializar categorías si estamos editando
+  React.useEffect(() => {
+    if (componente?.categoria) {
+      // Buscar la categoría principal que contiene la subcategoría
+      const categoriaEncontrada = CATEGORIAS_COMPONENTES.find(cat => 
+        cat.subcategorias.includes(componente.categoria)
+      );
+      
+      if (categoriaEncontrada) {
+        setCategoriaSeleccionada(categoriaEncontrada.categoria);
+        setSubcategoriaSeleccionada(componente.categoria);
+      }
+    }
+  }, [componente]);
+
+  // ✅ Obtener subcategorías disponibles
+  const subcategoriasDisponibles = CATEGORIAS_COMPONENTES.find(
+    c => c.categoria === categoriaSeleccionada
+  )?.subcategorias || [];
+
+  // ✅ Manejar cambio de categoría principal
+  const handleCategoriaChange = (categoria) => {
+    setCategoriaSeleccionada(categoria);
+    setSubcategoriaSeleccionada(''); // Reset subcategoría
+    setValue('categoria', ''); // Reset valor del formulario
+  };
+
+  // ✅ Manejar cambio de subcategoría
+  const handleSubcategoriaChange = (subcategoria) => {
+    setSubcategoriaSeleccionada(subcategoria);
+    setValue('categoria', subcategoria); // Guardar subcategoría como categoría final
+  };
 
   // ✅ Helper para URLs de imagen - usar la misma ruta que el listado
   const getImageUrl = (filename) => {
@@ -148,17 +185,52 @@ const ComponenteForm = ({ componente = null, onSuccess, onCancel }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Categoría
+              Categoría Principal
             </label>
             <select
-              {...register('categoria')}
+              value={categoriaSeleccionada}
+              onChange={(e) => handleCategoriaChange(e.target.value)}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
             >
-              <option value="">Seleccionar categoría</option>
+              <option value="">Seleccionar categoría principal</option>
               {CATEGORIAS_COMPONENTES.map((cat) => (
-                <option key={cat} value={cat}>{cat}</option>
+                <option key={cat.categoria} value={cat.categoria}>
+                  {cat.categoria}
+                </option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Subcategoría
+            </label>
+            <select
+              value={subcategoriaSeleccionada}
+              onChange={(e) => handleSubcategoriaChange(e.target.value)}
+              disabled={!categoriaSeleccionada}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            >
+              <option value="">
+                {categoriaSeleccionada ? 'Seleccionar subcategoría' : 'Selecciona primero una categoría principal'}
+              </option>
+              {subcategoriasDisponibles.map((sub) => (
+                <option key={sub} value={sub}>
+                  {sub}
+                </option>
+              ))}
+            </select>
+            {subcategoriaSeleccionada && (
+              <p className="mt-1 text-sm text-green-600">
+                Categoría seleccionada: {categoriaSeleccionada} → {subcategoriaSeleccionada}
+              </p>
+            )}
+            {/* Campo oculto para el formulario */}
+            <input
+              type="hidden"
+              {...register('categoria')}
+              value={subcategoriaSeleccionada}
+            />
           </div>
 
           <div>

@@ -44,24 +44,25 @@ def create_maquina():
         if not data.get('nombre'):
             raise BadRequest("El nombre es requerido")
         
-        # Verificar número de serie único
-        if data.get('numero_serie'):
-            existing = Maquina.query.filter_by(numero_serie=data['numero_serie']).first()
-            if existing:
-                raise BadRequest("El número de serie ya existe")
+        # Los campos numero_serie, tipo, horas_trabajo, ubicacion, activo no existen en la BD
+        # Solo usar campos que realmente existen
         
         maquina = Maquina(
             nombre=data.get('nombre'),
-            marca=data.get('marca'),
-            modelo=data.get('modelo'),
-            numero_serie=data.get('numero_serie'),
-            año=data.get('año'),
-            tipo=data.get('tipo'),
-            estado=data.get('estado', 'operativo'),
-            horas_trabajo=data.get('horas_trabajo', 0),
-            ubicacion=data.get('ubicacion'),
-            observaciones=data.get('observaciones')
+            codigo=data.get('codigo', f"M-{Maquina.query.count() + 1:03d}")  # Auto-generar código si no se proporciona
         )
+        
+        # Establecer campos reflejados que existen en la BD
+        if data.get('marca'):
+            setattr(maquina, 'Marca', data.get('marca'))
+        if data.get('modelo'):
+            setattr(maquina, 'Modelo', data.get('modelo'))
+        if data.get('año'):
+            setattr(maquina, 'Año', data.get('año'))
+        if data.get('estado'):
+            setattr(maquina, 'Estado', data.get('estado'))
+        if data.get('observaciones'):
+            setattr(maquina, 'Observaciones', data.get('observaciones'))
         
         db.session.add(maquina)
         commit_or_rollback()
@@ -107,31 +108,82 @@ def update_maquina(id):
         maquina = Maquina.query.get_or_404(id)
         data = request.get_json()
         
-        # Verificar número de serie único
-        if data.get('numero_serie') and data['numero_serie'] != maquina.numero_serie:
-            existing = Maquina.query.filter_by(numero_serie=data['numero_serie']).first()
-            if existing:
-                raise BadRequest("El número de serie ya existe")
+        print(f"🔧 Actualizando máquina ID: {id}")
+        print(f"📝 Datos recibidos: {data}")
         
-        # Actualizar campos
-        for field in ['nombre', 'marca', 'modelo', 'numero_serie', 'año', 'tipo', 'estado', 'horas_trabajo', 'ubicacion', 'observaciones', 'activo']:
+        # ✅ USAR METADATOS DINÁMICOS en lugar de hardcodear
+        from ...services.field_metadata_service import FieldMetadataService
+        metadata = FieldMetadataService.get_maquinas_metadata()
+        
+        # Crear mapeo dinámico basado en metadatos
+        field_mapping = {}
+        available_fields = []
+        unavailable_fields = []
+        
+        for frontend_field, field_info in metadata['field_metadata'].items():
+            if field_info['exists_in_db']:
+                field_mapping[frontend_field] = field_info['db_field']
+                available_fields.append(frontend_field)
+            else:
+                unavailable_fields.append(frontend_field)
+        
+        print(f"📊 Campos disponibles: {available_fields}")
+        print(f"⚠️  Campos no disponibles: {unavailable_fields}")
+        
+        # Actualizar campos usando el mapeo dinámico
+        for frontend_field, db_field in field_mapping.items():
+            if frontend_field in data:
+                value = data[frontend_field]
+                
+                # ✅ SKIP campos vacíos para evitar sobrescribir con valores vacíos
+                if value == '' or value is None:
+                    print(f"   ⚠️  Saltando campo vacío {frontend_field}")
+                    continue
+                
+                print(f"   🔄 Actualizando {frontend_field} -> {db_field} = {value}")
+                
+                # Para campos explícitos, usar setattr directo
+                if frontend_field in ['nombre', 'codigo']:
+                    setattr(maquina, db_field, value)
+                else:
+                    # Para campos reflejados, usar setattr con el nombre de BD
+                    setattr(maquina, db_field, value)
+        
+        # Manejar campos no disponibles de forma dinámica
+        for field in unavailable_fields:
             if field in data:
-                setattr(maquina, field, data[field])
+                value = data[field]
+                field_info = metadata['field_metadata'][field]
+                if value != '' and value is not None:
+                    print(f"   ⚠️  Ignorando campo {field} (no existe en BD): {value}")
+                    print(f"      💡 Nota: {field_info.get('note', 'Campo no implementado')}")
+                else:
+                    print(f"   ⚠️  Ignorando campo vacío {field} (no existe en BD)")
         
         commit_or_rollback()
+        
+        print(f"✅ Máquina {id} actualizada exitosamente")
         
         return jsonify({
             'success': True,
             'data': maquina.to_dict(),
-            'message': 'Máquina actualizada exitosamente'
+            'message': 'Máquina actualizada exitosamente',
+            'metadata': {
+                'updated_fields': list(field_mapping.keys()),
+                'ignored_fields': unavailable_fields
+            }
         })
         
     except BadRequest as e:
+        print(f"❌ Error BadRequest: {e}")
         return jsonify({
             'success': False,
             'error': str(e)
         }), 400
     except Exception as e:
+        print(f"❌ Error en update_maquina: {e}")
+        import traceback
+        traceback.print_exc()
         db.session.rollback()
         return jsonify({
             'success': False,
@@ -140,42 +192,91 @@ def update_maquina(id):
 
 @api_bp.route('/maquinas/<int:id>/upload-photo', methods=['POST'])
 def upload_maquina_photo(id):
+    """Subir foto de máquina"""
     try:
+        print(f"📸 Subiendo foto para máquina ID: {id}")
+        
         maquina = Maquina.query.get_or_404(id)
         
         if 'photo' not in request.files:
-            raise BadRequest("No se proporcionó archivo")
+            return jsonify({
+                'success': False,
+                'error': 'No se encontró archivo en la petición'
+            }), 400
         
         file = request.files['photo']
+        
         if file.filename == '':
-            raise BadRequest("No se seleccionó archivo")
+            return jsonify({
+                'success': False,
+                'error': 'No se seleccionó archivo'
+            }), 400
         
-        if maquina.foto:
-            FileService.delete_file(maquina.foto)
+        # Verificar que el archivo tiene extensión válida
+        allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+        if '.' not in file.filename:
+            return jsonify({
+                'success': False,
+                'error': 'Archivo sin extensión válida'
+            }), 400
+            
+        file_extension = file.filename.rsplit('.', 1)[1].lower()
+        if file_extension not in allowed_extensions:
+            return jsonify({
+                'success': False,
+                'error': f'Formato no permitido. Use: {", ".join(allowed_extensions)}'
+            }), 400
         
-        file_path = FileService.save_file(file, 'maquinas')
-        if not file_path:
-            raise BadRequest("Archivo no válido")
+        if file:
+            # Importar las funciones necesarias
+            from werkzeug.utils import secure_filename
+            from flask import current_app
+            import os
+            
+            # Generar nombre seguro
+            filename = secure_filename(f"maquina_{id}.{file_extension}")
+            
+            # Crear directorio si no existe (guardar en raíz de fotos como el listado)
+            upload_folder = os.path.join(current_app.root_path, '..', 'static', 'fotos')
+            os.makedirs(upload_folder, exist_ok=True)
+            
+            # Guardar archivo
+            filepath = os.path.join(upload_folder, filename)
+            
+            # Eliminar foto anterior si existe
+            old_filename = getattr(maquina, 'Foto', None)
+            if old_filename:
+                old_filepath = os.path.join(upload_folder, old_filename)
+                if os.path.exists(old_filepath):
+                    try:
+                        os.remove(old_filepath)
+                        print(f"🗑️ Foto anterior eliminada: {old_filename}")
+                    except Exception as e:
+                        print(f"⚠️ No se pudo eliminar foto anterior: {e}")
+            
+            # Guardar nueva foto
+            file.save(filepath)
+            
+            # Actualizar máquina con el campo real 'Foto'
+            setattr(maquina, 'Foto', filename)
+            db.session.commit()
+            
+            print(f"✅ Foto guardada: {filename}")
+            
+            return jsonify({
+                'success': True,
+                'message': 'Foto subida exitosamente',
+                'data': {
+                    'foto': filename,
+                    'maquina': maquina.to_dict()
+                }
+            })
         
-        maquina.foto = file_path
-        commit_or_rollback()
-        
-        return jsonify({
-            'success': True,
-            'data': {
-                'foto': file_path,
-                'url': FileService.get_file_url(file_path)
-            },
-            'message': 'Foto subida exitosamente'
-        })
-        
-    except BadRequest as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 400
     except Exception as e:
         db.session.rollback()
+        print(f"❌ Error en upload_maquina_photo: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({
             'success': False,
             'error': str(e)
@@ -231,6 +332,25 @@ def get_maquinas_template():
         return ImportService.get_maquinas_template()
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+@api_bp.route('/maquinas/metadata', methods=['GET'])
+def get_maquinas_metadata():
+    """Obtener metadatos de campos para formularios dinámicos"""
+    try:
+        from ...services.field_metadata_service import FieldMetadataService
+        metadata = FieldMetadataService.get_maquinas_metadata()
+        
+        return jsonify({
+            'success': True,
+            'data': metadata,
+            'message': 'Metadatos obtenidos exitosamente'
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 @api_bp.route('/maquinas/stats', methods=['GET'])
 def get_maquinas_stats():
