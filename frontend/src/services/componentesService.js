@@ -3,22 +3,42 @@ import { apiService } from './api';
 export const componentesService = {
   async getAll(filters = {}) {
     const response = await apiService.get('/componentes', filters);
-    return response.data;
+    // Si el response tiene estructura de API estándar, extraer el array de data
+    if (response.success && response.data) {
+      return response.data;
+    }
+    // Fallback para compatibilidad
+    return response.data || response;
   },
 
   async getById(id, includeRelations = false) {
     const response = await apiService.get(`/componentes/${id}`, { include_relations: includeRelations });
-    return response.data;
+    // Si el response tiene estructura de API estándar, extraer el objeto de data
+    if (response.success && response.data) {
+      return response.data;
+    }
+    // Fallback para compatibilidad
+    return response.data || response;
   },
 
   async create(componente) {
     const response = await apiService.post('/componentes', componente);
-    return response.data;
+    // Si el response tiene estructura de API estándar, extraer el objeto de data
+    if (response.success && response.data) {
+      return response.data;
+    }
+    // Fallback para compatibilidad
+    return response.data || response;
   },
 
   async update(id, componente) {
     const response = await apiService.put(`/componentes/${id}`, componente);
-    return response.data;
+    // Si el response tiene estructura de API estándar, extraer el objeto de data
+    if (response.success && response.data) {
+      return response.data;
+    }
+    // Fallback para compatibilidad
+    return response.data || response;
   },
 
   async delete(id) {

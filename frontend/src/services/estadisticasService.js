@@ -69,6 +69,32 @@ export const estadisticasService = {
   async getGraficosStock() {
     const response = await apiService.get('/estadisticas/graficos-stock');
     return response.data;
+  },
+
+  // Métodos adicionales para compatibilidad con las páginas
+  async getResumenGeneral() {
+    const response = await apiService.get('/estadisticas/resumen-general');
+    return response.data;
+  },
+
+  async getComprasPorPeriodo(periodo = 'mes') {
+    const response = await apiService.get(`/estadisticas/compras-periodo?periodo=${periodo}`);
+    return response.data;
+  },
+
+  async getStockCritico() {
+    const response = await apiService.get('/estadisticas/stock-critico');
+    return response.data;
+  },
+
+  async getTopProveedores(periodo = 'mes') {
+    const response = await apiService.get(`/estadisticas/top-proveedores?periodo=${periodo}`);
+    return response.data;
+  },
+
+  async getAlertas() {
+    const response = await apiService.get('/estadisticas/alertas');
+    return response.data;
   }
 };
 

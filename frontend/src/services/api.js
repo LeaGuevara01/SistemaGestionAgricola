@@ -1,8 +1,10 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-// Forzar URL de producción - sin localhost
-const API_BASE_URL = '/api/v1';
+// Configurar URL del backend
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? '/api/v1'  // En producción usar URL relativa
+  : '/api/v1';  // En desarrollo usar proxy de Vite
 
 // Configurar axios
 const api = axios.create({

@@ -145,8 +145,8 @@ const ListarMaquinas = () => {
   const [filtros, setFiltros] = useState({
     search: '',
     tipo: '',
-    estado: '',
-    activo: true
+    estado: ''
+    // Removido activo: true para mostrar todas las máquinas por defecto
   });
 
   const { data: maquinas, loading, error, refetch } = useMaquinas(filtros);
