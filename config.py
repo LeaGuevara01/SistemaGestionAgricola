@@ -39,6 +39,23 @@ class Config:
     WEATHER_API_URL = os.getenv("WEATHER_API_URL", "https://api.openweathermap.org/data/2.5/weather")
     
     COORDENADAS_UCACHA = {'lat': -33.0320, 'lon': -63.5066}
+    
+    @classmethod
+    def check_env_vars(cls):
+        """Verificar variables de entorno requeridas"""
+        warnings = []
+        
+        if not cls.SECRET_KEY or cls.SECRET_KEY == "dev-secret-key-postgresql":
+            warnings.append("⚠️ SECRET_KEY no está configurada o usa valor por defecto")
+        
+        if not cls.DATABASE_URL:
+            warnings.append("⚠️ DATABASE_URL no está configurada")
+        
+        if warnings:
+            for warning in warnings:
+                print(warning)
+        
+        return len(warnings) == 0
 
 class DevelopmentConfig(Config):
     DEBUG = True
